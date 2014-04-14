@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action
+END
+DeleteAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action/DeleteAction.java
+END
+SelectAllAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action/SelectAllAction.java
+END
+CopyAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action/CopyAction.java
+END
+CutAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action/CutAction.java
+END
+PasteAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/desktop/action/PasteAction.java
+END

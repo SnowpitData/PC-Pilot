@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc
+END
+PitObs.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/Kahrlconsulting/PCPilot/svn/!svn/ver/23/src/avscience/ppc/PitObs.java
+END
+AvScienceDataObject.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/AvScienceDataObject.java
+END
+ShearTestResult.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/ShearTestResult.java
+END
+XMLReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/Kahrlconsulting/PCPilot/svn/!svn/ver/23/src/avscience/ppc/XMLReader.java
+END
+GrainTypeConvtertor.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/GrainTypeConvtertor.java
+END
+Location.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/Kahrlconsulting/PCPilot/svn/!svn/ver/14/src/avscience/ppc/Location.java
+END
+SPDataStore.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/SPDataStore.java
+END
+CAAMLWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/CAAMLWriter.java
+END
+AvScienceObjectTypes.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/AvScienceObjectTypes.java
+END
+Layer.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/Kahrlconsulting/PCPilot/svn/!svn/ver/14/src/avscience/ppc/Layer.java
+END
+AvOccurence.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/Kahrlconsulting/PCPilot/svn/!svn/ver/1/src/avscience/ppc/AvOccurence.java
+END
+XMLWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/Kahrlconsulting/PCPilot/svn/!svn/ver/14/src/avscience/ppc/XMLWriter.java
+END
+User.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/Kahrlconsulting/PCPilot/svn/!svn/ver/22/src/avscience/ppc/User.java
+END
