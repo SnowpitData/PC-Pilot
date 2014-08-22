@@ -49,8 +49,6 @@ public class PitFrame extends Frame implements Printable
 	public PitFrame(avscience.ppc.PitObs pit, MainFrame mf, boolean forDisplay)
 	{
 		super("Pit Observation: "+pit.getName());
-	//	this.width = width;
-	//	this.height = height;
 		this.pit = pit;
 		this.mf = mf;
 		if (mf!=null) this.smallscreen=mf.smallscreen;
@@ -108,6 +106,7 @@ public class PitFrame extends Frame implements Printable
 		this.setSize(width, height);
 		this.setLocation(1, 1);
 		this.setMaximizedBounds(new Rectangle(width, height));
+                this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		boolean escale=false;
 		if (mf!=null) escale = mf.getUser().hardnessScaling.equals("exponential");
 		canvas = new avscience.desktop.PitCanvas(pit, width, height-160, escale, 0);

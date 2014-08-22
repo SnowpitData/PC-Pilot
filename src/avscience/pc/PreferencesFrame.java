@@ -9,8 +9,8 @@ import avscience.ppc.User;
 
 public class PreferencesFrame extends Frame
 {
-	private int width = 378;
-	private int height = 410;
+	private int width = 440;
+	private int height = 540;
 	private MenuBar mainMenuBar = new java.awt.MenuBar();
 	private Menu menu = new java.awt.Menu();
 	private MenuItem saveMenuItem = new java.awt.MenuItem();
@@ -42,6 +42,11 @@ public class PreferencesFrame extends Frame
     {
     	super("Snow Pilot - Preferences");
 	    this.mframe = mframe;
+            if (mframe.macos) 
+            {
+                width = 600;
+                height = 580;
+            }
 		user = mframe.getUser();
 		setLayout(null);
 		
@@ -50,7 +55,6 @@ public class PreferencesFrame extends Frame
 		this.setVisible(true);
 	
 		this.setMaximizedBounds(new Rectangle(width, height));
-		
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		
@@ -197,10 +201,10 @@ public class PreferencesFrame extends Frame
     	
     	y+=vspace;
     	from.setLocation(x, y);
-    	from.setSize(64, 32);
+    	from.setSize(100, 32);
     	add(from);
     	
-    	y+=vspace;
+    	y+=1.4*vspace;
     	Label l2= new Label("Depth Units");
     	l2.setLocation(x, y);
     	l2.setSize(180, 20);
@@ -208,10 +212,11 @@ public class PreferencesFrame extends Frame
     	
     	y+=vspace;
     	depthUnits.setLocation(x, y);
-    	depthUnits.setSize(64, 32);
+    	depthUnits.setSize(100, 32);
     	add(depthUnits);
     	
-    	y+=vspace;
+        y+=1.4*vspace;
+    	//y+=vspace;
     	Label l3= new Label("Temp Units");
     	l3.setLocation(x, y);
     	l3.setSize(180, 20);
@@ -219,7 +224,7 @@ public class PreferencesFrame extends Frame
     	    	
     	y+=vspace;
     	tempUnits.setLocation(x, y);
-    	tempUnits.setSize(64, 32);
+    	tempUnits.setSize(80, 32);
     	add(tempUnits);
     	
     	state=new Choice();
@@ -229,7 +234,8 @@ public class PreferencesFrame extends Frame
     		state.add(states[i]);
     	}
     	
-    	y+=vspace;
+    	//y+=vspace;
+        y+=1.4*vspace;
     	Label sp = new Label("State/Prov");
     	sp.setLocation(x, y);
     	sp.setSize(180, 20);
@@ -239,7 +245,8 @@ public class PreferencesFrame extends Frame
     	state.setSize(112, 32);
     	add(state);
     	state.select("MT");
-    	y+=vspace;
+    	//y+=vspace;
+        y+=1.4*vspace;
     	
     	Label ctl = new Label("Coordinate Type");
     	ctl.setLocation(x, y);
@@ -257,6 +264,7 @@ public class PreferencesFrame extends Frame
     	add(coordType);
     	
     	y=ys;
+       /// y+=1.4*vspace;
     	x+=hspace;
     	
     //	y+=vspace;
@@ -267,10 +275,11 @@ public class PreferencesFrame extends Frame
     	
     	y+=vspace;
     	elvUnits.setLocation(x, y);
-    	elvUnits.setSize(60, 32);
+    	elvUnits.setSize(80, 32);
     	add(elvUnits);
     	
-    	y+=vspace;
+    	//y+=vspace;
+        y+=1.4*vspace;
     	Label l5= new Label("Longitude type");
     	l5.setLocation(x, y);
     	l5.setSize(180, 20);
@@ -278,10 +287,11 @@ public class PreferencesFrame extends Frame
     	
     	y+=vspace;
     	lonType.setLocation(x, y);
-    	lonType.setSize(60, 32);
+    	lonType.setSize(80, 32);
     	add(lonType);
     	
-    	y+=vspace;
+    	//y+=vspace;
+        y+=1.4*vspace;
     	Label l6= new Label("Latitude type");
     	l6.setLocation(x, y);
     	l6.setSize(180, 20);
@@ -292,7 +302,8 @@ public class PreferencesFrame extends Frame
     	latType.setSize(60, 32);
     	add(latType);
     	
-    	y+=vspace;
+    	///y+=vspace;
+        y+=1.4*vspace;
     	Label l7= new Label("Density units");
     	l7.setLocation(x, y);
     	l7.setSize(180, 20);
@@ -300,9 +311,10 @@ public class PreferencesFrame extends Frame
     	
     	y+=vspace;
     	rhoUnits.setLocation(x, y);
-    	rhoUnits.setSize(96, 32);
+    	rhoUnits.setSize(180, 32);
     	add(rhoUnits);
-    	y+=vspace;
+        y+=1.4*vspace;
+    	//y+=vspace;
     	
     ///	String[] fracs = {"Fracture Character", "Shear Quality"};
     	Label fcl = new Label("Fracture Category");
@@ -312,7 +324,7 @@ public class PreferencesFrame extends Frame
     	y+=vspace+8;
     	
     	fractureChar.setLocation(x, y);
-    	fractureChar.setSize(162, 20);
+    	fractureChar.setSize(180, 20);
     	add(fractureChar);
     	y+=vspace+8;
     	

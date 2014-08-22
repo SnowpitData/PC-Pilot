@@ -94,7 +94,11 @@ public class PitSearchFrame extends Frame implements TimeFrame
     {
     	super("Search for Pits");
     	this.mf = mf;
-    	this.setSize(930, 764);
+        int wdth=940;
+        int ht=960;
+        if (mf.macos) starty=26;
+        this.setMaximizedBounds(new Rectangle(wdth, ht));
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
     	setLayout(null);
     	SymWindow swindow = new SymWindow();
     	this.addWindowListener(swindow);
@@ -1338,6 +1342,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
         ol.setLocation(xx, yy);
         add(ol);
         operator.setLocation(xx+124, yy);
+        operator.setSize(88, 20);
         add(operator);
         operator.select("AND");
         yy+=yspace;
