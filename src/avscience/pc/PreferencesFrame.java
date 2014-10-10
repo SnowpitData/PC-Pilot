@@ -260,6 +260,7 @@ public class PreferencesFrame extends Frame
     	{
     		coordType.add(ctypes[j]);
     	}
+        coordType.setSize(100, 32);
     	coordType.setLocation(x, y);
     	add(coordType);
     	

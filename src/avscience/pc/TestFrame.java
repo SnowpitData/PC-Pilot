@@ -12,8 +12,8 @@ import phil.awt.*;
 
 public class TestFrame extends Frame
 {
-	private int width = 300;
-	private int height = 430;
+	private int width = 332;
+	private int height = 442;
 	private MenuBar mainMenuBar = new java.awt.MenuBar();
 	private Menu menu = new java.awt.Menu();
 	private MenuItem addMenuItem = new java.awt.MenuItem();
@@ -95,7 +95,7 @@ public class TestFrame extends Frame
     	
     	testType = new Choice();
     	testType.setLocation(x, y);
-    	testType.setSize(180, 20);
+    	testType.setSize(200, 20);
     	String[] types = ShearTests.getInstance().getShearTestDescriptions();
     	for ( int i=0; i<types.length; i++ )
     	{
@@ -110,7 +110,7 @@ public class TestFrame extends Frame
     	y+=vspace;
     	testScore=new Choice();
     	testScore.setLocation(x, y);
-    	testScore.setSize(84, 20);
+    	testScore.setSize(112, 20);
     	String[] tss = ShearTests.getInstance().getShearTest(testType.getSelectedItem()).getScores();
     	for ( int i=0; i<tss.length; i++ )
     	{
@@ -122,11 +122,11 @@ public class TestFrame extends Frame
     
     	sq = new Label("Shear Quality");
     	sq.setLocation(x, y);
-    	sq.setSize(180, 20);
+    	sq.setSize(200, 20);
     	add(sq);
     	fc = new Label("Fracture Character");
     	fc.setLocation(x, y);
-    	fc.setSize(180, 20);
+    	fc.setSize(200, 20);
     	add(fc);
     	y+=vspace;
     	String[] qls = new String[4];
@@ -136,7 +136,7 @@ public class TestFrame extends Frame
     	qls[3]="Q3";
     	//testQ=new Choice();
     	testQ.setLocation(x, y);
-    	testQ.setSize(48, 20);
+    	testQ.setSize(120, 20);
     	
     	for ( int i=0; i<qls.length; i++ )
     	{
@@ -150,7 +150,7 @@ public class TestFrame extends Frame
     	String[] fcss = {" ", "SP", "SC", "PC", "RP", "BRK"};
     	fractureChar=new Choice();
     	fractureChar.setLocation(x, y);
-    	fractureChar.setSize(48, 20);
+    	fractureChar.setSize(58, 20);
     	
     	for ( int i=0; i<fcss.length; i++ )
     	{
@@ -185,7 +185,7 @@ public class TestFrame extends Frame
     	}
     	rtl = new Label("Release Type");
     	rtl.setLocation(x, y);
-    	rtl.setSize(132, 16);
+    	rtl.setSize(144, 20);
     	add(rtl);
     	lengthOfCut = new DepthTextItem("Length of Saw Cut "+user.getDepthUnits(), x, y);
     	add(lengthOfCut);
@@ -193,7 +193,8 @@ public class TestFrame extends Frame
     	add(numOfTaps);
     	numOfTaps.setVisible(false);
     	y+=vspace;
-    	releaseType.setLocation(x, y);
+    	releaseType.setLocation(x, y-8);
+        releaseType.setSize(144, 32);
     	add(releaseType);
     	lengthOfColumn = new DepthTextItem("Length of Isolated Column "+user.getDepthUnits(), x, y);
     	add(lengthOfColumn);
@@ -207,7 +208,7 @@ public class TestFrame extends Frame
     	
     	if ( user.fractureCat.equals("Shear Quality"))
     	{
-    		if ( (testScore.getSelectedItem().trim().equals("ECTN")) || (testScore.getSelectedItem().trim().equals("ECTX"))) testQ.setVisible(false);
+    		if ( (testScore.getSelectedItem().trim().equals("ECTX"))) testQ.setVisible(false);
     		else testQ.setVisible(true);
     	}
     	
@@ -556,7 +557,7 @@ public class TestFrame extends Frame
 		String score = testScore.getSelectedItem();
 		boolean noFail = false;
         if ( score.equals("SBN") || score.equals("CTN") || score.equals("RB7") || score.equals("STN") || score.equals("ECTX")) noFail=true;
-		if ( (score.trim().equals("ECTN")) || (score.trim().equals("ECTX")) || noFail)
+		if ( (score.trim().equals("ECTX")) || noFail)
 		{
 			testQ.setVisible(false);
 			sq.setVisible(false);
@@ -593,7 +594,12 @@ public class TestFrame extends Frame
     		if ( score.contains("ECTP")) ctscore.setVisible(false);
     	}
          
-        if ( score.trim().equals("ECTN")) numOfTaps.setVisible(true);
+        if ( score.trim().equals("ECTN")) 
+        {
+            numOfTaps.setVisible(true);
+            ctscore.setVisible(false);
+            testQ.setVisible(false);
+        }
         else numOfTaps.setVisible(false);
    
     	if (testScore.getSelectedItem().trim().equals("ECTP")) 

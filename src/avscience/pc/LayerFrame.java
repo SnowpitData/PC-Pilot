@@ -10,8 +10,8 @@ import avscience.ppc.User;
 
 public class LayerFrame extends Frame
 {
-	private int width = 364;
-	private int height = 684;
+	private int width = 424;
+	private int height = 960;
 	private MenuBar mainMenuBar = new java.awt.MenuBar();
 	private Menu menu = new java.awt.Menu();
 	private MenuItem addMenuItem = new java.awt.MenuItem();
@@ -22,7 +22,7 @@ public class LayerFrame extends Frame
 	
 	MainFrame mframe;
 	PitHeaderFrame pframe;
-	int vspace = 30;
+	//int vspace = 30;
 	Choice layers;
 	DepthTextItem startDepth;
 	DepthTextItem endDepth;
@@ -88,7 +88,7 @@ public class LayerFrame extends Frame
 		ssuffix[2]=">";
 		layers = new Choice();
 		useMultHardness = new Choice();
-		useMultHardness.setSize(60, 32);
+		useMultHardness.setSize(72, 32);
 	    for ( int i=0; i<yesno.length; i++)
 	    {
 	    	useMultHardness.add(yesno[i]);
@@ -96,88 +96,88 @@ public class LayerFrame extends Frame
 	    String[] hardness = Hardness.getInstance().getCodes();
 	    String[] sizes = GrainSize.getInstance().getCodes();
 	    hard1 = new Choice();
-	    hard1.setSize(60, 32);
+	    hard1.setSize(72, 32);
 	    for ( int i=0; i<hardness.length; i++ )
 	    {
 	    	hard1.add(hardness[i]);
 	    }
 	    hsuffix1 = new Choice();
-	    hsuffix1.setSize(60, 32);
+	    hsuffix1.setSize(72, 32);
 	    for ( int i=0; i<plusmin.length; i++ )
 	    {
 	    	hsuffix1.add(plusmin[i]);
 	    }
 	    hard2 = new Choice();
-	    hard2.setSize(60, 32);
+	    hard2.setSize(72, 32);
 	    for ( int i=0; i<hardness.length; i++ )
 	    {
 	    	hard2.add(hardness[i]);
 	    }
 	    useMultType = new Choice();
-	    useMultType.setSize(60, 32);
+	    useMultType.setSize(72, 32);
 	    for ( int i=0; i<yesno.length; i++ )
 	    {
 	    	useMultType.add(yesno[i]);
 	    }
 	    hsuffix2 = new Choice();
-	    hsuffix2.setSize(60, 32);
+	    hsuffix2.setSize(72, 32);
 		for ( int i=0; i<plusmin.length; i++ )
 		{
 			hsuffix2.add(plusmin[i]);
 		}
 		useMultSize = new Choice();
-		useMultSize.setSize(60, 32);
+		useMultSize.setSize(72, 32);
 	 	for ( int i=0; i<yesno.length; i++ )
 	    {
 	    	useMultSize.add(yesno[i]);
 	    }
 	    sunits1 = new Choice();
-	    sunits1.setSize(60, 32);
+	    sunits1.setSize(72, 32);
 	 	for ( int i=0; i<sunits.length; i++ )
 	 	{
 	 		sunits1.add(sunits[i]);
 	 	}
 	 	
 	 	size1 = new Choice();
-	 	size1.setSize(60, 32);
+	 	size1.setSize(72, 32);
 	 	for ( int i=0; i<sizes.length; i++ )
 	 	{
 	 		size1.add(sizes[i]);
 	 	}
 	 	sizeSuffix1 = new Choice();
-	 	sizeSuffix1.setSize(60, 32);
+	 	sizeSuffix1.setSize(72, 32);
 	 	for ( int i=0; i<ssuffix.length; i++ )
 	 	{
 	 		sizeSuffix1.add(ssuffix[i]);
 	 	}
 	 	
  		sunits2 = new Choice();
- 		sunits2.setSize(60, 32);
+ 		sunits2.setSize(72, 32);
 	 	for ( int i=0; i<sunits.length; i++ )
 	 	{
 	 		sunits2.add(sunits[i]);
 	 	}
 	 	
 	 	size2 = new Choice();
-	 	size2.setSize(60, 32);
+	 	size2.setSize(72, 32);
 	 	for ( int i=0; i<sizes.length; i++ )
 	 	{
 	 		size2.add(sizes[i]);
 	 	}
 	 	sizeSuffix2 = new Choice();
-	 	sizeSuffix2.setSize(60, 32);
+	 	sizeSuffix2.setSize(72, 32);
 	 	for ( int i=0; i<ssuffix.length; i++ )
 	 	{
 	 		sizeSuffix2.add(ssuffix[i]);
 	 	}
 	 	useMultDensity = new Choice();
-	 	useMultDensity.setSize(60, 32);
+	 	useMultDensity.setSize(72, 32);
 	 	for ( int i=0; i<yesno.length; i++ )
 	 	{
 	 		useMultDensity.add(yesno[i]);
 	 	}
 	 	waterContent = new Choice();
-	 	waterContent.setSize(100, 32);
+	 	waterContent.setSize(124, 32);
 	 	String[] wc = WaterContent.getInstance().getCodes();
 	 	for ( int i=0; i<wc.length; i++ )
 	 	{
@@ -335,6 +335,7 @@ public class LayerFrame extends Frame
     	int x=24;
     	int y=ys;
     	int vspace=24;
+        if (mframe.macos) vspace = 26;
     	boolean fromTop = true;
     	if (user.getMeasureFrom().equals("top")) fromTop = true;
     	else fromTop=false;
@@ -383,7 +384,7 @@ public class LayerFrame extends Frame
 	    
 	    Label mh = new Label("Use Multiple Hardness");
 	    mh.setLocation(x, y);
-	    mh.setSize(142, 20);
+	    mh.setSize(110, 20);
 	    add(mh);
 	    
 	    useMultHardness.setLocation(x+150, y);
@@ -393,17 +394,17 @@ public class LayerFrame extends Frame
 	    if (!multHardness)
 	    {
 	    	Label hl1 = new Label("Hardness");
-	    	hl1.setSize(94, 20);
+	    	hl1.setSize(100, 20);
 	    	hl1.setLocation(x, y);
 	    	add(hl1);
 	    	hard1.setLocation(x+114, y);
 	    	add(hard1);
 	    
 	    	Label hs1 = new Label("+-");
-	    	hs1.setLocation(x+174, y);
-	    	hs1.setSize(24, 20);
+	    	hs1.setLocation(x+190, y);
+	    	hs1.setSize(36, 20);
 	    	add(hs1);
-	    	hsuffix1.setLocation(x+200, y);
+	    	hsuffix1.setLocation(x+228, y);
 	    	add(hsuffix1);
 	    	y+=vspace;
 	    }
@@ -412,7 +413,7 @@ public class LayerFrame extends Frame
 	    {
     		
 			Label hl2 = new Label("Hardness "+tp);
-		    hl2.setSize(94, 20);
+		    hl2.setSize(100, 20);
 		    hl2.setLocation(x, y);
 		    add(hl2);
 		    
@@ -420,10 +421,10 @@ public class LayerFrame extends Frame
 		    add(hard2);
 		   // y+=vspace;
 		    Label hs2 = new Label("+-");
-		    hs2.setLocation(x+174, y);
-		    hs2.setSize(24, 20);
+		    hs2.setLocation(x+190, y);
+		    hs2.setSize(36, 20);
 		    add(hs2);
-		    hsuffix2.setLocation(x+200, y);
+		    hsuffix2.setLocation(x+228, y);
 		    add(hsuffix2);
 		    y+=vspace;
 		    Label hl1 = new Label("Hardness "+bt);
@@ -434,10 +435,10 @@ public class LayerFrame extends Frame
 	    	add(hard1);
 	    //	y+=vspace;
 	    	Label hs1 = new Label("+-");
-	    	hs1.setLocation(x+174, y);
-	    	hs1.setSize(24, 20);
+	    	hs1.setLocation(x+190, y);
+	    	hs1.setSize(36, 20);
 	    	add(hs1);
-	    	hsuffix1.setLocation(x+200, y);
+	    	hsuffix1.setLocation(x+228, y);
 	    	add(hsuffix1);
 	   
 		    y+=vspace;
@@ -508,17 +509,17 @@ public class LayerFrame extends Frame
 	 	
 	 	if (!multSize)
 	 	{
-	 		Label gs1 = new Label("Grain Size");
-		 	gs1.setSize(92, 20);
+	 		Label gs1 = new Label("Grain Size (mm)");
+		 	gs1.setSize(100, 20);
 		 	gs1.setLocation(x, y);
 		 	add(gs1);
 		 	
 		 	size1.setLocation(x+110, y);
 		 	add(size1);
-		 	Label ss1 = new Label("<>");
-		 	ss1.setSize(20, 20);
-		 	ss1.setLocation(x+168, y);
-		 	add(ss1);
+		 	//Label ss1 = new Label("<>");
+		 	//ss1.setSize(20, 20);
+		 	//ss1.setLocation(x+168, y);
+		 	//add(ss1);
 		 	
 		 	sizeSuffix1.setLocation(x+190, y);
 		 	add(sizeSuffix1);
@@ -526,34 +527,34 @@ public class LayerFrame extends Frame
 	 	}
 	 	else
 	 	{
-	 		Label gs1 = new Label("Grain Size 1");
-		 	gs1.setSize(124, 20);
+	 		Label gs1 = new Label("Grain Size 1 (mm)");
+		 	gs1.setSize(128, 20);
 		 	gs1.setLocation(x, y);
 		 	add(gs1);
 		 	
 		 	size1.setLocation(x+130, y);
 		 	add(size1);
-		 	Label ss1 = new Label("<>");
-		 	ss1.setSize(20, 20);
-		 	ss1.setLocation(x+188, y);
-		 	add(ss1);
+		 	//Label ss1 = new Label("<>");
+		 	//ss1.setSize(20, 20);
+		 	//ss1.setLocation(x+188, y);
+		 	//add(ss1);
 		 	
 		 	sizeSuffix1.setLocation(x+210, y);
 		 	add(sizeSuffix1);
 		 	y+=vspace;
 		 	
-		 	Label gs2 = new Label("Grain Size 2");
-		 	gs2.setSize(124, 20);
+		 	Label gs2 = new Label("Grain Size 2 (mm)");
+		 	gs2.setSize(128, 20);
 		 	gs2.setLocation(x, y);
 		 	add(gs2);
 		 	
 		 	size2.setLocation(x+130, y);
 		 	add(size2);
 		 	
-		 	Label ss2 = new Label("<>");
-		 	ss2.setSize(20, 20);
-		 	ss2.setLocation(x+188, y);
-		 	add(ss2);
+		 	//Label ss2 = new Label("<>");
+		 	//ss2.setSize(20, 20);
+		 	//ss2.setLocation(x+188, y);
+		 	//add(ss2);
 		 	sizeSuffix2.setLocation(x+210, y);
 		 	add(sizeSuffix2);
 		 	y+=vspace;
@@ -648,7 +649,7 @@ public class LayerFrame extends Frame
 		iEnd.setVisible(false);
 		
 		iNone.setLocation(x+2*82, y);
-		iNone.setSize(100, 20);
+		iNone.setSize(128, 20);
 		iNone.setVisible(false);
 		
 		add(iStart);
