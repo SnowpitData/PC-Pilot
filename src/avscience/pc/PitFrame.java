@@ -376,6 +376,7 @@ public class PitFrame extends Frame implements Printable
 			StringSerializable slayer = (StringSerializable)l.nextElement();
 			avscience.ppc.Layer layer = new avscience.ppc.Layer(slayer.dataString());
 			buffer.append(layer.getStartDepth()+", "+layer.getEndDepth()+", "+layer.getHardness1()+", "+layer.getHardness2()+", "+layer.getGrainType1()+", "+layer.getGrainType2()+", "+layer.getGrainSize1()+", "+layer.getGrainSize2()+", "+layer.getGrainSizeUnits1()+", "+layer.getGrainSizeUnits2()+", "+layer.getDensity1()+", "+layer.getDensity2()+", "+layer.getWaterContent()+"\n");
+                        
 		}
                 avscience.ppc.Layer cl = pit.getCriticalLayer();
                 if (cl!=null)
@@ -383,9 +384,15 @@ public class PitFrame extends Frame implements Printable
                     buffer.append("Critical Layer:  ");
                     buffer.append("\n");
                     buffer.append(cl.getStartDepth()+", "+cl.getEndDepth()+", "+cl.getHardness1()+", "+cl.getHardness2()+", "+cl.getGrainType1()+", "+cl.getGrainType2()+", "+cl.getGrainSize1()+", "+cl.getGrainSize2()+", "+cl.getGrainSizeUnits1()+", "+cl.getGrainSizeUnits2()+", "+cl.getDensity1()+", "+cl.getDensity2()+", "+cl.getWaterContent()+"\n");
+                    //buffer.append("Critical interface depth: "+ pit.iDepth);
+                    //buffer.append("\n");
                 }
-                    
-		buffer.append("\n");
+                
+                if ( pit.getCriticalLayerDepth() > 0 )
+                 {
+                       buffer.append("Critical interface depth: "+ pit.iDepth);
+                       buffer.append("\n");
+                 }
                 
 		buffer.append("Test Data: \n");
 		buffer.append("Test, Score, Shear quality, Depth \n");
@@ -426,13 +433,13 @@ public class PitFrame extends Frame implements Printable
 		
 		if ( dp!=null )
 		{
-			dpths = dp.getDepths().elements();
+			avscience.util.Enumeration dts = dp.getDepths().elements();
 		
-			if ( dpths!=null ) 
+			if ( dts!=null ) 
 			{
-				while (dpths.hasMoreElements())
+				while (dts.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+					avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
 					String rho = dp.getDensity(depth);
 					buffer.append(depth.toString()+", "+rho+"\n");
 				}

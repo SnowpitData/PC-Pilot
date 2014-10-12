@@ -160,7 +160,8 @@ public class PitInfoCanvas extends Canvas implements MouseListener
 		      		hr = time.substring(0, 2);
 		      		min = time.substring(2, 4);
 		      	}
-		      	
+		      	try
+                        {
 		      	int yy = new Integer(yr).intValue();
 		      	int m = new Integer(mnth).intValue()-1;
 		      	int d = new Integer(dy).intValue();
@@ -171,6 +172,8 @@ public class PitInfoCanvas extends Canvas implements MouseListener
 		      	ts = cal.getTimeInMillis();
 		      	Date date = new Date(ts);
 		        g.drawString(date.toString(), x, y);
+                        }
+                        catch(Exception e){System.out.println(e.toString());}
 		    }
 		}
         	

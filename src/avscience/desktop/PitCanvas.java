@@ -1672,13 +1672,16 @@ public class PitCanvas extends Canvas
 		}
 	    boolean mor=false;
 	    System.out.println("max depth rho profile.");
-	    if (( pit.getDensityProfile()!=null) && (pit.getDensityProfile().getDepths()!=null))
+	    if (( pit.getDensityProfile())!=null)
+            {
+             if (pit.getDensityProfile().getDepths()!=null)
 	    {
 	    	avscience.util.Enumeration ee = pit.getDensityProfile().getDepths().elements();
 		    
 		    while ( ee.hasMoreElements() )
 		    {
-		    	avscience.pda.Integer I = (avscience.pda.Integer)ee.nextElement();
+                 
+		    	Integer I = (Integer)ee.nextElement();
 		    	int depth = I.intValue();
 		    	// need to scale for rho depth??
 		    	depth=depth*10;
@@ -1689,6 +1692,7 @@ public class PitCanvas extends Canvas
 		    	}
 		    }
 		}
+            }
 	    //if (mor) max+=4;
        		
        if ( max == 0 ) max = 60;

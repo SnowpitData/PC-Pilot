@@ -896,6 +896,20 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         addLayer(layer.dataString());
     }
     
+    public int getCriticalLayerDepth()
+    {
+        int idpth = 0;
+        try
+        {
+            idpth = new Integer(iDepth).intValue();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+        }
+        return idpth;
+    }
+    
     public Layer getCriticalLayer()
     {
     	Enumeration lys = getLayers();

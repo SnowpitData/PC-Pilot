@@ -145,13 +145,13 @@ public class FileWriter
 		
 		if ( dp!=null )
 		{
-			dpths = dp.getDepths().elements();
+			avscience.util.Enumeration dts = dp.getDepths().elements();
 		
-			if ( dpths!=null ) 
+			if ( dts!=null ) 
 			{
-				while (dpths.hasMoreElements())
+				while (dts.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+					avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
 					String rho = dp.getDensity(depth);
 					buffer.append(depth.toString()+", "+rho+"\n");
 				}
