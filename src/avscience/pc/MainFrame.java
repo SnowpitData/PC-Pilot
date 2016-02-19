@@ -50,7 +50,8 @@ public class MainFrame extends Frame implements ListFrame
     public java.awt.List  occList;
     public boolean  macos;
     public String defaultUser = "";
-        
+    long lastDataSentTime = 0;
+    long dataSendIterval = 5*24*60*60*1000;
 	MainFrame thisframe;
 	
     Logger logger = Logger.getInstance();
@@ -150,9 +151,9 @@ public class MainFrame extends Frame implements ListFrame
         	nmsg.setVisible(true);
         	nmsg.requestFocus();
         }
-        
+        if ((System.currentTimeMillis() - lastDataSentTime) > dataSendIterval) new Sender(false).start();
 	}
-	
+        
 	public avscience.wba.Location getCurrentLocation()
 	{
 		avscience.wba.Location l = new avscience.wba.Location();
@@ -630,7 +631,7 @@ public class MainFrame extends Frame implements ListFrame
         return true;
     }
     
-    void sendData()
+    void sendData(boolean showDialog)
 	{
         boolean sent = false;
         store.getPitNames();
@@ -638,10 +639,13 @@ public class MainFrame extends Frame implements ListFrame
         String[] pitSers = store.getPitSerials();
         String[] occSers = store.getOccSerials();
         int size = pitSers.length;
-        
         SendDialog send = new SendDialog(this, false);
-        send.setLocation(300, 300);
-        send.setVisible(true);
+        if ( showDialog)
+        {
+            
+            send.setLocation(300, 300);
+            send.setVisible(true);
+        }
        /* try
         {
         	Thread.sleep(400);
@@ -753,7 +757,7 @@ public class MainFrame extends Frame implements ListFrame
                 e.printStackTrace();
             }
         }
-        send.dispose();
+        if (showDialog) send.dispose();
        /* if (sent)
         {
            OKDialog ok = new OKDialog(this, true);
@@ -761,13 +765,20 @@ public class MainFrame extends Frame implements ListFrame
            ok.setVisible(true);
         }*/
         rebuildList();
+        lastDataSentTime = System.currentTimeMillis();
     }
     
     class Sender extends Thread
     {
+        boolean showDialog=false;
+        public Sender(boolean showDialog)
+        {
+            this.showDialog = showDialog;
+        }
+        
     	public void run()
     	{
-    		sendData();
+    		sendData(showDialog);
     	}
     }
 	
@@ -1034,7 +1045,7 @@ public class MainFrame extends Frame implements ListFrame
 				if (( object == addOccMenuItem )||( object == addOcc )) showOccFrame(false);
 			}
            else showUserFrame(false);
-           if ( object == sendMenuItem ) new Sender().start();///sendData();
+           if ( object == sendMenuItem ) new Sender(true).start();///sendData();
            if ( object == wcMenuItem ) startWebClient();
            if ( object == editNews ) editNews();
 		}
@@ -1500,5 +1511,6 @@ public class MainFrame extends Frame implements ListFrame
 		this.dispose();
 		System.exit(0);
 	}
+       
 }	
 	
