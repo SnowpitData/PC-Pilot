@@ -27,20 +27,20 @@ public class ProfileCanvas extends Frame
      	show();
      } 
      
-     public int getType()
+     public int getProfileType()
      { 
         return type+1;
      }
      
-     public void setType(int type)
+     public void setProfileType(int type)
      {
         this.type=type-1;
      }
      
-     public void setType(String type)
+     public void setProfileType(String type)
      {
      	int t = StringNumConvertor.getInstance().getNumFromDisplayString(type);
-     	setType(t);
+     	setProfileType(t);
      }
      
      public void onEvent(MouseEvent e)

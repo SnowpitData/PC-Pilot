@@ -998,7 +998,7 @@ public class OccFrame extends Frame implements TimeFrame
         tcWeak.setType(occ.getWeakLayerType());
         tcAbove.setType(occ.getCrystalTypeAbove());
         tcBelow.setType(occ.getCrystalTypeBelow());
-        profileCanvas.setType(occ.getSnowPackType());
+        profileCanvas.setProfileType(occ.getSnowPackType());
 	}
 	
 	

@@ -6,7 +6,8 @@ import avscience.util.*;
 import java.awt.print.*;
 import java.awt.image.*;
 import java.io.*;
-import com.sun.image.codec.jpeg.*;
+///import com.sun.image.codec.jpeg.*;
+import javax.imageio.ImageIO;
 import avscience.desktop.*;
 import avscience.ppc.*;
 import java.awt.event.*;
@@ -299,11 +300,12 @@ public class PitFrame extends Frame implements Printable
     {
     	try
     	{
-    		FileOutputStream fout = new FileOutputStream(f);
-	       	JPEGImageEncoder en = JPEGCodec.createJPEGEncoder(fout);
-			en.encode(image);
-	        fout.flush();
-	        fout.close();
+            ImageIO.write(image, "jpg", f);
+    		//FileOutputStream fout = new FileOutputStream(f);
+////	       	JPEGImageEncoder en = JPEGCodec.createJPEGEncoder(fout);
+	///		en.encode(image);
+	    //    fout.flush();
+	    //    fout.close();
     	}
     	catch(Exception e)
     	{
