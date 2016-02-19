@@ -966,12 +966,15 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    	else whereClause = qry;
 	    	query.setText(whereClause);
 	    	
-	    	LinkedHashMap v = getPitsFromQuery(whereClause);
-	    	Object[] keys = v.keySet().toArray();
-			for ( int i = 0; i < keys.length; i++ )
+	    	String[][] v = getPitsFromQuery(whereClause);
+	    //	Object[] keys = v.keySet().toArray();
+                //Object[] keys = v[0];
+		for ( int i = 0; i < v[0].length; i++ )
 	    	{
-	    		String serial = (String) keys[i];
-	    		String data = (String) v.get(serial);
+	    		//String serial = (String) keys[i];
+	    		//String data = (String) v.get(serial);
+                        String serial = v[0][i];
+                        String data = v[1][i];
 	    		
 	    		if (( data!=null) && (data.trim().length()>9))
 	    		{
@@ -1027,9 +1030,10 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    noPits.setText(currentPits.size()+" pits meet criteria.");
     }
     
-    private LinkedHashMap getPitsFromQuery(String whereClause)
+    private String[][] getPitsFromQuery(String whereClause)
     {
-    	LinkedHashMap pits = new LinkedHashMap();
+    	///LinkedHashMap pits = new LinkedHashMap();
+        String [][] pits = new String[2][1];
     	try
         {
             String err = null;
@@ -1041,15 +1045,15 @@ public class PitSearchFrame extends Frame implements TimeFrame
             props.put("q", whereClause);
             InputStream in = msg.sendGetMessage(props);
             ObjectInputStream result = new ObjectInputStream(in);
-            pits =  (LinkedHashMap) result.readObject();
+            pits =  (String[][]) result.readObject();
         }
         catch(Exception e)
         {
             System.out.println(e.toString());
             e.printStackTrace();
         }
-        System.out.println("# of PITS: "+pits.size());
-        noPits.setText(pits.size()+" pits received.");
+        System.out.println("# of PITS: "+pits[0].length);
+        noPits.setText(pits[0].length+" pits received.");
         return pits;
     }
     
