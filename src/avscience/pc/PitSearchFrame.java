@@ -951,6 +951,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
     void popPitList(boolean form, boolean testFilter, boolean layerFilter)
     {
     	noPits.setText("Getting pits from DB");
+        getPits.setEnabled(false);
     	String qry=query.getText();
     	query.setText(" ");
     	repaint();
@@ -1027,6 +1028,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    	
 	    }
 	    catch(Exception e){System.out.println(e.toString());}
+            getPits.setEnabled(true);
 	    noPits.setText(currentPits.size()+" pits meet criteria.");
     }
     
@@ -1757,7 +1759,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			Object object = event.getSource();
 			if ( object == setTime1 ) showDatePopup1();
 			if ( object == setTime2 ) showDatePopup2();
-			if ( object == getPits ) popPitList(true, testFilter, layerFilter);
+			if ( object == getPits ) new GetPitsThread(testFilter, layerFilter).start();
 			if ( object == exQry ) popPitList(false, false, false);
 			if ( object == pits ) showPitFrame();
 			if ( object == layerMenuItem ) showLayerSearchFrame();
@@ -1819,6 +1821,24 @@ public class PitSearchFrame extends Frame implements TimeFrame
 		if (!showing) testSearchFrame.setVisible(true);
 		
 	 }
+         
+         class GetPitsThread extends Thread
+         {
+             boolean testFilter;
+             boolean layerFilter;
+             
+             public GetPitsThread(boolean testFilter, boolean layerFilter)
+             {
+                 this.testFilter = testFilter;
+                 this.layerFilter = layerFilter;
+                 
+             }
+             
+             public void run()
+             {
+                 popPitList(true, testFilter, layerFilter);
+             }
+         }
 	 
 	void showPitFrame()
 	{
