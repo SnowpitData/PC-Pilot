@@ -331,7 +331,7 @@ public class PitApplet extends Frame
             s = s.trim();
             if(!s.equals("ALL"))
             {
-                stringbuffer.append(" RANGE = '" + s + "' ");
+                stringbuffer.append(" MTN_RANGE = '" + s + "' ");
                 flag = true;
             }
         }
