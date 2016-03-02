@@ -970,12 +970,17 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    	String[][] v = getPitsFromQuery(whereClause);
 	    //	Object[] keys = v.keySet().toArray();
                 //Object[] keys = v[0];
+                System.out.println("NUMBER OF PITS: "+v[0].length);
 		for ( int i = 0; i < v[0].length; i++ )
 	    	{
 	    		//String serial = (String) keys[i];
 	    		//String data = (String) v.get(serial);
                         String serial = v[0][i];
-                        String data = v[1][i];
+                        String name = v[1][i];
+                        String data = v[2][i];
+                        System.out.println("Pit Serial:  "+serial);
+                        System.out.println("Name:  "+name);
+                        
 	    		
 	    		if (( data!=null) && (data.trim().length()>9))
 	    		{
@@ -1042,7 +1047,8 @@ public class PitSearchFrame extends Frame implements TimeFrame
             URL url = new URL(server);
             HttpMessage msg = new HttpMessage(url);
             Properties props = new Properties();
-            props.put("format", "pitsfromquery");
+            //props.put("format", "pitsfromquery");
+            props.put("format", "pitstringsarrayfromquery");
             whereClause = URLEncoder.encode(whereClause, "UTF-8");
             props.put("q", whereClause);
             InputStream in = msg.sendGetMessage(props);

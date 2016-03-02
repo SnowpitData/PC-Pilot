@@ -1,0 +1,46 @@
+readData()
+java.io.FileNotFoundException: PCPILOTV5.DAT (No such file or directory)
+initializing datastore
+readVer3Data()
+java.io.FileNotFoundException: PCPILOT.DAT (No such file or directory)
+READ ver 3 DATA DONE::: 
+readOldData()
+java.io.FileNotFoundException: SnowPilot-PC.dat (No such file or directory)
+READ OLD DATA DONE::: 
+readOldERData()
+java.io.FileNotFoundException: AviData.dat (No such file or directory)
+READ OLDER DATA DONE::: 
+getCurrentPitCat()
+findCurrentPitCat
+findCurrentPitCat
+findCurrentPitCat
+getCurrentOccCat()
+getCurrentOccCat()
+findCurrentUserCat
+findCurrentUserCat
+findCurrentUserCat
+getCurrentLocCat()
+findCurrentLocCat
+findCurrentLocCat
+findCurrentLocCat
+getRecords()
+pitCat is null.
+deleting pitcat
+deleting occcat
+OS: Mac OS X
+java.io.FileNotFoundException: PROPS.DAT (No such file or directory)
+ saveData()
+checkSuperUser()
+superuser: false
+ saveData()
+ saveData()
+ saveData()
+checkSuperUser()
+superuser: false
+Sending data to web app..
+Number of pits: 1
+Pit name: SD UTC :  Mar 01
+ saveData()
+checkSuperUser()
+superuser: false
+ saveData()

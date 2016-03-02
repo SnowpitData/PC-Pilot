@@ -1680,7 +1680,6 @@ public class PitCanvas extends Canvas
 		    
 		    while ( ee.hasMoreElements() )
 		    {
-                 
 		    	Integer I = (Integer)ee.nextElement();
 		    	int depth = I.intValue();
 		    	// need to scale for rho depth??
