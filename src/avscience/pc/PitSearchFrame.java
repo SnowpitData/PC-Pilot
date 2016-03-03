@@ -1137,25 +1137,32 @@ public class PitSearchFrame extends Frame implements TimeFrame
     	String op = " "+operator.getSelectedItem()+" ";
     	String e =" ) ";
     	String[] sts = states.getSelectedItems();
-    	if ( sts.length > 0 ) buffer.append(s);
+    	if ( sts.length > 0 ) if (!sts[0].equals("ALL")) buffer.append(s);
     	for (int i = 0; i < sts.length; i++)
     	{
+            if (!sts[i].equals("ALL"))
+            {
     		fa=true;
     		buffer.append(" STATE = '"+sts[i]+"'");
     		if (( sts.length > 1 ) && ( i != sts.length-1 ))buffer.append(" OR ");
+            }
     	}
-    	if ( sts.length > 0 ) buffer.append(e);
+    	if ( sts.length > 0 ) if (!sts[0].equals("ALL")) buffer.append(e);
     	
     	String[] rngs = range.getSelectedItems();
     	if ( fa && rngs.length > 0) buffer.append(op);
-    	if ( rngs.length > 0 ) buffer.append(s);
+    	//if ( rngs.length > 0 ) buffer.append(s);
+        if ( rngs.length > 0 ) if (!rngs[0].equals("ALL")) buffer.append(s);
     	for (int i = 0; i < rngs.length; i++)
     	{
+            if (!rngs[i].equals("ALL"))
+            {
     		fa=true;
-    		buffer.append(" RANGE = '"+rngs[i]+"'");
+    		buffer.append(" MTN_RANGE = '"+rngs[i]+"'");
     		if (( rngs.length > 1 ) && ( i != rngs.length-1 ))buffer.append(" OR ");
+            }
     	}
-    	if ( rngs.length > 0 ) buffer.append(e);
+    	if ( rngs.length > 0 ) if (!rngs[0].equals("ALL"))  buffer.append(e);
     	
     	String[] locs = locations.getSelectedItems();
     	if ( fa && locs.length > 0 ) buffer.append(op);
@@ -1996,7 +2003,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
             e.printStackTrace();
             return new Vector();
         }
-              
+        if ((list!=null) && (list.size()>0)) list.insertElementAt("ALL",0);     
         return list;
     }
     
