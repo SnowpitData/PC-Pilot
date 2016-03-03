@@ -968,6 +968,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    	query.setText(whereClause);
 	    	
 	    	String[][] v = getPitsFromQuery(whereClause);
+                sortPitsbyObsDate(v);
 	    //	Object[] keys = v.keySet().toArray();
                 //Object[] keys = v[0];
                 System.out.println("NUMBER OF PITS: "+v[0].length);
@@ -1035,6 +1036,57 @@ public class PitSearchFrame extends Frame implements TimeFrame
 	    catch(Exception e){System.out.println(e.toString());}
             getPits.setEnabled(true);
 	    noPits.setText(currentPits.size()+" pits meet criteria.");
+    }
+    
+    void sortPitsbyObsDate(String[][] pits)
+    {
+        noPits.setText("Processing pits...");
+        getPits.setEnabled(false);
+        boolean sorted = false;
+        int length = pits[0].length;
+        int i = 0;
+        avscience.ppc.PitObs pit;
+        avscience.ppc.PitObs pitInc;
+
+        if (length > 0)
+        {
+            while (!sorted)
+            {
+                sorted = true;
+                for(i=0; i<length - 1; i++)
+                {
+                    String data = pits[2][i];
+                    String serial = pits[0][i];
+                    String name = pits[0][i];
+                    
+                    
+                    pit = new avscience.ppc.PitObs(data); 
+                    long pdate = pit.getTimestamp();
+                    
+                    String dataInc = pits[2][i+1];
+                    String serialInc = pits[0][i+1];
+                    String nameInc = pits[0][i+1];
+                    
+                    pitInc = new avscience.ppc.PitObs(dataInc); 
+                    long pdateInc = pitInc.getTimestamp();
+                    
+                    if ( pdateInc > pdate )
+                    {
+                            pits[0][i] = serialInc;
+                            pits[0][i+1] = serial;
+                            
+                            pits[1][i] = nameInc;
+                            pits[1][i+1] = name;
+                            
+                            pits[2][i] = dataInc;
+                            pits[2][i+1] = data;
+                            
+                            sorted = false;
+                    }
+                }
+            }
+        }
+       /// return pits;
     }
     
     private String[][] getPitsFromQuery(String whereClause)
