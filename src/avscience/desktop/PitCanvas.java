@@ -1680,8 +1680,20 @@ public class PitCanvas extends Canvas
 		    
 		    while ( ee.hasMoreElements() )
 		    {
-		    	Integer I = (Integer)ee.nextElement();
-		    	int depth = I.intValue();
+                        Object o = ee.nextElement();
+                        int depth=0;
+                        if (o instanceof java.lang.Integer)
+                        {
+                            java.lang.Integer I = (java.lang.Integer) o;
+                            depth = I.intValue();
+                        }
+                        if (o instanceof avscience.pda.Integer)
+                        {
+                            avscience.pda.Integer I = (avscience.pda.Integer) o;
+                            depth = I.intValue();
+                        }
+                        
+		    	
 		    	// need to scale for rho depth??
 		    	depth=depth*10;
 		    	if ( depth > max )
