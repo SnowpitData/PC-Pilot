@@ -64,14 +64,15 @@ public class LayerFrame extends Frame
 	Checkbox weakInt;
 	TextItem notes;
 	public Vector subFrames = new Vector();
-	Label msg = new Label();
+	Label msg;// = new Label();
 	avscience.ppc.User user;
 	Label wil;
 	
 	int currentLayerNum;
 	void initControls()
 	{
-		msg.setSize(260, 20);
+                msg = new Label();
+		msg.setSize(320, 20);
 		String[] yesno = new String[2];
 		String[] plusmin = new String[3];
 		String[] sunits = new String[2];
@@ -655,11 +656,9 @@ public class LayerFrame extends Frame
 		add(iStart);
 		add(iEnd);
 		add(iNone);
-	 	y+=vspace;
 	 	
-    	msg.setLocation(x, y);
-    	msg.setVisible(false);
-    	add(msg);
+	 	
+    	
     //	y+=vspace;
 	 	if (!edit)
 	 	{
@@ -672,9 +671,15 @@ public class LayerFrame extends Frame
 		}
 		y+=vspace;
 	 	Label u = new Label("User: "+user.getName());
+                
+        msg.setLocation(x, y);
+    	msg.setVisible(true);
+    	add(msg);
+        y+=vspace;
     	u.setLocation(x, y);
     	u.setSize(126, 20);
     	add(u);
+        
 	}
 	
 	public void add(TextItemType item)
@@ -721,16 +726,16 @@ public class LayerFrame extends Frame
 	
 	void displayMsg(String message)
 	{
-		msg.setSize(260, 20);
+		//msg.setSize(260, 20);
 		msg.setFont(new Font(null, Font.BOLD, 12));
 		msg.setText(message);
 		msg.setVisible(true);
-		try
-		{
-			Thread.sleep(2200);
-		}
-		catch(Exception e){System.out.println(e.toString());}
-		msg.setVisible(false);
+		//try
+		//{
+		//	Thread.sleep(2200);
+		//}
+		//catch(Exception e){System.out.println(e.toString());}
+		//msg.setVisible(false);
 	}
 	
 	public LayerFrame(MainFrame mframe, PitHeaderFrame pframe)
@@ -919,10 +924,13 @@ public class LayerFrame extends Frame
     	
     	double st = new Double(startDepth.getText()).doubleValue();
     	double ed = new Double(endDepth.getText()).doubleValue();
-    	
+    	System.out.println("Validate form");
+        System.out.println("Start depth "+st);
+        System.out.println("end depth "+ed);
     	if ( ed < st)
     	{
     		valid=false;
+                System.out.println("Valid ? "+valid);
     		displayMsg("Top depth cannot be lower than bottom depth!");
     	}
     	
