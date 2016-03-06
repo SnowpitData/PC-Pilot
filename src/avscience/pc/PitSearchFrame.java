@@ -1045,6 +1045,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
         boolean sorted = false;
         int length = pits[0].length;
         int i = 0;
+        long [] pdates = new long[pits[0].length];
         avscience.ppc.PitObs pit;
         avscience.ppc.PitObs pitInc;
 
@@ -1058,17 +1059,28 @@ public class PitSearchFrame extends Frame implements TimeFrame
                     String data = pits[2][i];
                     String serial = pits[0][i];
                     String name = pits[0][i];
+                    long pdate = 0;
+                    long pdateInc = 0;
                     
-                    
-                    pit = new avscience.ppc.PitObs(data); 
-                    long pdate = pit.getTimestamp();
+                    if (pdates[i]==0)
+                    {
+                        pit = new avscience.ppc.PitObs(data); 
+                        pdate = pit.getTimestamp();
+                        pdates[i]=pdate;
+                    }
+                    else pdate = pdates[i];
                     
                     String dataInc = pits[2][i+1];
                     String serialInc = pits[0][i+1];
                     String nameInc = pits[0][i+1];
                     
-                    pitInc = new avscience.ppc.PitObs(dataInc); 
-                    long pdateInc = pitInc.getTimestamp();
+                    if (pdates[i+1]==0)
+                    {
+                        pitInc = new avscience.ppc.PitObs(dataInc); 
+                        pdateInc = pitInc.getTimestamp();
+                        pdates[i+1]=pdateInc;
+                    }
+                    else pdateInc = pdates[i+1];
                     
                     if ( pdateInc > pdate )
                     {
@@ -1080,6 +1092,9 @@ public class PitSearchFrame extends Frame implements TimeFrame
                             
                             pits[2][i] = dataInc;
                             pits[2][i+1] = data;
+                            
+                            pdates[i]=pdateInc;
+                            pdates[i+1]=pdate;
                             
                             sorted = false;
                     }
@@ -1150,7 +1165,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
     	if ( sts.length > 0 ) if (!sts[0].equals("ALL")) buffer.append(e);
     	
     	String[] rngs = range.getSelectedItems();
-    	if ( fa && rngs.length > 0) buffer.append(op);
+    	if ( fa && rngs.length > 0) if (!rngs[0].equals("ALL")) buffer.append(op);
     	//if ( rngs.length > 0 ) buffer.append(s);
         if ( rngs.length > 0 ) if (!rngs[0].equals("ALL")) buffer.append(s);
     	for (int i = 0; i < rngs.length; i++)
@@ -1350,7 +1365,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
     	{
     		if ( fa ) buffer.append(op);
     		fa = true;
-    		buffer.append(" OBS_DATETIME ");
+    		buffer.append(" OBS_DATE ");
     		if ( cb1 == t1after ) buffer.append("> ");
     		else buffer.append("< ");
     		buffer.append(getDateString(ts1));
@@ -1361,7 +1376,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
     	{
     		if ( fa ) buffer.append(op);
     		fa = true;
-    		buffer.append(" OBS_DATETIME ");
+    		buffer.append(" OBS_DATE ");
     		if ( cb2 == t2after ) buffer.append("> ");
     		else buffer.append("< ");
     		buffer.append(getDateString(ts2));
