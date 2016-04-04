@@ -43,11 +43,12 @@ public class MainFrame extends Frame implements ListFrame
 	public static final String pitserver="http://www.kahrlconsulting.com:8084/avscience/PitServlet";
     
     public avscience.pc.SPV5DataStore store = avscience.pc.SPV5DataStore.getInstance();
-    public final static int bld = 42;
+    public final static int bld = 44;
     final static String vDate = "Version 10 - build "+ bld;
     public final static String version = vDate+" PC: "+System.getProperty( "os.name" );
     public java.awt.List  pitList;
     public java.awt.List  occList;
+    Hashtable pitSerials = new Hashtable();
     public boolean  macos;
     public String defaultUser = "";
     long lastDataSentTime = 0;
@@ -572,11 +573,13 @@ public class MainFrame extends Frame implements ListFrame
     		if ( e.getItemSelectable()==pits )
     		{
     			int idx = pits.getSelectedIndex();
-    			if (idx > 0)
-    			{
-	    			avscience.ppc.PitObs pit = store.getPit(idx);
+    			///if (idx > 0)
+    			///{
+                                String serial = (String) pitSerials.get(idx);
+                                avscience.ppc.PitObs pit = store.getPit(serial);
+	    			//avscience.ppc.PitObs pit = store.getPit(idx);
 	    			new avscience.pc.PitFrame(pit, MainFrame.this, false);
-	    		}
+	    		///}
     		}
     		
     		if ( e.getItemSelectable()==occs )
@@ -803,10 +806,15 @@ public class MainFrame extends Frame implements ListFrame
 		
 		pits.removeAll();
 	//	pits.add(" ");
-		String[] pts = store.getPitNames(false);
-		for (int i = 0; i < pts.length; i++ )
+		///String[] pts = store.getPitNames(false);
+                java.util.Vector pts = store.getPits();
+                pts = sortPitsByTime(pts);
+		for (int i = 0; i < pts.size(); i++ )
 		{
-			pits.add(pts[i]);
+                    avscience.ppc.PitObs mpt = (avscience.ppc.PitObs) pts.elementAt(i);
+                    String nm = mpt.getName();
+                    pits.add(nm);
+                    pitSerials.put(i, mpt.getSerial());
 		}
 		
 		occs.removeAll();
@@ -828,6 +836,41 @@ public class MainFrame extends Frame implements ListFrame
 		}
 		saveData();
 	}
+        
+        /////////////////////
+        public java.util.Vector sortPitsByTime(java.util.Vector pits)
+    {
+    	boolean sorted = false;
+        int length = pits.size();
+        //Vector v = new Vector(length);
+        int i = 0;
+        avscience.ppc.PitObs pit;
+        avscience.ppc.PitObs pitInc;
+
+        if (length > 0)
+        {
+            while (!sorted)
+            {
+                sorted = true;
+                for(i=0; i<length - 1; i++)
+                {
+                    pit = (avscience.ppc.PitObs) pits.elementAt(i);
+                    long time = pit.getTimestamp();
+                    pitInc = (avscience.ppc.PitObs) pits.elementAt(i+1);
+                    long timeinc = pitInc.getTimestamp();
+                  
+                    if ( timeinc > time )
+                    {
+                            pits.setElementAt(pitInc, i);
+                            pits.setElementAt(pit, i+1);
+                            sorted = false;
+                    }
+                }
+            }
+        }
+        return pits;
+    }
+        /////////////////
 	
 	public void saveData()
     {  

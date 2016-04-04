@@ -266,7 +266,6 @@ public class PitCanvas extends Canvas
     	{
     		if (!t1.getECScore().equals(t2.getECScore())) same=false;
                 if (!t1.numberOfTaps.equals(t2.numberOfTaps)) same=false;
-                
     	}
     	return same;
     }
