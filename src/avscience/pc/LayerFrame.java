@@ -663,6 +663,7 @@ public class LayerFrame extends Frame
 	 	if (!edit)
 	 	{
 		 
+                        y+=vspace;
 		 	add = new Button("Add Layer");
 		 	add.setLocation(x, y);
 		 	add.setSize(72, 22);
