@@ -10,7 +10,7 @@ import avscience.ppc.User;
 public class LocationFrame extends Frame
 {
 	private int width = 300;
-	private int height = 280;
+	private int height = 320;
 	private MenuBar mainMenuBar = new java.awt.MenuBar();
 	private Menu menu = new java.awt.Menu();
 	private MenuItem saveMenuItem = new java.awt.MenuItem();
@@ -26,7 +26,7 @@ public class LocationFrame extends Frame
 	TextItem utmZone;
 	LocationListFrame lframe;
 	MainFrame mframe;
-	int vspace = 30;
+	int vspace = 36;
 	avscience.ppc.User user;
 	boolean utm=false;
 	
@@ -98,12 +98,15 @@ public class LocationFrame extends Frame
         sl.setLocation(x, y);
         add(sl);
         
+        
         String[] states = new StateProv().getList();
         for (int i=0;i<states.length;i++)
         {
         	state.add(states[i]);
         }
-        state.setLocation(x+80, y);
+        state.setLocation(x+82, y);
+        state.setSize(160,20);
+        state.setVisible(true);
 		add(state);
 		state.select(user.getState());
 		y+=vspace;

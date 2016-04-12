@@ -39,6 +39,7 @@ public class StateProv
 		v.add("France");
 		v.add("Norway");
 		v.add("Sweden");
+                v.add("Finland");
 		v.add("UK");
 		v.add("Japan");
 		v.add("India");
