@@ -2,7 +2,7 @@
  * @(#)CAAMLWriter.java
  *
  *
- * @author 
+ * @author Mark KAHRL
  * @version 1.00 2009/8/20
  */
 package avscience.ppc;
@@ -64,14 +64,14 @@ public class CAAMLWriter
     	ElementFilter filter = new ElementFilter("dateTimeReport");
     	Iterator<Element> result = root.getDescendants(filter);
     	Element dateTime  = result.next();
-   		if (dateTime!=null) if (pit!=null) dateTime.setText(new Date().toString());
+   	if (dateTime!=null) if (pit!=null) dateTime.setText(getIsoDate(new Date(pit.getTimestamp())));
    		
-   		ElementFilter filter1 = new ElementFilter("timePosition");
+   	ElementFilter filter1 = new ElementFilter("timePosition");
     	Iterator<Element> result1 = root.getDescendants(filter1);
     	Element timePos  = result1.next();
-   		if (timePos!=null) if (pit!=null) timePos.setText(new Date(pit.getTimestamp()).toString());
+   	if (timePos!=null) if (pit!=null) timePos.setText(getIsoDateTime(new Date(pit.getTimestamp())));//(new Date(pit.getTimestamp()).toString());
    		
-   		ElementFilter spFilter = new ElementFilter("SnowProfileMeasurements");
+   	ElementFilter spFilter = new ElementFilter("SnowProfileMeasurements");
     	Iterator<Element> spResults = root.getDescendants(spFilter);
     	Element snowProfile = spResults.next();
     	if ( snowProfile==null )
@@ -233,9 +233,14 @@ public class CAAMLWriter
     	ElementFilter pointLocFilter = new ElementFilter("pointLocation");
     	Iterator<Element> pointLocI = oPoint.getDescendants(pointLocFilter);
     	Element ploc = pointLocI.next();
+        
+        ElementFilter gmlPonFilter = new ElementFilter("Point", gml);
+    	Iterator<Element> gmlPonI = ploc.getDescendants(gmlPonFilter);
+    	Element gmlpon = gmlPonI.next();
+        gmlpon.setAttribute("srsDimension", "1");
     	
     	ElementFilter gmlPosFilter = new ElementFilter("pos", gml);
-    	Iterator<Element> gmlPosI = ploc.getDescendants(gmlPosFilter);
+    	Iterator<Element> gmlPosI = gmlpon.getDescendants(gmlPosFilter);
     	Element gmlpos = gmlPosI.next();
     	gmlpos.setText(pit.getLocation().getLongitude()+" "+pit.getLocation().getLat());
     }
@@ -643,7 +648,9 @@ public class CAAMLWriter
 					dpthUnits.setValue(pit.getUser().getDepthUnits());
 					
 					String gt = l.getGrainType1();
+                   
 					String cgt = new GrainTypeConvtertor().getCAAMLType(gt);
+                                        System.out.println("CAAML grain type primary: ........  "+cgt);
 		
 					if ( cgt!=null )
 					{
@@ -656,6 +663,7 @@ public class CAAMLWriter
 					
 					String gt2 = l.getGrainType2();
 					String cgt2 = new GrainTypeConvtertor().getCAAMLType(gt2);
+                                        System.out.println("CAAML grain type secondary: ........  "+cgt2);
 					ElementFilter gt2f = new ElementFilter("grainFormSecondary");
 					Iterator<Element> gt2i = layer.getDescendants(gt2f);
 					Element gtsecond = gt2i.next();
@@ -876,6 +884,59 @@ public class CAAMLWriter
     	if (( aspect >= 112.5 ) && (aspect <= 157.5)) return "SE";
     	if (( aspect >= 202.5 ) && (aspect <= 247.5)) return "SW";
     	return "NA";
+    }
+    
+    String getIsoDate(Date date)
+    {
+        String s = "";
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(cal.get(Calendar.YEAR));
+        buffer.append("-");
+        
+        buffer.append(cal.get(Calendar.MONTH));
+        buffer.append("-");
+        buffer.append(cal.get(Calendar.DAY_OF_MONTH));
+        buffer.append("T");
+        
+        buffer.append(cal.get(Calendar.HOUR_OF_DAY));
+        buffer.append(":");
+        buffer.append(cal.get(Calendar.MINUTE));
+        buffer.append(":");
+        buffer.append(cal.get(Calendar.SECOND));
+        int offset = (int) (cal.getTimeZone().getRawOffset()/(1000*60*60));
+        buffer.append(offset);
+       
+        return s;
+    }
+    
+    String getIsoDateTime(Date date)
+    {
+        String s = "";
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(cal.get(Calendar.YEAR));
+        buffer.append("-");
+        
+        buffer.append(cal.get(Calendar.MONTH));
+        buffer.append("-");
+        buffer.append(cal.get(Calendar.DAY_OF_MONTH));
+        buffer.append("T");
+        
+        buffer.append(cal.get(Calendar.HOUR_OF_DAY));
+        buffer.append(":");
+        buffer.append(cal.get(Calendar.MINUTE));
+        buffer.append(":");
+        buffer.append(cal.get(Calendar.SECOND));
+        buffer.append(".");
+        buffer.append(cal.get(Calendar.MILLISECOND));
+        
+        int offset = (int) (cal.getTimeZone().getRawOffset()/(1000*60*60));
+        buffer.append(offset);
+       
+        return s;
     }
     
     void writeCAAMLToFile()
