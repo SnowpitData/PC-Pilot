@@ -285,7 +285,6 @@ public class CAAMLWriter
 	    		e.setText(getAspectCat(aspect));
     		}
     	}
-    	
     	//sky
     	ElementFilter filter = new ElementFilter("skyCond");
     	Iterator<Element> result = snowProfile.getDescendants(filter);
@@ -295,6 +294,21 @@ public class CAAMLWriter
     		String sc = getSkyCondition(pit.getSky());
     		e.setText(sc);
     	}
+        
+        /////////////////////////////////
+        filter = new ElementFilter("profileDepth");
+    	result = snowProfile.getDescendants(filter);
+    	e  = result.next();
+    	if ( e!=null )
+    	{
+    		Attribute a = new Attribute("uom", pit.getUser().getDepthUnits());
+    		e.setAttribute(a);
+                String mds = new Integer(getMaxDepth(pit)).toString();
+                System.out.println("MAX DEPTH::: "+mds);
+    		e.setText((mds));
+    	}
+        /////////////////////////////////
+    	
     	
     	// precip
     	filter = new ElementFilter("precipTI");
@@ -745,7 +759,7 @@ public class CAAMLWriter
         if ( pit==null )
         {
         	System.out.println("PIT IS NULL.");
-        	return 60;
+        	return 0;
         }
       
       	System.out.println("max depth layers.");
@@ -815,8 +829,8 @@ public class CAAMLWriter
 		}
 	    //if (mor) max+=4;
        		
-       if ( max == 0 ) max = 60;
-       return max;
+      /// if ( max == 0 ) max = 60;
+       return max/10;
     }
     
     public String getWindspeedCat(String windspeed)
@@ -888,7 +902,6 @@ public class CAAMLWriter
     
     String getIsoDate(Date date)
     {
-        String s = "";
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
         StringBuffer buffer = new StringBuffer();
@@ -908,12 +921,11 @@ public class CAAMLWriter
         int offset = (int) (cal.getTimeZone().getRawOffset()/(1000*60*60));
         buffer.append(offset);
        
-        return s;
+        return buffer.toString();
     }
     
     String getIsoDateTime(Date date)
     {
-        String s = "";
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
         StringBuffer buffer = new StringBuffer();
@@ -936,7 +948,7 @@ public class CAAMLWriter
         int offset = (int) (cal.getTimeZone().getRawOffset()/(1000*60*60));
         buffer.append(offset);
        
-        return s;
+        return buffer.toString();
     }
     
     void writeCAAMLToFile()
