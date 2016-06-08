@@ -43,7 +43,7 @@ public class MainFrame extends Frame implements ListFrame
 	public static final String pitserver="http://www.kahrlconsulting.com:8084/avscience/PitServlet";
     
     public avscience.pc.SPV5DataStore store = avscience.pc.SPV5DataStore.getInstance();
-    public final static int bld = 47;
+    public final static int bld = 48;
     final static String vDate = "Version 10 - build "+ bld;
     public final static String version = vDate+" PC: "+System.getProperty( "os.name" );
     public java.awt.List  pitList;

@@ -83,6 +83,7 @@ public class CAAMLWriter
     	setPitInfo(pit, snowProfile);
     	addLayers(pit, snowProfile);
     	addTests(pit, snowProfile);
+      //  setActsAndNotes(pit);
     	setLocation(pit, root);
         setPersonInfo(pit, root);
         addTempProfile(pit, root);
@@ -245,7 +246,7 @@ public class CAAMLWriter
     	gmlpos.setText(pit.getLocation().getLongitude()+" "+pit.getLocation().getLat());
     }
     
-    public void setActsAndNotes(avscience.ppc.PitObs pit)//call after add layers
+    /*public void setActsAndNotes(avscience.ppc.PitObs pit)//call after add layers
     {
     	Element specifics = new Element("specifics");
     	specifics.setText(pit.getActivitiesString());
@@ -255,7 +256,7 @@ public class CAAMLWriter
     	
     	layerRoot.addContent(notes);
     	layerRoot.addContent(specifics);
-    }
+    }*/
     
     
     public void setPitHeaderInfo(avscience.ppc.PitObs pit)
@@ -266,13 +267,13 @@ public class CAAMLWriter
     public void setPitInfo(avscience.ppc.PitObs pit, Element snowProfile)
     {
     	
-    	ElementFilter aFilter = new ElementFilter("AspectPosition");
-    	Iterator<Element> aPos = snowProfile.getDescendants(aFilter);
-    	Element aspectPos = aPos.next();
-    	if ( aspectPos != null )
+    	ElementFilter filter = new ElementFilter("AspectPosition");
+    	Iterator<Element> aPos = snowProfile.getDescendants(filter);
+    	Element asPos = aPos.next();
+    	if ( asPos != null )
     	{
     		ElementFilter apf = new ElementFilter("position");
-    		Iterator<Element> pos = aspectPos.getDescendants(apf);
+    		Iterator<Element> pos = asPos.getDescendants(apf);
     		Element e = pos.next();
     		if (e!=null)
     		{
@@ -286,8 +287,8 @@ public class CAAMLWriter
     		}
     	}
     	//sky
-    	ElementFilter filter = new ElementFilter("skyCond");
-    	Iterator<Element> result = snowProfile.getDescendants(filter);
+    	ElementFilter ffilter = new ElementFilter("skyCond");
+    	Iterator<Element> result = snowProfile.getDescendants(ffilter);
     	Element e = result.next();
     	if ( e!=null )
     	{
@@ -341,17 +342,27 @@ public class CAAMLWriter
     		e.setText(getWindspeedMPH(pit.getWindspeed()));
     	}
     	
-    		/// wind speed
-    	filter = new ElementFilter("windSpd");
+    		/// wind dir
+    	filter = new ElementFilter("windDir");
     	result = snowProfile.getDescendants(filter);
-    	e  = result.next();
-    	if ( e!=null )
-    	{
-    		Attribute a = new Attribute("uom", "mph");
-    		e.setAttribute(a);
-    		e.setText(getWindspeedMPH(pit.getWindspeed()));
-    	}
+        Element wd = result.next();
+        ElementFilter aFilter = new ElementFilter("AspectPosition");
+        result = wd.getDescendants(aFilter);
+        Element aspectPos = result.next();
     	
+    	if ( aspectPos != null )
+    	{
+    		ElementFilter apf = new ElementFilter("position");
+    		Iterator<Element> pos = aspectPos.getDescendants(apf);
+    		Element ee = pos.next(); 
+    		if (ee!=null)
+    		{
+                    int windDir = getWindDirAzi(pit.getWinDir());
+                    ee.setText(windDir+"");
+                    
+                }
+         }
+               
     		/// snow height
     	filter = new ElementFilter("snowHeight");
     	result = snowProfile.getDescendants(filter);
@@ -842,6 +853,20 @@ public class CAAMLWriter
     	if (windspeed.equals("Strong")) return "S";
     	if (windspeed.equals("gale force winds")) return "X";
     	return "unknown";
+    }
+    
+    public int getWindDirAzi(String windirCard)
+    {
+        if (windirCard.equals("N")) return 360;
+        if (windirCard.equals("NE")) return 45;
+        if (windirCard.equals("E")) return 90;
+        if (windirCard.equals("SE")) return 135;
+        if (windirCard.equals("S")) return 180;
+        if (windirCard.equals("SW")) return 225;
+        if (windirCard.equals("W")) return 270;
+        if (windirCard.equals("NW")) return 315;
+        
+        return 0;
     }
     
     public String getWindspeedMPH(String windspeed)

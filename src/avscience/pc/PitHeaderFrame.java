@@ -450,6 +450,7 @@ import javax.swing.*;
         footSki.add(" ");
         footSki.add("Foot");
         footSki.add("Ski");
+        footSki.setSize(160, 32);
         footSki.setLocation(xx, yy);
         p.add(footSki);
         yy+=yspace;
