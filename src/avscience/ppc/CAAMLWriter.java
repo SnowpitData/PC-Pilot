@@ -74,6 +74,14 @@ public class CAAMLWriter
    	ElementFilter spFilter = new ElementFilter("SnowProfileMeasurements");
     	Iterator<Element> spResults = root.getDescendants(spFilter);
     	Element snowProfile = spResults.next();
+        
+        ////////////
+        String measureFrom = pit.getMeasureFrom();
+	String tb = "top down";
+	/////if ( measureFrom.equals("bottom") )  tb = "top down";/// to support back assword SnowPiz
+	Attribute a = new Attribute("dir", tb);
+	snowProfile.setAttribute(a);
+        //////////
     	if ( snowProfile==null )
     	{
     		System.out.println("Snow Profile is NULL !!!!!!!!!");
@@ -258,11 +266,6 @@ public class CAAMLWriter
     	layerRoot.addContent(specifics);
     }*/
     
-    
-    public void setPitHeaderInfo(avscience.ppc.PitObs pit)
-    {
-    	
-    }
     
     public void setPitInfo(avscience.ppc.PitObs pit, Element snowProfile)
     {
@@ -635,7 +638,7 @@ public class CAAMLWriter
     	
 		String measureFrom = pit.getMeasureFrom();
 		String tb = "top down";
-		if ( measureFrom.equals("bottom") )  tb = "bottom up";
+		///if ( measureFrom.equals("top") )  tb = "bottom up";/// backassword SnowPiz  hack
 		Attribute a = new Attribute("dir", tb);
 		layerRoot.setAttribute(a);
     	java.util.Enumeration e=null;
@@ -652,25 +655,17 @@ public class CAAMLWriter
 		            ElementFilter dt = new ElementFilter("depthTop");
 		            Iterator<Element> dti = layer.getDescendants(dt);
 		            Element top = dti.next();
-		            
-		            if (pit.getMeasureFrom().equals("top"))
-		            {
-		            	top.setText(l.getStartDepth()+"");
-		            }
-					else
-					{
-		            	top.setText(l.getEndDepth()+"");
-					}
+		            top.setText(l.getStartDepth()+"");
 					
-					Attribute dpthUnits = top.getAttribute("uom");
-					dpthUnits.setValue(pit.getUser().getDepthUnits());
+                            Attribute dpthUnits = top.getAttribute("uom");
+                            dpthUnits.setValue(pit.getUser().getDepthUnits());
 					
-					ElementFilter thkf = new ElementFilter("thickness");
-					Iterator<Element> thki = layer.getDescendants(thkf);
-					Element thicknss = thki.next();
-					thicknss.setText(l.getThickness()+"");
-					dpthUnits = thicknss.getAttribute("uom");
-					dpthUnits.setValue(pit.getUser().getDepthUnits());
+                            ElementFilter thkf = new ElementFilter("thickness");
+                            Iterator<Element> thki = layer.getDescendants(thkf);
+                            Element thicknss = thki.next();
+                            thicknss.setText(l.getThickness()+"");
+                            dpthUnits = thicknss.getAttribute("uom");
+                            dpthUnits.setValue(pit.getUser().getDepthUnits());
 					
 					String gt = l.getGrainType1();
                    
