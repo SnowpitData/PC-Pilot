@@ -110,7 +110,7 @@ public class TestFrame extends Frame
     	y+=vspace;
     	testScore=new Choice();
     	testScore.setLocation(x, y);
-    	testScore.setSize(112, 20);
+    	testScore.setSize(116, 20);
     	String[] tss = ShearTests.getInstance().getShearTest(testType.getSelectedItem()).getScores();
     	for ( int i=0; i<tss.length; i++ )
     	{
@@ -150,7 +150,7 @@ public class TestFrame extends Frame
     	String[] fcss = {" ", "SP", "SC", "PC", "RP", "BRK"};
     	fractureChar=new Choice();
     	fractureChar.setLocation(x, y);
-    	fractureChar.setSize(58, 20);
+    	fractureChar.setSize(84, 20);
     	
     	for ( int i=0; i<fcss.length; i++ )
     	{

@@ -106,13 +106,13 @@ public class CAAMLWriter
     	Element rhoProfile = rit.next();
     	
     	Attribute dpthUnits = new Attribute("uomDepthTop", pit.getUser().getDepthUnits());
-		Attribute thkUnits = new Attribute("uomThickness", pit.getUser().getDepthUnits());
-		Attribute rhoUnits = new Attribute("uomDensity", "kgm-3");
+	Attribute thkUnits = new Attribute("uomThickness", pit.getUser().getDepthUnits());
+	Attribute rhoUnits = new Attribute("uomDensity", "kgm-3");
 		
-		rhoProfile.setAttribute(dpthUnits);
-		rhoProfile.setAttribute(thkUnits);
+	rhoProfile.setAttribute(dpthUnits);
+	rhoProfile.setAttribute(thkUnits);
 		
-		ElementFilter lFilter = new ElementFilter("Layer"); 
+	ElementFilter lFilter = new ElementFilter("Layer"); 
     	Iterator<Element> lit = rhoProfile.getDescendants(lFilter);
     	Element  llayer = lit.next();
     	
@@ -132,14 +132,14 @@ public class CAAMLWriter
 		            Iterator<Element> dti = layer.getDescendants(dt);
 		            Element top = dti.next();
 		            
-		            if (pit.getMeasureFrom().equals("top"))
-		            {
-		            	top.setText(l.getStartDepth()+"");
-		            }
-					else
-					{
-		            	top.setText(l.getEndDepth()+"");
-					}
+		           // if (pit.getMeasureFrom().equals("top"))
+		          //  {
+		          //  	top.setText(l.getStartDepth()+"");
+		         //   }
+			///		else
+			//		{
+		         //   	top.setText(l.getEndDepth()+"");
+			///		}
 					
 					ElementFilter thkf = new ElementFilter("thickness");
 					Iterator<Element> thki = layer.getDescendants(thkf);
@@ -451,7 +451,7 @@ public class CAAMLWriter
     				Element dpth = new Element("depthTop");
     				
     				Attribute dpthUnits = new Attribute("uom",pit.getUser().getDepthUnits());
-					dpth.setAttribute(dpthUnits);
+				dpth.setAttribute(dpthUnits);
     				dpth.setText(sdpth);
     				
     				llayer.addContent(dpth);
@@ -489,7 +489,7 @@ public class CAAMLWriter
     				Element dpth = new Element("depthTop");
     				
     				Attribute dpthUnits = new Attribute("uom",pit.getUser().getDepthUnits());
-					dpth.setAttribute(dpthUnits);
+				dpth.setAttribute(dpthUnits);
     				dpth.setText(sdpth);
     				
     				llayer.addContent(dpth);
@@ -525,25 +525,25 @@ public class CAAMLWriter
     			if ( !score.equals("ECTX") )
     			{
 	    			Element failedOn = new Element("failedOn");
-					Element llayer = new Element("Layer");
-					Element dpth = new Element("depthTop");
+				Element llayer = new Element("Layer");
+				Element dpth = new Element("depthTop");
 					
-					Attribute dpthUnits = new Attribute("uom",pit.getUser().getDepthUnits());
-					dpth.setAttribute(dpthUnits);
-					dpth.setText(sdpth);
+				Attribute dpthUnits = new Attribute("uom",pit.getUser().getDepthUnits());
+				dpth.setAttribute(dpthUnits);
+				dpth.setText(sdpth);
 					
-					llayer.addContent(dpth);
+				llayer.addContent(dpth);
     				failedOn.addContent(llayer);
     				ectest.addContent(failedOn);
     				
     				Element res = new Element("Results");
     				Element tscore = new Element("testScore");
-    				Element fc = new Element("fractureCharacter");
-    				String sfc = test.getQuality()+test.fractureCat;
-    				fc.setText(sfc);
+    				//Element fc = new Element("fractureCharacter");
+    				//String sfc = test.getQuality()+test.fractureCat;
+    				//fc.setText(sfc);
     				tscore.setText(test.getECScore());
     				res.addContent(tscore);
-    				res.addContent(fc);
+    				//res.addContent(fc);
     				failedOn.addContent(res);
     			}
     			else
@@ -553,6 +553,21 @@ public class CAAMLWriter
     			}
     			testRoot.addContent(ectest);
     		}
+                else if ( type.equals("Propogation Saw Test"))
+                {
+                        Element pstest = new Element("PropSawTest");
+                        Element failedOn = new Element("failedOn");
+			Element llayer = new Element("Layer");
+			Element dpth = new Element("depthTop");
+					
+			Attribute dpthUnits = new Attribute("uom",pit.getUser().getDepthUnits());
+			dpth.setAttribute(dpthUnits);
+			dpth.setText(sdpth);
+					
+			llayer.addContent(dpth);
+    			failedOn.addContent(llayer);
+    			pstest.addContent(failedOn);
+                }
     		
     	}
     	snowProfile.addContent(testRoot);
