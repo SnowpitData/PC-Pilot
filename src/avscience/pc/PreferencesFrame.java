@@ -29,14 +29,14 @@ public class PreferencesFrame extends Frame
 	Choice hardScale;
 
 	private void buildMenu()
-    {
-        saveMenuItem.setLabel("Save preferences");
-    	menu.setLabel("Select..");
-        menu.add(saveMenuItem);
-    	mainMenuBar.add(menu);
-    	setMenuBar(mainMenuBar);
-        saveMenuItem.addActionListener(new MenuAction());
-    }
+        {
+            saveMenuItem.setLabel("Save preferences");
+            menu.setLabel("Select..");
+            menu.add(saveMenuItem);
+            mainMenuBar.add(menu);
+            setMenuBar(mainMenuBar);
+            saveMenuItem.addActionListener(new MenuAction());
+        }
     
     public PreferencesFrame(MainFrame mframe)
     {
@@ -58,7 +58,7 @@ public class PreferencesFrame extends Frame
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		
-        buildMenu();
+                buildMenu();
 		buildForm();
 		popForm();
     }

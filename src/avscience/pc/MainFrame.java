@@ -11,11 +11,11 @@ import java.util.Properties;
 
 public class MainFrame extends Frame implements ListFrame
 {
-	private int width = 360;
-	private int height = 428;
-	private MenuBar mainMenuBar = new java.awt.MenuBar();
-	private Menu menu = new java.awt.Menu();
-	private MenuItem addUserMenuItem = new java.awt.MenuItem();
+    private int width = 360;
+    private int height = 428;
+    private MenuBar mainMenuBar = new java.awt.MenuBar();
+    private Menu menu = new java.awt.Menu();
+    private MenuItem addUserMenuItem = new java.awt.MenuItem();
     private MenuItem editUserMenuItem = new java.awt.MenuItem();
     private MenuItem preferencesMenuItem = new java.awt.MenuItem();
     private MenuItem locationsMenuItem = new java.awt.MenuItem();
@@ -31,19 +31,19 @@ public class MainFrame extends Frame implements ListFrame
     private MenuItem advQryMenuItem = new java.awt.MenuItem();
     private Button addPit = new Button("Add Pit");
     private Button addOcc = new Button("Add Occurence");
-   	final static int maxDataLength=4500;
-   	public boolean smallscreen;
+    final static int maxDataLength=4500;
+    public boolean smallscreen;
     Choice users  = new Choice();
     Choice locations;
     Choice pits = new Choice();
     Choice occs = new Choice();
-	private static final String filename = "PCPILOTV5.DAT";
-	private static final String propFile = "PROPS.DAT";
+    private static final String filename = "PCPILOTV5.DAT";
+    private static final String propFile = "PROPS.DAT";
     public static final String server="http://www.kahrlconsulting.com:8084/avscience/PitListServlet";
-	public static final String pitserver="http://www.kahrlconsulting.com:8084/avscience/PitServlet";
+    public static final String pitserver="http://www.kahrlconsulting.com:8084/avscience/PitServlet";
     
     public avscience.pc.SPV5DataStore store = avscience.pc.SPV5DataStore.getInstance();
-    public final static int bld = 52;
+    public final static int bld = 53;
     final static String vDate = "Version 10 - build "+ bld;
     public final static String version = vDate+" PC: "+System.getProperty( "os.name" );
     public java.awt.List  pitList;
@@ -53,7 +53,7 @@ public class MainFrame extends Frame implements ListFrame
     public String defaultUser = "";
     long lastDataSentTime = 0;
     long dataSendIterval = 5*24*60*60*1000;
-	MainFrame thisframe;
+    MainFrame thisframe;
 	
     Logger logger = Logger.getInstance();
 	
@@ -86,7 +86,7 @@ public class MainFrame extends Frame implements ListFrame
     	props.put("DEFAULTUSER", defaultUser);
     	try
     	{
-    		File propsFile = new File(propFile);
+    	    File propsFile = new File(propFile);
             FileOutputStream out = new FileOutputStream(propsFile);
             props.store(out, "UserInfo");
             out.close();
