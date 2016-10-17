@@ -838,7 +838,7 @@ import javax.swing.*;
         pit.setSurfacePen(penetration.getText());
         pit.setHeightOfSnowpack(heightOfSnowpack.getText());
         pit.setPrecip(precip.getSelectedItem());
-        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex());
+        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex()-1);
         pit.setSky(skyCode);
         pit.setWindSpeed(windSpeed.getSelectedItem());
         pit.setWinDir(winDir.getSelectedItem());

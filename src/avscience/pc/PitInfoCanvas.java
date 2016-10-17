@@ -230,7 +230,7 @@ public class PitInfoCanvas extends Canvas implements MouseListener
         y+=vspace;
         g.drawString("Sky Cover:", x,y);
         g.setFont(bold);
-        String sky = pit.getSky();
+        String sky = SkyCover.getInstance().getDescription(pit.getSky());
         if ( sky==null ) sky="";
         g.drawString(sky,x+62, y);
         g.setFont(f);

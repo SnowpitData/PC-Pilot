@@ -682,7 +682,7 @@ public class PitSumFrame extends Frame implements TimeFrame
         pFrame.getPit().setHeightOfSnowpack(heightOfSnowpack.getText());
         pFrame.getPit().setPrecip(precip.getSelectedItem());
         
-        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex());
+        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex()-1);
         System.out.println("Update Pit, Sky Code: "+skyCode);
         pFrame.getPit().setSky(skyCode);
         pFrame.getPit().setWindSpeed(windSpeed.getSelectedItem());

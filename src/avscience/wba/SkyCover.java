@@ -35,7 +35,7 @@
              codes[1] = "Few";
              descriptions[1] = "sky < 2/8 covered";
              shortCodes[1] = "FEW";
-	     codesDesc.put(shortCodes[1], this.descriptions[1]);
+	     codesDesc.put(shortCodes[1], descriptions[1]);
  
              codes[2] = "Scattered";
              descriptions[2] = "sky 3/8 to 4/8 covered";
@@ -45,17 +45,17 @@
              codes[3] = "Broken";
              descriptions[3] = "sky 4/8 to 8/8 covered";
              shortCodes[3] = "BKN";
-	     codesDesc.put(shortCodes[3], this.descriptions[3]);
+	     codesDesc.put(shortCodes[3], descriptions[3]);
 
              codes[4] = "Overcast";
              descriptions[4] = "sky 8/8 covered";
              shortCodes[4] = "OVC";
-	     codesDesc.put(shortCodes[4], this.descriptions[4]);
+	     codesDesc.put(shortCodes[4], descriptions[4]);
  
              codes[5] = "Obscured";
              descriptions[5] = "Fog";
              shortCodes[5] = "X";
-             codesDesc.put(shortCodes[5], this.descriptions[5]);
+             codesDesc.put(shortCodes[5], descriptions[5]);
           }
  
             public String[] getCodes()
@@ -65,7 +65,7 @@
  
             public String[] getDescriptions()
             {
-                return this.descriptions;
+                return descriptions;
             }
             
            public String getCode(int i)
