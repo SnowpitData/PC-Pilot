@@ -1,72 +1,87 @@
-/*    */ package avscience.wba;
+     package avscience.wba;
 
-		 import java.util.Hashtable;
-/*    */ 
-/*    */ public final class SkyCover
-/*    */   implements DataTable
-/*    */ {
-/*  6 */   private static final SkyCover instance = new SkyCover();
-/*    */   private String[] codes;
-/*    */   private String[] descriptions;
-/*  9 */   private int size = 6;
-		   private Hashtable codesDesc = new Hashtable(size);
-/*    */ 
-/*    */   public static SkyCover getInstance()
-/*    */   {
-/* 17 */     return instance;
-/*    */   }
-/*    */ 
-/*    */   private SkyCover()
-/*    */   {
-/* 23 */     init();
-/*    */   }
-/*    */ 
-/*    */   private void init()
-/*    */   {
-/* 28 */     this.codes = new String[this.size];
-/* 29 */     this.descriptions = new String[this.size];
-/*    */ 
-/* 31 */     this.codes[0] = "Clear";
-/* 32 */     this.descriptions[0] = "Clear";
-			 codesDesc.put("CLR", this.descriptions[0]);
-/*    */ 
-/* 34 */     this.codes[1] = "Few";
-/* 35 */     this.descriptions[1] = "sky < 2/8 covered";
-			 codesDesc.put("FEW", this.descriptions[1]);
-/*    */ 
-/* 37 */     this.codes[2] = "Scattered";
-/* 38 */     this.descriptions[2] = "sky 3/8 to 4/8 covered";
-             codesDesc.put("SCT", this.descriptions[2]);
-/*    */ 
-/* 40 */     this.codes[3] = "Broken";
-/* 41 */     this.descriptions[3] = "sky 4/8 to 8/8 covered";
-			 codesDesc.put("BKN", this.descriptions[3]);
-/*    */ 
-/* 43 */     this.codes[4] = "Overcast";
-/* 44 */     this.descriptions[4] = "sky 8/8 covered";
-			 codesDesc.put("OVC", this.descriptions[4]);
-/*    */ 
-/* 46 */     this.codes[5] = "Obscured";
-/* 47 */     this.descriptions[5] = "Fog";
-             codesDesc.put("X", this.descriptions[5]);
-/*    */   }
-/*    */ 
-/*    */   public String[] getCodes()
-/*    */   {
-/* 52 */     return this.codes;
-/*    */   }
-/*    */ 
-/*    */   public String[] getDescriptions()
-/*    */   {
-/* 57 */     return this.descriptions;
-/*    */   }
+     import java.util.Hashtable;
+     
+     public final class SkyCover implements DataTable 
+     {
+            private static final SkyCover instance = new SkyCover();
+            private String[] codes;
+            private String[] descriptions;
+            private String[] shortCodes;
+            private int size = 6;
+            private Hashtable codesDesc = new Hashtable(size);
+
+            public static SkyCover getInstance()
+            {
+                return instance;
+            }
+
+           private SkyCover()
+           {
+             init();
+           }
+
+           private void init()
+           {
+             codes = new String[size];
+             descriptions = new String[size];
+             shortCodes = new String[size];
+ 
+             codes[0] = "Clear";
+             descriptions[0] = "Clear";
+             shortCodes[0] = "CLR";
+	     codesDesc.put(shortCodes[0], descriptions[0]);
+ 
+             codes[1] = "Few";
+             descriptions[1] = "sky < 2/8 covered";
+             shortCodes[1] = "FEW";
+	     codesDesc.put(shortCodes[1], this.descriptions[1]);
+ 
+             codes[2] = "Scattered";
+             descriptions[2] = "sky 3/8 to 4/8 covered";
+             shortCodes[2] = "SCT";
+             codesDesc.put(shortCodes[2], descriptions[2]);
+ 
+             codes[3] = "Broken";
+             descriptions[3] = "sky 4/8 to 8/8 covered";
+             shortCodes[3] = "BKN";
+	     codesDesc.put(shortCodes[3], this.descriptions[3]);
+
+             codes[4] = "Overcast";
+             descriptions[4] = "sky 8/8 covered";
+             shortCodes[4] = "OVC";
+	     codesDesc.put(shortCodes[4], this.descriptions[4]);
+ 
+             codes[5] = "Obscured";
+             descriptions[5] = "Fog";
+             shortCodes[5] = "X";
+             codesDesc.put(shortCodes[5], this.descriptions[5]);
+          }
+ 
+            public String[] getCodes()
+            {
+                return this.codes;
+            }
+ 
+            public String[] getDescriptions()
+            {
+                return this.descriptions;
+            }
+            
+           public String getCode(int i)
+           {
+               return codes[i];
+           }
+           
+           public String getShortCode(int i)
+           {
+               return shortCodes[i];
+           }
 			
-			public String getDescription(String code)
-			{
-				Object o = codesDesc.get(code);
-				if (o!=null)return o.toString();
-				else return null;
-			}
-
-
-/*    */ }
+	   public String getDescription(String code)
+	   {
+		Object o = codesDesc.get(code);
+		if (o!=null)return o.toString();
+		else return null;
+	    }
+ }

@@ -1,8 +1,3 @@
-// Decompiled by DJ v3.5.5.77 Copyright 2003 Atanas Neshkov  Date: 11/7/2010 8:36:50 AM
-// Home Page : http://members.fortunecity.com/neshkov/dj.html  - Check often for new version!
-// Decompiler options: packimports(3) 
-// Source File Name:   PitApplet.java
-
 package avscience.desktop;
 
 import avscience.pc.MainFrame;
@@ -27,13 +22,60 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLEncoder;
 
-// Referenced classes of package avscience.desktop:
-//            HttpMessage, OccCanvas, PitCanvas, OccFrame
 
 public class PitApplet extends Frame
 {
-    class ActListener
-        implements ActionListener
+    private static final String all = "ALL";
+    public List pitList;
+    private Label pitLabel;
+    private List occList;
+    private Label occLabel;
+    private Label statLabel;
+    private Label infoLabel;
+    private List nameList;
+    private Label nameLabel;
+    private List stateList;
+    private Label stateLabel;
+    private Label filter;
+    private Label Nof;
+    private Label Sof;
+    private Label Eof;
+    private Label Wof;
+    private TextField N;
+    private TextField S;
+    private TextField E;
+    private TextField W;
+    private Button showPit;
+    private Button showOcc;
+    private Button filterList;
+    private PitCanvas c;
+    private Panel pitPanel;
+    private Panel mainPanel;
+    private Panel occPanel;
+    private Panel txtPanel;
+    private TextArea qryBox;
+    private TextArea msgBox;
+    private Button qryButton;
+    private Label qryLabel;
+    private Label msgLabel;
+    private Button txtButton;
+    private ActListener alistener;
+    private String breadCrumb;
+    Button main;
+    private Button back;
+    int width;
+    int height;
+    private static final String server = "http://kahrlconsulting.com:8087/avscience/PitListServlet";
+    private static final String pitserver = "http://kahrlconsulting.com:8087/avscience/PitServlet";
+//   	public static final String server="http://home.kahrlconsulting.com/avscience/PitListServlet";
+//	public static final String pitserver="http://home.kahrlconsulting.com/avscience/PitServlet";
+    private static final int yoffset = 36;
+    public String pitlist[][];
+    private String occlist[][];
+    private MainFrame mframe;
+    public boolean superuser;
+    
+    class ActListener implements ActionListener
     {
         public void actionPerformed(ActionEvent actionevent)
         {
@@ -816,79 +858,4 @@ public class PitApplet extends Frame
         mframe = mainframe;
         superuser = mainframe.checkSuperUser();
     }
-
-    private static final String all = "ALL";
-    public List pitList;
-    private Label pitLabel;
-    private List occList;
-    private Label occLabel;
-    private Label statLabel;
-    private Label infoLabel;
-    private List nameList;
-    private Label nameLabel;
-    private List stateList;
-    private Label stateLabel;
-    private Label filter;
-    private Label Nof;
-    private Label Sof;
-    private Label Eof;
-    private Label Wof;
-    private TextField N;
-    private TextField S;
-    private TextField E;
-    private TextField W;
-    private Button showPit;
-    private Button showOcc;
-    private Button filterList;
-    private PitCanvas c;
-    private Panel pitPanel;
-    private Panel mainPanel;
-    private Panel occPanel;
-    private Panel txtPanel;
-    private TextArea qryBox;
-    private TextArea msgBox;
-    private Button qryButton;
-    private Label qryLabel;
-    private Label msgLabel;
-    private Button txtButton;
-    private ActListener alistener;
-    private String breadCrumb;
-    Button main;
-    private Button back;
-    int width;
-    int height;
-    private static final String server = "http://kahrlconsulting.com:8087/avscience/PitListServlet";
-    private static final String pitserver = "http://kahrlconsulting.com:8087/avscience/PitServlet";
-//   	public static final String server="http://home.kahrlconsulting.com/avscience/PitListServlet";
-//	public static final String pitserver="http://home.kahrlconsulting.com/avscience/PitServlet";
-    private static final int yoffset = 36;
-    public String pitlist[][];
-    private String occlist[][];
-    private MainFrame mframe;
-    public boolean superuser;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

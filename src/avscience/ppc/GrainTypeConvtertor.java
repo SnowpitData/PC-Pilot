@@ -8,7 +8,7 @@ public class GrainTypeConvtertor
 {
 	Hashtable<String, String> types = new Hashtable<String, String>();
 	Hashtable<String, String> lwc = new Hashtable<String, String>();
-	
+        
     public GrainTypeConvtertor() 
     {
     	types.put("Precipitation particles", "PP");

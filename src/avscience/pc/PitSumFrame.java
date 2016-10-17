@@ -58,9 +58,9 @@ public class PitSumFrame extends Frame implements TimeFrame
     Checkbox sharePit;
     
     UTMTextItem east;
-	UTMTextItem north;
-	TextItem utmZone;
-	boolean utm=false;
+    UTMTextItem north;
+    TextItem utmZone;
+    boolean utm=false;
     
     private MenuBar mainMenuBar = new java.awt.MenuBar();
     private Menu menu = new java.awt.Menu();
@@ -82,35 +82,17 @@ public class PitSumFrame extends Frame implements TimeFrame
         init();
     }
     
-   /* public void updateEstDate()
-	{
-		System.out.println("updateEstDate():PitSumFrame");
-		Timestamp tts = estDate.getTimestamp();
-		long ts = tts.getTime();
-		Date dd = new Date(ts);
-      	lDate.setText(dd.toString());
-      	if (ts>0) pFrame.getPit().setTimestamp(ts);
-     // 	estDate = new org.compiere.grid.ed.Calendar(this, "Select Date/Time", tts, 16, this);
-	//	estDate.addWindowListener(new SymWindow());
-	//	estDate.setVisible(false);
-	}
-	
-	void showDatePopup()
-    {
-    	estDate.setSize(380, 320);
-       	estDate.setVisible(true);
-    }*/
     
     public void updateEstDate()
-	{
-		System.out.println("updateEstDate():PitHeaderFrame");
-		Timestamp tts = estDate.getTimestamp();
-		long ts = tts.getTime();
-		Date dd = new Date(ts);
+    {
+	System.out.println("updateEstDate():PitHeaderFrame");
+	Timestamp tts = estDate.getTimestamp();
+	long ts = tts.getTime();
+	Date dd = new Date(ts);
       	lDate.setText(dd.toString());
       	pFrame.getPit().setTimestamp(ts);
       	
-	}
+     }
     
     void showDatePopup()
     {
@@ -589,12 +571,14 @@ public class PitSumFrame extends Frame implements TimeFrame
         aspect.setText(pFrame.getPit().getAspect()); 
         slope.setText(pFrame.getPit().getIncline());  
         temp.setText(pFrame.getPit().getAirTemp());
-        ////
         footSki.select(pFrame.getPit().getSkiBoot());
-	    penetration.setText(pFrame.getPit().getSurfacePen());
-	    heightOfSnowpack.setText(pFrame.getPit().getHeightOfSnowpack());
+	penetration.setText(pFrame.getPit().getSurfacePen());
+	heightOfSnowpack.setText(pFrame.getPit().getHeightOfSnowpack());
         precip.select(pFrame.getPit().getPrecip());
-        skyCover.select(pFrame.getPit().getSky());
+        
+        String skyCvr = SkyCover.getInstance().getDescription(pFrame.getPit().getSky());
+        System.out.println("popForm: SkyCover "+ skyCvr);
+        skyCover.select(skyCvr);
         windSpeed.select(pFrame.getPit().getWindspeed());
         winDir.select(pFrame.getPit().getWinDir());
         windLoad.select(pFrame.getPit().getWindLoading());
@@ -602,7 +586,7 @@ public class PitSumFrame extends Frame implements TimeFrame
         String nts = pFrame.getPit().getPitNotes();
       	long ts = pFrame.getPit().getTimestamp();
       	System.out.println("Timestamp: "+ts);
-	    Date dd = new Date(ts);
+	Date dd = new Date(ts);
       	lDate.setText(dd.toString());
 	      
         notes.setText(nts);
@@ -683,7 +667,6 @@ public class PitSumFrame extends Frame implements TimeFrame
     
     public void updatePitFromForm()
     {
-		System.out.println("updatePitFromForm");
     	pFrame.getPit().setEdited();
         String name = pFrame.getPit().getLocation().getName();
         User u = pFrame.getPit().getUser();
@@ -698,7 +681,10 @@ public class PitSumFrame extends Frame implements TimeFrame
         pFrame.getPit().setSurfacePen(penetration.getText());
         pFrame.getPit().setHeightOfSnowpack(heightOfSnowpack.getText());
         pFrame.getPit().setPrecip(precip.getSelectedItem());
-        pFrame.getPit().setSky(skyCover.getSelectedItem());
+        
+        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex());
+        System.out.println("Update Pit, Sky Code: "+skyCode);
+        pFrame.getPit().setSky(skyCode);
         pFrame.getPit().setWindSpeed(windSpeed.getSelectedItem());
         pFrame.getPit().setWinDir(winDir.getSelectedItem());
         pFrame.getPit().setWindLoading(windLoad.getSelectedItem());

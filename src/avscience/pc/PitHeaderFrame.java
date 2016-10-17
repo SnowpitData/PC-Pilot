@@ -38,8 +38,8 @@ import javax.swing.*;
     LonTextItem lon;
     LatTextItem lat;
     UTMTextItem east;
-	UTMTextItem north;
-	TextItem utmZone;
+    UTMTextItem north;
+    TextItem utmZone;
     DegTextItem aspect;
     SlopeAngleTextItem slope;
     TempTextItem temp;
@@ -699,8 +699,7 @@ import javax.swing.*;
 			        }
 			        elv.setText(l.getElv());
 			     }
-		    }
-		    System.out.println("location poppped.");
+                }
 		    if ( pit.testPit.trim().equals("true")) testPit.setState(true);
 		    else testPit.setState(false);
 		    /////////
@@ -715,22 +714,21 @@ import javax.swing.*;
 	        slope.setText(pit.getIncline());  
 	        temp.setText(pit.getAirTemp());
 	        ////
-	        System.out.println("temp poppped.");
 	        footSki.select(pit.getSkiBoot());
 	        penetration.setText(pit.getSurfacePen());
 	        heightOfSnowpack.setText(pit.getHeightOfSnowpack());
 	        precip.select(pit.getPrecip());
-	        skyCover.select(pit.getSky());
+                String skyCvr = SkyCover.getInstance().getDescription(pit.getSky());
+                System.out.println("SkyCover: "+skyCvr);
+	        skyCover.select(skyCvr);
 	        windSpeed.select(pit.getWindspeed());
 	        winDir.select(pit.getWinDir());
 	        windLoad.select(pit.getWindLoading());
-	        System.out.println("wind poppped.");
 	        stability.select(pit.getStability());
 	        String nts = pit.getPitNotes();
 	       
 	      	/////////////////////
 	      	long ts = pit.getTimestamp();
-	      	System.out.println("Timestamp: "+ts);
 
 	      	Date dd = new Date(ts);
       		lDate.setText(dd.toString());
@@ -840,7 +838,8 @@ import javax.swing.*;
         pit.setSurfacePen(penetration.getText());
         pit.setHeightOfSnowpack(heightOfSnowpack.getText());
         pit.setPrecip(precip.getSelectedItem());
-        pit.setSky(skyCover.getSelectedItem());
+        String skyCode = SkyCover.getInstance().getShortCode(skyCover.getSelectedIndex());
+        pit.setSky(skyCode);
         pit.setWindSpeed(windSpeed.getSelectedItem());
         pit.setWinDir(winDir.getSelectedItem());
         pit.setWindLoading(windLoad.getSelectedItem());
