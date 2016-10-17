@@ -857,8 +857,8 @@ public class PitApplet extends Frame
     private Button back;
     int width;
     int height;
-    private static final String server = "http://kahrlconsulting.com:8084/avscience/PitListServlet";
-    private static final String pitserver = "http://kahrlconsulting.com:8084/avscience/PitServlet";
+    private static final String server = "http://kahrlconsulting.com:8087/avscience/PitListServlet";
+    private static final String pitserver = "http://kahrlconsulting.com:8087/avscience/PitServlet";
 //   	public static final String server="http://home.kahrlconsulting.com/avscience/PitListServlet";
 //	public static final String pitserver="http://home.kahrlconsulting.com/avscience/PitServlet";
     private static final int yoffset = 36;

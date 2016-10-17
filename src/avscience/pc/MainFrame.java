@@ -39,12 +39,12 @@ public class MainFrame extends Frame implements ListFrame
     Choice occs = new Choice();
     private static final String filename = "PCPILOTV5.DAT";
     private static final String propFile = "PROPS.DAT";
-    public static final String server="http://www.kahrlconsulting.com:8084/avscience/PitListServlet";
-    public static final String pitserver="http://www.kahrlconsulting.com:8084/avscience/PitServlet";
+    public static final String server="http://www.kahrlconsulting.com:8087/avscience/PitListServlet";
+    public static final String pitserver="http://www.kahrlconsulting.com:8087/avscience/PitServlet";
     
     public avscience.pc.SPV5DataStore store = avscience.pc.SPV5DataStore.getInstance();
-    public final static int bld = 53;
-    final static String vDate = "Version 10 - build "+ bld;
+    public final static int bld = 54;
+    final static String vDate = "V.10 DEV-TEST-8087 "+ bld;
     public final static String version = vDate+" PC: "+System.getProperty( "os.name" );
     public java.awt.List  pitList;
     public java.awt.List  occList;
