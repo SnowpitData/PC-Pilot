@@ -75,6 +75,7 @@
            
            public String getShortCode(int i)
            {
+               if (i < 0) return "";
                return shortCodes[i];
            }
 			
