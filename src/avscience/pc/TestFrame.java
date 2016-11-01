@@ -146,7 +146,6 @@ public class TestFrame extends Frame
     	add(testQ);
     	testQ.select("Q2");
     	
-    //	String[] fcss = {" ", "SP", "SC", "PC", "RP"};
     	String[] fcss = {" ", "SP", "SC", "PC", "RP", "BRK"};
     	fractureChar=new Choice();
     	fractureChar.setLocation(x, y);
@@ -425,6 +424,8 @@ public class TestFrame extends Frame
         
          if ( tScore.equals("CTM"))
          {
+             try
+             {
          	int ct = new Integer(ctscore.getText()).intValue();
          	if ( ct < 11 )
          	{
@@ -432,6 +433,10 @@ public class TestFrame extends Frame
          		displayMsg("CTM score must be 11-20");
          		return false;
          	}
+             }catch(Exception e)
+             {
+                 System.out.println(e.toString());
+             }
          }
          
          if ( tScore.equals("CTH"))
@@ -673,9 +678,6 @@ public class TestFrame extends Frame
 		String type=testType.getSelectedItem();
 		if ( type.trim().equals("Compression Test")) ctscore.setVisible(true);
 		else ctscore.setVisible(false);
-		
-		//if ( type.trim().equals("Extended Column Test")) numOfTaps.setVisible(true);
-	//	else numOfTaps.setVisible(false);
 		
 		if ( type.trim().equals("Propogation Saw Test")) 
 		{

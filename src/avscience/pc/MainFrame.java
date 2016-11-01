@@ -8,6 +8,7 @@ import avscience.util.*;
 import java.io.*;
 import java.net.*;
 import java.util.Properties;
+import avscience.ppc.*;
 
 public class MainFrame extends Frame implements ListFrame
 {
@@ -26,12 +27,11 @@ public class MainFrame extends Frame implements ListFrame
     private MenuItem addOccMenuItem = new java.awt.MenuItem();
     private MenuItem sendMenuItem = new java.awt.MenuItem();
     private MenuItem wcMenuItem = new java.awt.MenuItem();
-  //  private MenuItem qryMenuItem = new java.awt.MenuItem();
     private MenuItem editNews = new java.awt.MenuItem();
     private MenuItem advQryMenuItem = new java.awt.MenuItem();
     private Button addPit = new Button("Add Pit");
     private Button addOcc = new Button("Add Occurence");
-    final static int maxDataLength=4500;
+   // final static int maxDataLength=4500;
     public boolean smallscreen;
     Choice users  = new Choice();
     Choice locations;
@@ -41,9 +41,10 @@ public class MainFrame extends Frame implements ListFrame
     private static final String propFile = "PROPS.DAT";
     public static final String server="http://www.kahrlconsulting.com:8087/avscience/PitListServlet";
     public static final String pitserver="http://www.kahrlconsulting.com:8087/avscience/PitServlet";
+    final static int dataPushSize=8000;
     
     public avscience.pc.SPV5DataStore store = avscience.pc.SPV5DataStore.getInstance();
-    public final static int bld = 57;
+    public final static int bld = 58;
     final static String vDate = "V.10-8087 "+ bld;
     public final static String version = vDate+" PC: "+System.getProperty( "os.name" );
     public java.awt.List  pitList;
@@ -105,7 +106,7 @@ public class MainFrame extends Frame implements ListFrame
 			readData();
 		}
 		catch(Exception e){logger.println(e.toString());}
-		try
+		/*try
 		{
 			readVer3Data();
 		}
@@ -120,7 +121,7 @@ public class MainFrame extends Frame implements ListFrame
 		{
 			new PDARecordHandler(store);
 		}
-		catch(Exception e){logger.println(e.toString());}
+		catch(Exception e){logger.println(e.toString());}*/
 		addPit.addActionListener(new MenuAction());
 		addOcc.addActionListener(new MenuAction());
 		pits.addItemListener(new PitoccListener());
@@ -142,17 +143,17 @@ public class MainFrame extends Frame implements ListFrame
 		loadProperties();
 		checkGraphics();
         
-        buildForm();
-        buildMenu();
-        String news = getCurrentNews();
+                 buildForm();
+                 buildMenu();
+                String news = getCurrentNews();
         
-        if ( news.trim().length()>1 ) 
-        {
-        	MessageFrame nmsg = new MessageFrame(news);
-        	nmsg.setVisible(true);
-        	nmsg.requestFocus();
-        }
-        if ((System.currentTimeMillis() - lastDataSentTime) > dataSendIterval) new Sender(false).start();
+                if ( news.trim().length()>1 ) 
+                {
+                    MessageFrame nmsg = new MessageFrame(news);
+                    nmsg.setVisible(true);
+                    nmsg.requestFocus();
+                }
+                if ((System.currentTimeMillis() - lastDataSentTime) > dataSendIterval) new Sender(false).start();
 	}
         
 	public avscience.wba.Location getCurrentLocation()
@@ -262,7 +263,7 @@ public class MainFrame extends Frame implements ListFrame
 		
 	}
 	
-	void readOldData()
+	/*void readOldData()
     {
     	avscience.pc.DataStore ostore = null;
     	File file = null;
@@ -349,9 +350,9 @@ public class MainFrame extends Frame implements ListFrame
 	    }
 	    logger.println("READ OLD DATA DONE::: ");
         file.delete();
-    }
+    }*/
     
-    void readVer3Data()
+ /*   void readVer3Data()
     {
     	avscience.pc.SPDataStore ostore = null;
     	File file = null;
@@ -419,9 +420,9 @@ public class MainFrame extends Frame implements ListFrame
 	    logger.println("READ ver 3 DATA DONE::: ");
 	    System.out.println("READ ver 3 DATA DONE::: ");
         file.delete();
-    }
+    }*/
     
-    void readOlderData()
+ /*   void readOlderData()
     {
     	avscience.desktop.DataStore ostore = null;
     	File file = null;
@@ -506,9 +507,7 @@ public class MainFrame extends Frame implements ListFrame
 	        	store.addLocation(loc.dataString());
 	        }
 	    }
-	    logger.println("READ OLDER DATA DONE::: ");
-        file.delete();
-    }
+    }*/
     
     /*public void updatePitLayers(avscience.ppc.PitObs pit)
 	{
@@ -526,7 +525,7 @@ public class MainFrame extends Frame implements ListFrame
 	}
     */
    ///////////
-   	public avscience.ppc.PitObs convertPit(avscience.ppc.PitObs pit)
+   /*	public avscience.ppc.PitObs convertPit(avscience.ppc.PitObs pit)
   	{
   		logger.println("covertPit");
   		java.util.Vector nt = new java.util.Vector();
@@ -560,7 +559,7 @@ public class MainFrame extends Frame implements ListFrame
 	    avscience.wba.Location l = new avscience.wba.Location(genloc.dataString());
 	    pit.setLocation(l);
 	    return pit;
-  	}
+  	}*/
     
     public class PitoccListener implements ItemListener
     {
@@ -638,9 +637,9 @@ public class MainFrame extends Frame implements ListFrame
 	{
         boolean sent = false;
         store.getPitNames();
-        store.getOccNames();
+        //store.getOccNames();
         String[] pitSers = store.getPitSerials();
-        String[] occSers = store.getOccSerials();
+        //String[] occSers = store.getOccSerials();
         int size = pitSers.length;
         SendDialog send = new SendDialog(this, false);
         if ( showDialog)
@@ -649,12 +648,6 @@ public class MainFrame extends Frame implements ListFrame
             send.setLocation(300, 300);
             send.setVisible(true);
         }
-       /* try
-        {
-        	Thread.sleep(400);
-        }
-        catch(Exception e){}
-        send.dispose();*/
         
         logger.println("Sending data to web app..");
         logger.println("Number of pits: "+size);
@@ -662,104 +655,17 @@ public class MainFrame extends Frame implements ListFrame
         {
             try
             {
-                URL url = new URL(server);
-                HttpMessage msg = new HttpMessage(url);
-                Properties props = new Properties();
-                props.put("format", "pitsend");
                 avscience.ppc.PitObs pit = store.getPit(pitSers[i]);
                 logger.println("Pit name: "+pit.getName());
-               // System.out.println("Pit dat: "+pit.dataString());
-                String s = pit.dataString();
-                
-                int dsize=s.length();
-               // System.out.println("Data size: "+dsize);
-                
-                if ( dsize > 2*maxDataLength )
-                {
-                //	System.out.println("Dsize:: "+dsize);
-                	String s1=s.substring(0, maxDataLength);
-                	String s2=s.substring(maxDataLength, 2*maxDataLength);
-                	String s3=s.substring(2*maxDataLength, s.length());
-                	s1 = URLEncoder.encode(s1);
-                	s2 = URLEncoder.encode(s2);
-                	s3 = URLEncoder.encode(s3);
-                	HttpMessage msg1 = new HttpMessage(url);
-                	Properties props1 = new Properties();
-                	props1.put("format", "bigpit1");
-                	HttpMessage msg2 = new HttpMessage(url);
-                	Properties props2 = new Properties();
-                	props2.put("format", "bigpit2");
-                	props1.put("PITDATA1", s1);
-                	props2.put("PITDATA2", s2);
-                	HttpMessage msg3 = new HttpMessage(url);
-                	Properties props3 = new Properties();
-                	props3.put("format", "bigpit3");
-                	props3.put("PITDATA3", s3);
-                	msg1.sendGetMessage(props1);
-                	Thread.sleep(1200);
-                	msg2.sendGetMessage(props2);
-                	Thread.sleep(1200);
-                	msg3.sendGetMessage(props3);
-                	if ((msg1!=null ) && (msg2!=null) && (msg3!=null)) sent = true;
-                }
-                else if ( dsize > maxDataLength )
-                {
-                //	System.out.println("Dsize:: "+dsize);
-                	String s1=s.substring(0, maxDataLength);
-                	String s2=s.substring(maxDataLength, s.length());
-                	s1 = URLEncoder.encode(s1);
-                	s2 = URLEncoder.encode(s2);
-                	HttpMessage msg1 = new HttpMessage(url);
-                	Properties props1 = new Properties();
-                	props1.put("format", "bigpitsend1");
-                	HttpMessage msg2 = new HttpMessage(url);
-                	Properties props2 = new Properties();
-                	props2.put("format", "bigpitsend2");
-                	props1.put("PITDATA1", s1);
-                	props2.put("PITDATA2", s2);
-                	msg1.sendGetMessage(props1);
-                	Thread.sleep(1200);
-                	msg2.sendGetMessage(props2);
-                	if ((msg1!=null ) && (msg2!=null)) sent = true;
-                }
-                else
-                {
-                	s = URLEncoder.encode(s);
-	                props.put("PITDATA", s);
-	                msg.sendGetMessage(props);
-	                if (msg!=null) sent=true;
-            	}
-                
+                String rs = sendPitToServer(pit);
+                logger.println(rs);
             }
             catch(Exception e)
             {
                 logger.println(e.toString());
-                e.printStackTrace();
-            }
-                
-        }
-        size = occSers.length;
-        for ( int i=0; i<size; i++ )
-        {
-            try
-            {
-                URL url = new URL(server);
-                HttpMessage msg = new HttpMessage(url);
-                Properties props = new Properties();
-                props.put("format", "occsend");
-                avscience.ppc.AvOccurence occ = store.getOcc(occSers[i]);
-                String s = occ.dataString();
-                s = URLEncoder.encode(s);
-                props.put("OCCDATA", s);
-                msg.sendGetMessage(props);
-                if (msg!=null) sent=true;
-            }
-            catch(Exception e)
-            {
-                logger.println(e.toString());
-                e.printStackTrace();
             }
         }
+               
         if (showDialog) send.dispose();
        /* if (sent)
         {
@@ -770,6 +676,45 @@ public class MainFrame extends Frame implements ListFrame
         rebuildList();
         lastDataSentTime = System.currentTimeMillis();
     }
+    
+    private String sendPitToServer(avscience.ppc.PitObs pit)
+	{
+		System.out.println("bounceObjectToServer()");
+		Object result=null;
+		try
+		{
+			StringBuffer encUrl = new StringBuffer(pitserver);
+			encUrl.append("?TYPE=XMLPIT_SEND");
+			encUrl.append("");
+			
+			System.out.println("Url: "+encUrl.toString());
+			URL servletUrl = new URL(encUrl.toString());
+			HttpURLConnection servletConnection = (HttpURLConnection)servletUrl.openConnection();
+		   
+			servletConnection.setChunkedStreamingMode(dataPushSize);
+			servletConnection.setRequestProperty("Content-type","text/xml");
+
+			servletConnection.setRequestMethod("POST");
+			servletConnection.setDoOutput(true);
+                        servletConnection.setDoInput(true);	
+			servletConnection.setUseCaches(false);
+			servletConnection.connect();
+
+			char[] chars = new XMLWriter().getXML(pit);
+			
+			OutputStreamWriter oos = new OutputStreamWriter(servletConnection.getOutputStream());
+			oos.write(chars, 0, chars.length);
+			oos.flush(); 
+			oos.close();
+		
+			logger.println("READING OBJECT RESPONSE");
+			ObjectInputStream ois = new ObjectInputStream(servletConnection.getInputStream());
+			if ( ois!=null )result = ois.readObject();
+		}
+		catch(Exception e){System.out.println(e.toString());}
+		logger.println("result: "+result);
+		return result.toString();
+	}
     
     class Sender extends Thread
     {
@@ -1087,10 +1032,10 @@ public class MainFrame extends Frame implements ListFrame
 				if (( object == addPitMenuItem )||( object == addPit )) showPitHeaderFrame(false, null, null);
 				if (( object == addOccMenuItem )||( object == addOcc )) showOccFrame(false);
 			}
-           else showUserFrame(false);
-           if ( object == sendMenuItem ) new Sender(true).start();///sendData();
-           if ( object == wcMenuItem ) startWebClient();
-           if ( object == editNews ) editNews();
+                        else showUserFrame(false);
+                        if ( object == sendMenuItem ) new Sender(true).start();///sendData();
+                        if ( object == wcMenuItem ) startWebClient();
+                        if ( object == editNews ) editNews();
 		}
 	}
 	
@@ -1138,9 +1083,7 @@ public class MainFrame extends Frame implements ListFrame
 			}
 		}
 		if (!showing) new EditNewsFrame(this).setVisible(true);
-		
-	}
-	//////
+        }
 	
 	void showPitSumFrame(avscience.pc.PitFrame pframe)
 	{

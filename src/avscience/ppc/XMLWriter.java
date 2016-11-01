@@ -45,6 +45,29 @@ public class XMLWriter
 			System.out.println(ex.toString());
 		}
   	}
+    
+        public char[] getXML(avscience.ppc.PitObs pit)
+        {
+            CharArrayWriter cwriter = new CharArrayWriter(8400);
+            
+            avscience.ppc.PitObs tpit = new avscience.ppc.PitObs(pit.dataString());
+  	    tpit = Sorter.sortPit(tpit);
+  		
+            System.out.println("writePitToXML");
+	    Element e = getElementFromObject(tpit);
+	    Document doc = new Document(e);
+	    XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+		try
+		{
+			outputter.output(doc, cwriter);
+                        return cwriter.toCharArray();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex.toString());
+		}
+                return null;
+        }
   	
   	Element addProfileFromTable(avscience.util.Hashtable table, Element el)
   	{
