@@ -243,29 +243,32 @@ public class PitCanvas extends Canvas
     
     private boolean TestsAreSame(avscience.ppc.ShearTestResult t1, avscience.ppc.ShearTestResult t2)
     {
-    	System.out.println("TestsAreSame()");
     	boolean same = true;
     	if (!t1.getScore().equals(t2.getScore())) same=false;
     	if (!t1.getQuality().equals(t2.getQuality())) same=false;
     	if (!t1.getDepth().equals(t2.getDepth())) same=false;
     	if ( t1.getCode().equals("CT") && t2.getCode().equals("CT"))
     	{
-    		if (!t1.getCTScore().equals(t2.getCTScore())) same=false;
+            if (!t1.getCTScore().equals(t2.getCTScore())) same=false;
+    	}
+        if ( t1.getCode().equals("DT") && t2.getCode().equals("DT"))
+    	{
+            if (!t1.getDTScore().equals(t2.getDTScore())) same=false;
     	}
     	if ( t1.getCode().equals("RB") && t2.getCode().equals("RB"))
     	{
-    		if (!t1.getReleaseType().equals(t2.getReleaseType())) same=false;
+            if (!t1.getReleaseType().equals(t2.getReleaseType())) same=false;
     	}
     	if ( t1.getCode().equals("PST") && t2.getCode().equals("PST"))
     	{
-    		if (!t1.lengthOfCut.equals(t2.lengthOfCut)) return false;
-    		if (!t1.lengthOfColumn.equals(t2.lengthOfColumn)) return false;
+            if (!t1.lengthOfCut.equals(t2.lengthOfCut)) return false;
+            if (!t1.lengthOfColumn.equals(t2.lengthOfColumn)) return false;
     	}
     	
     	if ( t1.getCode().equals("EC") && t2.getCode().equals("EC"))
     	{
-    		if (!t1.getECScore().equals(t2.getECScore())) same=false;
-                if (!t1.numberOfTaps.equals(t2.numberOfTaps)) same=false;
+            if (!t1.getECScore().equals(t2.getECScore())) same=false;
+            if (!t1.numberOfTaps.equals(t2.numberOfTaps)) same=false;
     	}
     	return same;
     }
@@ -1439,46 +1442,34 @@ public class PitCanvas extends Canvas
     	
     	if (tests!=null)
     	{
-	    	while (tests.hasMoreElements())
-	    	{
-	    		test = (avscience.ppc.ShearTestResult) tests.nextElement();
-	    		temp1.add(test);
-	    		System.out.println("Test::: "+test.toString());
-	    		temp2.add(test);
-	    	}
+            while (tests.hasMoreElements())
+	    {
+                test = (avscience.ppc.ShearTestResult) tests.nextElement();
+	    	temp1.add(test);
+	    	temp2.add(test);
 	    }
-    	System.out.println("temps filled:");
+	}
     	int count=0;
     	java.util.Enumeration e = temp1.elements();
     	int i=0;
     	
     	while ( e.hasMoreElements())
     	{
-    		avscience.ppc.ShearTestResult first = (avscience.ppc.ShearTestResult) e.nextElement();
-    		java.util.Enumeration ee = temp2.elements();
-    		count=0;
-    		while (ee.hasMoreElements())
-    		{
-    			test = (avscience.ppc.ShearTestResult) ee.nextElement();
-    			if ( first != test )
-    			{
-    				if (TestsAreSame(first, test)) 
-    				{
-    					count++;
-    				}
-    			}
-    		}
-    		System.out.println("count: "+count);
-    		if ( count>0 )
-    		{
-    			first.setMult(count+1);
-    			if (!containsTest(first, results)) results.add(first);
-    		}
-    		else results.add(first);
-    		
+            avscience.ppc.ShearTestResult first = (avscience.ppc.ShearTestResult) e.nextElement();
+            java.util.Enumeration ee = temp2.elements();
+            count=0;
+            while (ee.hasMoreElements())
+            {
+                test = (avscience.ppc.ShearTestResult) ee.nextElement();
+    		if ( first != test ) if (TestsAreSame(first, test)) count++;
+            }
+            if ( count>0 )
+            {
+                first.setMult(count+1);
+    		if (!containsTest(first, results)) results.add(first);
+            }
+            else results.add(first);
     	}
-    	
-    ///	results=sortDescendingTests(results);
     	return results;
     }
     
@@ -1507,39 +1498,31 @@ public class PitCanvas extends Canvas
         int rendDepth;
         while ( ee.hasMoreElements() )
         {
-        	avscience.ppc.ShearTestResult test = (avscience.ppc.ShearTestResult) ee.nextElement();
-        	
-        	if ( test==null )System.out.println("Test NULL:");
-            else System.out.println("TEST:: "+test.toString());
+            avscience.ppc.ShearTestResult test = (avscience.ppc.ShearTestResult) ee.nextElement();
             int depth = test.getDepthValueInt();
             String dpth = test.getDepth();
-            
             if ( depth < 0 )  depth = 0;
             String score = test.getScore();
-            if (score.equals("ECTP"))
-            {
-            	score = score+test.getECScore();
-            }
+            if (score.equals("ECTP")) score = score+test.getECScore();
             if ( score.contains("EC") )if ( test.numberOfTaps.length()>0) score = score + " "+test.numberOfTaps;
             if ( score.contains("RB") )
             {
             	String rls = test.getReleaseType();
-            	//System.out.println("Release Type:: "+rls);
             	rls.trim();
             	if ( rls.length()>0 ) 
             	{
-            		String rcode = RBReleaseTypes.getInstance().getCode(rls);
-            		rcode.trim();
-            		if (rcode.length()>1) rcode = "("+rcode+")";
-            		score=score+" "+rcode;
+                    String rcode = RBReleaseTypes.getInstance().getCode(rls);
+                    rcode.trim();
+                    if (rcode.length()>1) rcode = "("+rcode+")";
+                    score=score+" "+rcode;
             	}
-            	
             }
             String qual=test.getQuality();
             if ( test.fractureCat.equals("Fracture Character")) qual=test.character;
             if (test.isNoFail()) s = score;
             else s = score + " " + qual + " Depth: (" + test.getDepthUnits() + ") " + dpth;
             if (test.getCTScore().trim().length()>0) s = s+" CT Score: "+test.getCTScore();
+            if (test.getDTScore().trim().length()>0) s = s+" DT Score: "+test.getDTScore();
            
             if ( test.code.equals("PST"))
             {
@@ -1547,7 +1530,6 @@ public class PitCanvas extends Canvas
             }
            
             if (test.getMult()>1) s=test.getMult()+"x "+s;
-           //	System.out.println("Mult: "+test.getMult());
             rendDepth = (depthScaleCen*depth/100) + inset + vspace;
             if ( !invert ) rendDepth+=15;
             if ( invert ) rendDepth = invertYpoint(rendDepth);
@@ -1556,25 +1538,19 @@ public class PitCanvas extends Canvas
             java.lang.Integer I = new java.lang.Integer(rendDepth);
             int mid = (miny+maxy)/2;
             boolean top = false;
-           // if (rendDepth > mid ) top=true;
-           // else top=false;
             int min = inset + vspace+12;
           
             while ( testDepths.contains(I) | (overWritesTest(testDepths, I)) )
             {
             	if (top)rendDepth-=15;
                 else rendDepth+=15;
-                //if (!top)
-               // {
-                	if ( rendDepth>this.height) rendDepth = oRendDepth-=15;
-               // }
+                if ( rendDepth>this.height) rendDepth = oRendDepth-=15;
                 I = new java.lang.Integer(rendDepth);
             }
                
             testDepths.add(I);
             g.drawLine(crystalColStart + crystalWidth+rhoColWidth, rendDepth, crystalColStart + crystalWidth + testColWidth+rhoColWidth+inset, rendDepth);
             g.drawString(s, crystalColStart + crystalWidth+rhoColWidth + 2, rendDepth - 2);
-            System.out.println("drawTests complete:");
         }
     }
     

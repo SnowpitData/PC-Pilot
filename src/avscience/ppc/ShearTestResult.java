@@ -1,7 +1,9 @@
 package avscience.ppc;
+
 import waba.util.Date;
 import waba.sys.Time;
 import avscience.wba.*;
+
 public class ShearTestResult extends avscience.ppc.AvScienceDataObject
 {
     public String code;
@@ -14,6 +16,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     private String comments = " ";
     private String dateString = "";
     private String ctScore = "";
+    private String dtScore = "";
     private String ecScore="";
     public String numberOfTaps="";
     public String releaseType="";
@@ -35,7 +38,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     {
     	boolean is = false;
     	if ( score==null) return false;
-    	if ( score.equals("SBN") || score.equals("CTN") || score.equals("RB7") || score.equals("STN") || score.equals("ECTNR")) is=true;
+    	if ( score.equals("SBN") || score.equals("CTN") || score.equals("DTN") || score.equals("RB7") || score.equals("STN") || score.equals("ECTNR")) is=true;
     	return is;
     }
     
@@ -46,7 +49,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     
     public ShearTestResult() {super();}
     
-    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String ecScore, String fractureChar, String cat)
+    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String dtScore, String ecScore, String fractureChar, String cat)
     {
     	if ( code.equals("PST")) this.code=code;
         else this.code = score.substring(0, 2);
@@ -56,6 +59,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
         this.depthUnits = depthUnits;
         this.comments = comments;
         this.ctScore = ctScore;
+        this.dtScore = dtScore;
         this.ecScore=ecScore;
         this.character=fractureChar;
         this.fractureCat=cat;
@@ -80,13 +84,13 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     }
     
 	
-	public double getDepthSI()
-	{
-		if ( isNoFail() ) return 0.0;
-		double dsi = getDepthValue();
-		if ( depthUnits.equals("inches") ) dsi = (dsi/2.54);
-		return dsi;
-	}
+    public double getDepthSI()
+    {
+        if ( isNoFail() ) return 0.0;
+        double dsi = getDepthValue();
+        if ( depthUnits.equals("inches") ) dsi = (dsi/2.54);
+        return dsi;
+    }
     
     public String getDepth()
     {
@@ -107,13 +111,12 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	if ( isNoFail() ) return 0.0;
     	try
     	{
-    		return new Double(sdepth).doubleValue();
+            return new Double(sdepth).doubleValue();
     	}
     	catch(Exception e)
     	{
     	    return 0.0;	
     	}
-    	
     }
     
     public String getDepthUnits()
@@ -167,6 +170,12 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	return ctScore;
     }
     
+    public String getDTScore()
+    {
+    	if ( dtScore==null ) dtScore="";
+    	return dtScore;
+    }
+    
     public String getECScore()
     {
     	if ( ecScore==null ) ecScore="";
@@ -179,6 +188,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	attributes.put("code", code);
     	attributes.put("score", score);
     	attributes.put("ctScore", ctScore);
+        attributes.put("dtScore", dtScore);
     	attributes.put("ecScore", ecScore);
     	attributes.put("quality", quality);
     	attributes.put("sdepth", sdepth);
@@ -199,6 +209,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	code = (String) attributes.get("code");
     	score = (String) attributes.get("score");
     	ctScore = (String) attributes.get("ctScore");
+        dtScore = (String) attributes.get("dtScore");
     	ecScore = (String) attributes.get("ecScore");
     	quality = (String) attributes.get("quality");
     	sdepth = (String) attributes.get("sdepth");
@@ -223,6 +234,4 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     {
         return new String("E");
     }
-    
-    
 }

@@ -13,6 +13,7 @@ public class ShearTestResult extends AvScienceDataObject
     private String dateString = "";
     private String ctScore = "";
     private String ecScore = "";
+    private String dtScore = "";
     private String s;
     
     public ShearTestResult(String data)
@@ -31,7 +32,7 @@ public class ShearTestResult extends AvScienceDataObject
     
     public ShearTestResult() {super();}
     
-    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String ecScore)
+    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String dtScore,String ecScore)
     {
         this.code = score.substring(0, 2);
         this.score = score;
@@ -40,13 +41,13 @@ public class ShearTestResult extends AvScienceDataObject
         this.depthUnits = depthUnits;
         this.comments = comments;
         this.ctScore = ctScore;
+        this.dtScore = dtScore;
         this.ecScore = ecScore;
         Date date = new Date();
         Time time = new Time();
         int hour = time.hour;
         int min = time.minute;
         int sec = time.second;
-       // dateString = date.getDate();
         int yr = date.getYear();
         int mnth = date.getMonth();
         int day = date.getDay();
@@ -102,6 +103,11 @@ public class ShearTestResult extends AvScienceDataObject
     	return ctScore;
     }
     
+    public String getDTScore()
+    {
+    	return dtScore;
+    }
+    
     public String getECScore()
     {
     	return ecScore;
@@ -113,6 +119,7 @@ public class ShearTestResult extends AvScienceDataObject
     	attributes.put("code", code);
     	attributes.put("score", score);
     	attributes.put("ctScore", ctScore);
+        attributes.put("dtScore", dtScore);
     	attributes.put("ecScore", ecScore);
     	attributes.put("quality", quality);
     	attributes.put("sdepth", sdepth);
@@ -128,6 +135,7 @@ public class ShearTestResult extends AvScienceDataObject
     	score = (String) attributes.get("score");
     	ctScore = (String) attributes.get("ctScore");
     	ecScore = (String) attributes.get("ecScore");
+        dtScore = (String) attributes.get("dtScore");
     	quality = (String) attributes.get("quality");
     	sdepth = (String) attributes.get("sdepth");
     	depthUnits = (String) attributes.get("depthUnits");

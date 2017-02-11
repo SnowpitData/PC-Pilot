@@ -441,7 +441,7 @@ public class CAAMLWriter
     		
     		System.out.println("Test type: "+type+" score "+score+" sdpth "+sdpth);
     		
-    		if ( type.equals("Compression Test"))
+    		if ( type.equals("Compression Test") )
     		{
     			Element ctscore = new Element("ComprTest");
     			if ( !score.equals("CTN") )
