@@ -1,19 +1,17 @@
 package avscience.pc;
 
 import java.awt.*;
-import avscience.wba.*;
-import avscience.util.*;
 import java.awt.print.*;
 import java.awt.image.*;
 import java.io.*;
-///import com.sun.image.codec.jpeg.*;
 import javax.imageio.ImageIO;
 import avscience.desktop.*;
 import avscience.ppc.*;
-import java.awt.event.*;
+import avscience.wba.DensityProfile;
+import avscience.wba.TempProfile;
 import java.net.*;
 import java.util.Properties;
-import javax.swing.*;
+import java.util.*;
 
 public class PitFrame extends Frame implements Printable
 {
@@ -228,7 +226,7 @@ public class PitFrame extends Frame implements Printable
             {
                 File f = new File(dialog.getDirectory()+"\\"+dialog.getFile()+".xml");
                 XMLWriter writer = new XMLWriter(f);
-                writer.writePitToXML(pit);
+                writer.writeToXML(pit);
 	        }
 	     }
 	     catch (Exception e) {e.printStackTrace();}
@@ -338,10 +336,10 @@ public class PitFrame extends Frame implements Printable
     
     void writePitToFile(avscience.ppc.PitObs pit)
     {
-    	avscience.ppc.User u = pit.getUser();
+                avscience.ppc.User u = pit.getUser();
     	
 		StringBuffer buffer = new StringBuffer();
-		avscience.wba.Location loc = pit.getLocation();
+		avscience.ppc.Location loc = pit.getLocation();
 		buffer.append(pit.getDateString()+ "\n");
 		buffer.append("Observer ,"+u.getFirst()+ " "+ u.getLast()+ "\n");
 		buffer.append("Location ,"+loc.getName()+ "\n");
@@ -352,15 +350,22 @@ public class PitFrame extends Frame implements Printable
 		buffer.append("Long. ,"+loc.getLongitude()+"\n");
 		
 		java.util.Hashtable labels = getPitLabels();
-		avscience.util.Hashtable atts = pit.attributes;
 		java.util.Enumeration e = labels.keys();
 		while ( e.hasMoreElements())
 		{
-			String s = (String) e.nextElement();
-            String v = (String) atts.get(s);
-            String l = (String) labels.get(s);
-            s = l + " ," + v + "\n";
-            if (!( s.trim().equals("null")) ) buffer.append(s);
+                    String s = (String) e.nextElement();
+                    String v = "";
+                    try
+                    {
+                        v = (String) pit.get(s);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println(ex.toString());
+                    }
+                    String l = (String) labels.get(s);
+                    s = l + " ," + v + "\n";
+                    if (!( s.trim().equals("null")) ) buffer.append(s);
 		}
 		buffer.append("Activities: \n");
 		java.util.Enumeration ee = pit.getActivities().elements();
@@ -375,8 +380,7 @@ public class PitFrame extends Frame implements Printable
 		java.util.Enumeration l = pit.getLayers();
 		while ( l.hasMoreElements())
 		{
-			StringSerializable slayer = (StringSerializable)l.nextElement();
-			avscience.ppc.Layer layer = new avscience.ppc.Layer(slayer.dataString());
+			avscience.ppc.Layer layer = (avscience.ppc.Layer) l.nextElement();
 			buffer.append(layer.getStartDepth()+", "+layer.getEndDepth()+", "+layer.getHardness1()+", "+layer.getHardness2()+", "+layer.getGrainType1()+", "+layer.getGrainType2()+", "+layer.getGrainSize1()+", "+layer.getGrainSize2()+", "+layer.getGrainSizeUnits1()+", "+layer.getGrainSizeUnits2()+", "+layer.getDensity1()+", "+layer.getDensity2()+", "+layer.getWaterContent()+"\n");
                         
 		}
@@ -401,8 +405,7 @@ public class PitFrame extends Frame implements Printable
 		java.util.Enumeration tests = pit.getShearTests();
 		while ( tests.hasMoreElements())
 		{
-			StringSerializable stest = (StringSerializable) tests.nextElement();
-			avscience.ppc.ShearTestResult result = new avscience.ppc.ShearTestResult(stest.dataString());
+			ShearTestResult result = (ShearTestResult) tests.nextElement();
 			buffer.append(result.getCode()+", "+result.getScore()+", "+result.getQuality()+", "+result.getDepth()+"\n");
 		}
 		
@@ -420,7 +423,7 @@ public class PitFrame extends Frame implements Printable
 			{
 				while (dpths.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+					Integer depth = (Integer)dpths.nextElement();
 					int t = tp.getTemp(depth);
 					t=t/10;
 					buffer.append(depth.toString()+", "+t+"\n");
@@ -435,13 +438,13 @@ public class PitFrame extends Frame implements Printable
 		
 		if ( dp!=null )
 		{
-			avscience.util.Enumeration dts = dp.getDepths().elements();
+			Enumeration dts = dp.getDepths().elements();
 		
 			if ( dts!=null ) 
 			{
 				while (dts.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
+					Integer depth = (Integer)dts.nextElement();
 					String rho = dp.getDensity(depth);
 					buffer.append(depth.toString()+", "+rho+"\n");
 				}
@@ -464,7 +467,7 @@ public class PitFrame extends Frame implements Printable
             {
                 File file = new File(dialog.getDirectory()+"\\"+dialog.getFile());
                 FileOutputStream out = null;
-				PrintWriter writer = null;
+		PrintWriter writer = null;
 				
 				try
 				{
@@ -527,7 +530,7 @@ public class PitFrame extends Frame implements Printable
             
             System.out.println("Pit name: "+pit.getName());
            // System.out.println("Pit dat: "+pit.dataString());
-            String s = pit.dataString();
+            String s = pit.toXML();
             
             int dsize=s.length();
             System.out.println("Data size: "+dsize);
@@ -602,7 +605,7 @@ public class PitFrame extends Frame implements Printable
     	if ( webEdit ) updateWebPit(pit);
     	else
     	{
-    		if (mf!=null) mf.store.addPit(pit.dataString());
+    		if (mf!=null) mf.store.addPit(pit);
     	}
     	if ( oframe!=null ) oframe.pit = pit;
     	if ( ooframe!=null ) ooframe.pit = pit;

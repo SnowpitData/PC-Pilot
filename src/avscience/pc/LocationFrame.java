@@ -2,9 +2,7 @@ package avscience.pc;
 
 import java.awt.*;
 import avscience.desktop.*;
-import avscience.wba.*;
-import avscience.util.*;
-import java.io.*;
+import avscience.ppc.Location;
 import avscience.ppc.User;
 
 public class LocationFrame extends Frame
@@ -30,10 +28,9 @@ public class LocationFrame extends Frame
 	avscience.ppc.User user;
 	boolean utm=false;
 	
-	void popForm(avscience.wba.Location l)
+	void popForm(Location l)
 	{
 		System.out.println("popForm(): ");
-		///avscience.wba.Location l = mframe.store.getLocation(lframe.locations.getSelectedItem());
 		if (l!=null)
 		{
 			name.setText(l.getName());
@@ -43,33 +40,41 @@ public class LocationFrame extends Frame
 			elv.setText(l.getElv());
 			if ( utm )
 			{
-				utmZone.setText(l.zone);
-				east.setText(l.east);
-				north.setText(l.north);
+                            utmZone.setText(l.zone);
+                            east.setText(l.east);
+                            north.setText(l.north);
 			}
 			else
 			{
-				lon.setText(l.getLongitude());
-				lat.setText(l.getLat());
+                            lon.setText(l.getLongitude());
+                            lat.setText(l.getLat());
 			}
 			id.setText(l.getID());
 		}
-		else System.out.println("LOcation is null.");
+		else System.out.println("Location is null.");
 	}
 	
-	avscience.wba.Location getCurrentLocation()
+	Location getCurrentLocation()
 	{
 		System.out.println("getCurrentLocation.");
-		avscience.wba.Location l = mframe.store.getLocation(lframe.locations.getSelectedItem());
+		Location l = mframe.store.getLocation(lframe.locations.getSelectedItem());
 		if (l==null) System.out.println("Locaton is null!!");
 		return l;
 	}
 	
-	avscience.wba.Location getLocationFromForm()
+	Location getLocationFromForm()
 	{
-		avscience.wba.Location loc=null;
-		if (utm) loc = new avscience.wba.Location(new avscience.wba.User(user.dataString()), name.getText().trim(), state.getSelectedItem(), range.getText().trim(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), id.getText().trim());
-		else loc = new avscience.wba.Location(new avscience.wba.User(user.dataString()), name.getText().trim(), state.getSelectedItem(), range.getText().trim(), lat.getText(), lon.getText(), elv.getText(), id.getText().trim());
+		avscience.ppc.Location loc = new avscience.ppc.Location();
+                try
+                {
+                    if (utm) loc = new Location(user, name.getText().trim(), state.getSelectedItem(), range.getText().trim(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), id.getText().trim());
+                    else loc = new Location(user, name.getText().trim(), state.getSelectedItem(), range.getText().trim(), lat.getText(), lon.getText(), elv.getText(), id.getText().trim());
+                }
+                catch(Exception e)
+                {
+                    System.out.println(e.toString());
+                }
+                
 		return loc;
 	}
     
@@ -142,12 +147,21 @@ public class LocationFrame extends Frame
 	
 	public void saveLocation()
 	{
+                System.out.println("Save Location:: ");
 		if ( name.getText().trim().length()>0)
 		{
-			avscience.wba.Location l = getLocationFromForm();
-			mframe.store.addLocation(l.dataString());
-			mframe.rebuildList();
-			lframe.rebuildList();
+                    System.out.println("Getting  location from form:");
+                    Location l = getLocationFromForm();
+                    if ( l==null ) System.out.println("Layer is NULL !!");
+                    else
+                    {
+                        String json = l.toString();
+                        System.out.println("JSON:: "+json);
+                        System.out.println("Adding Location:: ");
+                        mframe.store.addLocation(l);
+                        mframe.rebuildList();
+                        lframe.rebuildList();
+                    }
 		}
 		dispose();
 	}
@@ -179,10 +193,10 @@ public class LocationFrame extends Frame
 		this.addWindowListener(aSymWindow);
 		
         buildMenu();
-        avscience.wba.Location loc = null;
+        Location loc = null;
         if (!edit) 
         {
-        	if (user.coordType.equals("UTM")) utm=true;
+        	if (user.getCoordType().equals("UTM")) utm=true;
         }
         else
         {

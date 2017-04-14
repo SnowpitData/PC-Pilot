@@ -1,13 +1,11 @@
 package avscience.pc;
-
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
+import java.util.*;
 import java.io.*;
 import java.awt.event.*;
 import avscience.ppc.User;
-
 public class LayerFrame extends Frame
 {
 	private int width = 424;
@@ -609,6 +607,7 @@ public class LayerFrame extends Frame
 	 	add(waterContent);
 	 	y+=vspace;
 	 	y+=4;
+                notes=new TextItem("Comments(20 char max)", 1, 1, 20);
 	 	notes.setLocation(x, y);
 	 	notes.setMaxLength(20);
 	 	add(notes);
@@ -788,7 +787,7 @@ public class LayerFrame extends Frame
         	if (validateForm())
         	{
         		avscience.ppc.Layer l = getLayerFromForm(false);
-				pframe.getPit().addLayer(l.dataString());
+				pframe.getPit().addLayer(l);
 		        displayMsg("Layer added.");
 		        if (pframe!=null) 
 		        {
@@ -1039,7 +1038,7 @@ public class LayerFrame extends Frame
 					String lNum = l.getLayerNumber()+"";
 					if ( lNum.equals(pframe.getPit().iLayerNumber)) criticalLayer=true;
 					else criticalLayer=false;
-					System.out.println("editing layer: "+l.toString());
+					System.out.println("editing layer: "+l.toUIString());
 					clearForm();
 					//to do need to call first to set mult params fix with new method.
 					popForm(l);
@@ -1059,7 +1058,7 @@ public class LayerFrame extends Frame
 		{
 			avscience.ppc.Layer l = pframe.getPit().getLayerByString(ln);
 			pframe.getPit().removeLayer(l.getLString());
-			displayMsg("Layer: "+l.toString()+" deleted.");
+			displayMsg("Layer: "+l.toUIString()+" deleted.");
 		}	
 		clearForm();
 		buildForm(false);

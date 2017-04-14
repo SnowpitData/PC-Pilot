@@ -3,7 +3,7 @@ package avscience.pc;
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
+import java.util.*;
 import java.io.*;
 import avscience.ppc.User;
 
@@ -74,7 +74,7 @@ public class PreferencesFrame extends Frame
     	user.setRhoUnits(rhoUnits.getSelectedItem());
     	user.setState(state.getSelectedItem());
     	user.setFractureCategory(fractureChar.getSelectedItem());
-    	user.coordType=coordType.getSelectedItem();
+    	user.setCoordType(coordType.getSelectedItem());
     	user.hardnessScaling=hardScale.getSelectedItem();
     	mframe.store.addUser(user);
     }
@@ -96,7 +96,7 @@ public class PreferencesFrame extends Frame
     	tempUnits.select(user.getTempUnits());
     	state.select(user.getState());
     	fractureChar.select(user.fractureCat);
-    	coordType.select(user.coordType);
+    	coordType.select(user.getCoordType());
     	hardScale.select(user.hardnessScaling);
     }
     

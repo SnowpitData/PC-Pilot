@@ -11,19 +11,15 @@ package avscience.ppc;
 import java.util.*;
 import java.io.*;
 import avscience.wba.*;
-import avscience.util.*;
-import avscience.ppc.*;
 import org.jdom.*;
-import org.jdom.output.*;
 import org.jdom.input.*;
 
 public class XMLReader 
 {
-	public avscience.ppc.PitObs pit;
+    public avscience.ppc.PitObs pit;
     Document doc;
     public XMLReader() 
     {
-    //	run();
     }
     
     public static void main(String[] args)
@@ -33,11 +29,13 @@ public class XMLReader
     
     public void run()
     {
-    	String s = "PitObs.xml";
-    	loadFile(s);
-    //	traverseDoc();
-    	popPit();
-    	
+        PitObs thepit = getPit(new File("/Users/mark/desktop/MarkTest.xml"));
+    	String name = thepit.getName();
+        System.out.println("PitName: "+name);
+        int bld = thepit.getBuild();
+        System.out.println("Build: "+bld);
+        String ser = thepit.getSerial();
+    	System.out.println("SERIAL: "+ser);
     }
     
     public PitObs getPit(File file)
@@ -71,6 +69,13 @@ public class XMLReader
     	}
     	
     	
+    }
+   
+    public PitObs getPitFromDoc(Document doc)
+    {
+        this.doc = doc;
+        popPit();
+        return pit;
     }
     
     public void loadFile(File file)
@@ -119,15 +124,7 @@ public class XMLReader
     	}
     	
     	List<Attribute> atts = e.getAttributes();
-    	/*List<Content> cont = e.getContent();
-    	System.out.println("Content:");
-    	Iterator<Content> i = cont.iterator();
-    	while ( i.hasNext() )
-    	{
-  
-    		Content c = i.next();
-    		System.out.println(c.getValue());
-    	}*/
+    	
     	System.out.println("Attributes");
     	
     	Iterator<Attribute> ii = atts.iterator();
@@ -169,9 +166,18 @@ public class XMLReader
     		Attribute a = it.next();
     		String s = a.getValue();
     		if (s==null)s="";
-    		pit.attributes.put(a.getName(),s);
+                try
+                {
+                    System.out.println("Setting pit param: "+a.getName()+" to value: "+s);
+                    pit.put(a.getName(),s);
+                }
+                catch(Exception e)
+                {
+                    System.out.println(e.toString());
+                }
+    		
     	}
-    	pit.getAttributes();
+    	pit.popAttributes();
     	List<Element> elements = root.getChildren();
     	Iterator<Element> els = elements.iterator();
     	
@@ -190,9 +196,18 @@ public class XMLReader
     				Attribute a = uit.next();
     				String s = a.getValue();
     				if (s==null)s="";
-    				user.attributes.put(a.getName(),s);
+                                try
+                                {
+                                    System.out.println("Setting "+name+" param: "+a.getName()+" to value: "+s);
+                                    user.put(a.getName(),s);
+                                }
+                                catch(Exception e)
+                                {
+                                    System.out.println(e.toString());
+                                }
+    				
     			}
-    			user.getAttributes();
+    			user.popAttributes();
     			pit.setUser(user);
     		}
     		/////////
@@ -206,11 +221,17 @@ public class XMLReader
     				Attribute a = uit.next();
     				String s = a.getValue();
     				if (s==null)s="";
-    				loc.attributes.put(a.getName(),s);
-    				if ( a.getName().equals("elevation") )loc.attributes.put("elv",s);
+                                try
+                                {
+                                    loc.put(a.getName(),s);
+                                }
+                                catch(Exception e)
+                                {
+                                    System.out.println(e.toString());
+                                }
     			}
     			
-    			loc.getAttributes();
+    			loc.popAttributes();
     			pit.setLocation(loc);
     		}
     		
@@ -224,14 +245,19 @@ public class XMLReader
     				Attribute a = uit.next();
     				String s = a.getValue();
     				if (s==null)s="";
-    				layer.attributes.put(a.getName(),s);
+                                try
+                                {
+                                    layer.put(a.getName(),s);
+                                }
+                                catch(Exception e)
+                                {
+                                    System.out.println(e.toString());
+                                }
+    				
     			}
-    			layer.getAttributes();
+    			layer.popAttributes();
     			if (layer.getFromTop()) layer.swapHardness();
-    			String ls = layer.dataString();
-    			pit.addLayer(ls);
-    			//System.out.println("Layer: "+ls);
-    			//pit.layers.addElement(layer);
+    			pit.addLayer(layer);
     		}
     		
     		if ((name.equals("Shear_Test_Result")) | (name.equals("ShearTestResult")))
@@ -244,10 +270,17 @@ public class XMLReader
     				Attribute a = uit.next();
     				String s = a.getValue();
     				if (s==null)s="";
-    				result.attributes.put(a.getName(),s);
+                                try
+                                {
+                                    result.put(a.getName(),s);
+                                }
+                                catch(Exception e)
+                                {
+                                    System.out.println(e.toString());
+                                }
     			}
-    			result.getAttributes();
-    			pit.addShearTestResult(result.dataString());
+    			result.popAttributes();
+    			pit.addShearTestResult(result);
     		}
     		if (name.equals("Temperature_Profile"))
     		{
@@ -319,10 +352,17 @@ public class XMLReader
     			}
     		}
     	    if (pit.getTempProfile()==null) pit.setTempProfile(new TempProfile());
-    		if (pit.getDensityProfile()==null)pit.setDensityProfile(new DensityProfile());
-    		if (pit.version.contains("PitPod")) mapSCandPrecip();
+            if (pit.getDensityProfile()==null)pit.setDensityProfile(new DensityProfile());
+            if (pit.version.contains("PitPod")) mapSCandPrecip();
     		////////
     	}
+        System.out.println("POP pit complete!");
+        String name = pit.getName();
+        System.out.println("PitName: "+name);
+        int bld = pit.getBuild();
+        System.out.println("Build: "+bld);
+        String ser = pit.getSerial();
+    	System.out.println("SERIAL: "+ser);
     }
     
 }

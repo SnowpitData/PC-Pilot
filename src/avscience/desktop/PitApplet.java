@@ -4,7 +4,7 @@ import avscience.pc.MainFrame;
 import avscience.pc.PitFrame;
 import avscience.ppc.AvOccurence;
 import avscience.ppc.PitObs;
-import avscience.wba.Location;
+import avscience.ppc.Location;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Frame;
@@ -110,11 +110,18 @@ public class PitApplet extends Frame
                 {
                     System.out.println("getPitBySerial()");
                     String s5 = getCrownObs(s4);
-                    pitobs = new PitObs(s5);
+                    try
+                    {
+                        pitobs = new PitObs(s5);
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e.toString());
+                    }
                 }
                 if(pitobs == null)
                     System.out.println("apit null.");
-                new OccFrame(mframe, avoccurence, pitobs, null, null, null, PitApplet.this);
+                ///new OccFrame(mframe, avoccureprivate static final AvalancheType instance = new AvalancheType();nce, pitobs, null, null, PitApplet.this);
                 statLabel.setText("");
             }
             if(obj == filterList || obj == stateList || obj == nameList)
@@ -700,10 +707,10 @@ public class PitApplet extends Frame
         return avoccurence;
     }
 
-    private avscience.wba.AvOccurence getWbaOcc(String s)
+    private AvOccurence getWbaOcc(String s)
     {
         System.out.println("getWbaOcc: " + s);
-        avscience.wba.AvOccurence avoccurence = null;
+        AvOccurence avoccurence = null;
         try
         {
             URL url = new URL(pitserver);
@@ -715,7 +722,7 @@ public class PitApplet extends Frame
             ObjectInputStream objectinputstream = new ObjectInputStream(inputstream);
             String s1 = (String)objectinputstream.readObject();
             System.out.println("Occ data: " + s1);
-            avoccurence = new avscience.wba.AvOccurence(s1);
+            avoccurence = new AvOccurence(s1);
             if(avoccurence == null)
                 System.out.println("Wba Occ null.");
         }

@@ -3,7 +3,7 @@ package avscience.pc;
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
+import java.util.*;
 import java.io.*;
 import avscience.ppc.User;
 

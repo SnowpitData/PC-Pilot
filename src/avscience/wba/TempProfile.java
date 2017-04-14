@@ -1,59 +1,87 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   TempProfile.java
-
 package avscience.wba;
 
-import avscience.pda.Integer;
-import avscience.util.*;
+import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.Vector;
+import avscience.ppc.ValueProfile;
 
-// Referenced classes of package avscience.wba:
-//            AvScienceDataObject, TempList
-
-public class TempProfile extends AvScienceDataObject
+public class TempProfile extends avscience.ppc.AvScienceDataObject implements ValueProfile
 {
-
-    public TempProfile()
+    public static void main(String[] args)
     {
-        tempUnits = "C";
-        depthUnits = "cm";
-        depths = new Hashtable();
-        profile = new Hashtable();
+        TempProfile tp = new TempProfile("C", "cm");
+        tp.addPoint(1, "0.5");
+        tp.addPoint(5, "1.5");
+        tp.addPoint(10, "2.5");
+        
+        String data = tp.toString();
+        System.out.println("TP: "+data);
+        
+        try
+        {
+            TempProfile tpp = new TempProfile(data);
+            System.out.println("TPP Number of points: "+tpp.getPoints().length);
+            data = tpp.toString();
+            System.out.println("TPP: "+data);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+        }
+       
+        
     }
+    public TempProfile(){}
 
-    public TempProfile(String data)
+    public TempProfile(String data) throws Exception
     {
-        this();
-        popFromString(data);
+        super(data);
     }
 
     public Hashtable getProfile()
     {
         return profile;
     }
-
-    public void setAttributes()
+    
+    public void writeAttributes()
     {
-        attributes.put("tempUnits", tempUnits);
-        attributes.put("depthUnits", depthUnits);
-        attributes.put("depths", depths);
-        attributes.put("profile", profile);
+        System.out.println("TempProfile:writeAttributes()");
+        try
+        {
+            put("tempUnits", tempUnits);
+            put("depthUnits", depthUnits);
+            String profile_data = this.getProfileFromTable(profile);
+            System.out.println("profile_data: "+profile_data);
+            put("profile_data", profile_data);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Temp profile:writeAtts: "+e.toString());
+        }
+       
     }
 
-    public void getAttributes()
+    public void popAttributes()
     {
-        tempUnits = (String)attributes.get("tempUnits");
-        depthUnits = (String)attributes.get("depthUnits");
-        depths = (Hashtable)attributes.get("depths");
-        profile = (Hashtable)attributes.get("profile");
+        depths = new Hashtable();
+        profile = new Hashtable();
+        try
+        {
+            tempUnits = getString("tempUnits");
+            depthUnits = getString("depthUnits");
+            this.writeProfileToTable(this, getString("profile_data"));
+        }
+        catch(Exception e)
+        {
+            System.out.println("TempProfile:popAtts: "+e.toString());
+        }
+       
     }
 
     public String[] getPoints()
     {
         String points[] = new String[profile.size()];
         Enumeration depths = getDepths().elements();
-        Enumeration temps = profile.elements();
         for(int i = 0; depths.hasMoreElements(); i++)
         {
             Integer D = (Integer)depths.nextElement();
@@ -66,8 +94,6 @@ public class TempProfile extends AvScienceDataObject
 
     public TempProfile(String tempUnits, String depthUnits)
     {
-        this.tempUnits = "C";
-        this.depthUnits = "cm";
         depths = new Hashtable();
         profile = new Hashtable();
         this.tempUnits = tempUnits;
@@ -76,8 +102,12 @@ public class TempProfile extends AvScienceDataObject
 
     public boolean addPoint(int depth, String temp)
     {
+        System.out.println("Temp profile:addPoint: depth: "+depth+" temp: "+temp);
         Integer I = new Integer(depth);
+        System.out.println("I depth: "+I);
+        if ( depths == null) System.out.println("Depth is NULL!");
         depths.put(I.toString(), I);
+        if ( profile == null) System.out.println("Profile is NULL!");
         Object o = profile.put(I, temp);
         return o == null;
     }
@@ -108,7 +138,6 @@ public class TempProfile extends AvScienceDataObject
 
     public Vector getDepths()
     {
-        if (profile==null) profile = new Hashtable();
         Vector v = new Vector();
         Integer I;
         for(Enumeration e = profile.keys(); e.hasMoreElements(); v.addElement(I))
@@ -138,13 +167,8 @@ public class TempProfile extends AvScienceDataObject
         return depthUnits;
     }
 
-    public String getKey()
-    {
-        return new String("7");
-    }
-
-    private String tempUnits;
-    private String depthUnits;
-    private Hashtable depths = new Hashtable();
-    private Hashtable profile = new Hashtable();
+    private String tempUnits;//="";
+    private String depthUnits;//="";
+    private Hashtable depths;// = new Hashtable();
+    private Hashtable profile;// = new Hashtable();
 }

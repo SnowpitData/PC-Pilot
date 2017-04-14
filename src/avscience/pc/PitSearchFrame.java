@@ -1,13 +1,15 @@
 package avscience.pc;
 
 import java.awt.*;
-import avscience.wba.*;
 import java.util.*;
 import avscience.desktop.*;
 import java.util.Date;
 import avscience.ppc.*;
-import org.compiere.grid.ed.Calendar;
-import java.sql.Timestamp;
+import avscience.wba.DensityProfile;
+import avscience.wba.TempProfile;
+import avscience.wba.ShearTests;
+import avscience.wba.Precipitation;
+import avscience.wba.*;
 import java.net.*;
 import java.io.*;
 import java.awt.event.*;
@@ -176,7 +178,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			pit = (avscience.ppc.PitObs) currentPits.get(I);
     	
 	    	avscience.ppc.User u = pit.getUser();
-			avscience.wba.Location loc = pit.getLocation();
+			avscience.ppc.Location loc = pit.getLocation();
 			buffer.append(pit.getName());
 			buffer.append(pit.getDateString()+ "\n");
 			buffer.append("Observer ,"+u.getFirst()+ " "+ u.getLast()+" ,"+"email: "+u.getEmail()+" ," + "Phone: "+u.getPhone()+"\n");
@@ -188,15 +190,23 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			buffer.append("Long. ,"+loc.getLongitude()+"\n");
 			
 			java.util.Hashtable labels = getPitLabels();
-			avscience.util.Hashtable atts = pit.attributes;
+			///avscience.util.Hashtable atts = pit.attributes;
 			java.util.Enumeration e = labels.keys();
 			while ( e.hasMoreElements())
 			{
-				String s = (String) e.nextElement();
-	            String v = (String) atts.get(s);
-	            String l = (String) labels.get(s);
-	            s = l + " ," + v + "\n";
-	            if (!( s.trim().equals("null")) ) buffer.append(s);
+                            String s = (String) e.nextElement();
+                            String v = "";
+                            try
+                            {
+                                v = (String) pit.get(s);
+                            }
+                            catch(Exception ex)
+                            {
+                                System.out.println(ex.toString());
+                            }
+                            String l = (String) labels.get(s);
+                            s = l + " ," + v + "\n";
+                            if (!( s.trim().equals("null")) ) buffer.append(s);
 			}
 			buffer.append("Activities: \n");
 			java.util.Enumeration ee = pit.getActivities().elements();
@@ -211,8 +221,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			java.util.Enumeration l = pit.getLayers();
 			while ( l.hasMoreElements())
 			{
-				StringSerializable slayer = (StringSerializable)l.nextElement();
-				avscience.ppc.Layer layer = new avscience.ppc.Layer(slayer.dataString());
+				avscience.ppc.Layer layer = (avscience.ppc.Layer) e.nextElement();
 				buffer.append(layer.getStartDepth()+", "+layer.getEndDepth()+", "+layer.getHardness1()+", "+layer.getHardness2()+", "+layer.getGrainType1()+", "+layer.getGrainType2()+", "+layer.getGrainSize1()+", "+layer.getGrainSize2()+", "+layer.getGrainSizeUnits1()+", "+layer.getGrainSizeUnits2()+", "+layer.getDensity1()+", "+layer.getDensity2()+", "+layer.getWaterContent()+"\n");
 			}
 			buffer.append("\n");
@@ -236,15 +245,14 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			java.util.Enumeration tests = pit.getShearTests();
 			while ( tests.hasMoreElements())
 			{
-				StringSerializable stest = (StringSerializable) tests.nextElement();
-				avscience.ppc.ShearTestResult result = new avscience.ppc.ShearTestResult(stest.dataString());
-				buffer.append(result.getCode()+", "+result.getScore()+", "+result.getQuality()+", "+result.getDepth()+"\n");
+                            avscience.ppc.ShearTestResult result = (avscience.ppc.ShearTestResult) e.nextElement();
+                            buffer.append(result.getCode()+", "+result.getScore()+", "+result.getQuality()+", "+result.getDepth()+"\n");
 			}
 			
 			buffer.append("\n");
 			buffer.append("Temperature Data:, Temp Units:, "+u.getTempUnits()+"\n");
 			buffer.append("Depth, Temperature \n");
-			avscience.util.Enumeration dpths=null;
+			Enumeration dpths=null;
 			if ( pit.hasTempProfile())
 			{
 				TempProfile tp = pit.getTempProfile();
@@ -256,7 +264,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 					{
 						while (dpths.hasMoreElements())
 						{
-							avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+							Integer depth = (Integer)dpths.nextElement();
 							int t = tp.getTemp(depth);
 							t=t/10;
 							buffer.append(depth.toString()+", "+t+"\n");
@@ -278,13 +286,13 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			{
 				try
 				{
-					avscience.util.Enumeration dts = dp.getDepths().elements();
+					Enumeration dts = dp.getDepths().elements();
 			
 					if ( dts!=null ) 
 					{
 						while (dpths.hasMoreElements())
 						{
-							avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
+							Integer depth = (Integer)dts.nextElement();
 							String rho = dp.getDensity(depth);
 							buffer.append(depth.toString()+", "+rho+"\n");
 						}
@@ -352,7 +360,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			if (pit.hasProblemInterface())
 			{
 		    	avscience.ppc.User u = pit.getUser();
-				avscience.wba.Location loc = pit.getLocation();
+				avscience.ppc.Location loc = pit.getLocation();
 				buffer.append(loc.getName()+" ,");
 				buffer.append(loc.getRange()+ " ,");
 				buffer.append(loc.getState()+ " ,");
@@ -454,7 +462,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			pit = en.nextElement();
 			
 	    	avscience.ppc.User u = pit.getUser();
-			avscience.wba.Location loc = pit.getLocation();
+			avscience.ppc.Location loc = pit.getLocation();
 			buffer.append(pit.getName());
 			buffer.append(pit.getDateString()+ "\n");
 			buffer.append("Observer ,"+u.getFirst()+ " "+ u.getLast()+" ,"+"email: "+u.getEmail()+" ," + "Phone: "+u.getPhone()+"\n");
@@ -466,15 +474,23 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			buffer.append("Long. ,"+loc.getLongitude()+"\n");
 			
 			java.util.Hashtable labels = getPitLabels();
-			avscience.util.Hashtable atts = pit.attributes;
+			///avscience.util.Hashtable atts = pit.attributes;
 			java.util.Enumeration e = labels.keys();
 			while ( e.hasMoreElements())
 			{
 				String s = (String) e.nextElement();
-	            String v = (String) atts.get(s);
-	            String l = (String) labels.get(s);
-	            s = l + " ," + v + "\n";
-	            if (!( s.trim().equals("null")) ) buffer.append(s);
+                                String v = "";
+                                try
+                                {
+                                    v = (String) pit.get(s);
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                                String l = (String) labels.get(s);
+                                s = l + " ," + v + "\n";
+                                if (!( s.trim().equals("null")) ) buffer.append(s);
 			}
 			buffer.append("Activities: \n");
 			java.util.Enumeration ee = pit.getActivities().elements();
@@ -489,8 +505,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			java.util.Enumeration l = pit.getLayers();
 			while ( l.hasMoreElements())
 			{
-				StringSerializable slayer = (StringSerializable)l.nextElement();
-				avscience.ppc.Layer layer = new avscience.ppc.Layer(slayer.dataString());
+				avscience.ppc.Layer layer = (avscience.ppc.Layer) e.nextElement();
 				buffer.append(layer.getStartDepth()+", "+layer.getEndDepth()+", "+layer.getHardness1()+", "+layer.getHardness2()+", "+layer.getGrainType1()+", "+layer.getGrainType2()+", "+layer.getGrainSize1()+", "+layer.getGrainSize2()+", "+layer.getGrainSizeUnits1()+", "+layer.getGrainSizeUnits2()+", "+layer.getDensity1()+", "+layer.getDensity2()+", "+layer.getWaterContent()+"\n");
 			}
 			buffer.append("\n");
@@ -499,15 +514,14 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			java.util.Enumeration tests = pit.getShearTests();
 			while ( tests.hasMoreElements())
 			{
-				StringSerializable stest = (StringSerializable) tests.nextElement();
-				avscience.ppc.ShearTestResult result = new avscience.ppc.ShearTestResult(stest.dataString());
-				buffer.append(result.getCode()+", "+result.getScore()+", "+result.getQuality()+", "+result.getDepth()+"\n");
+                            avscience.ppc.ShearTestResult result = (avscience.ppc.ShearTestResult) e.nextElement();
+                            buffer.append(result.getCode()+", "+result.getScore()+", "+result.getQuality()+", "+result.getDepth()+"\n");
 			}
 			
 			buffer.append("\n");
 			buffer.append("Temperature Data:, Temp Units:, "+u.getTempUnits()+"\n");
 			buffer.append("Depth, Temperature \n");
-			avscience.util.Enumeration dpths=null;
+			Enumeration dpths=null;
 			if ( pit.hasTempProfile())
 			{
 				try
@@ -519,7 +533,7 @@ public class PitSearchFrame extends Frame implements TimeFrame
 					{
 						while (dpths.hasMoreElements())
 						{
-							avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+							Integer depth = (Integer)dpths.nextElement();
 							int t = tp.getTemp(depth);
 							t=t/10;
 							buffer.append(depth.toString()+", "+t+"\n");
@@ -542,13 +556,13 @@ public class PitSearchFrame extends Frame implements TimeFrame
 			{
 				try
 				{
-					avscience.util.Enumeration dts = dp.getDepths().elements();
+					Enumeration dts = dp.getDepths().elements();
 			
 					if ( dts!=null ) 
 					{
 						while (dts.hasMoreElements())
 						{
-							avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
+							Integer depth = (Integer)dts.nextElement();
 							String rho = dp.getDensity(depth);
 							buffer.append(depth.toString()+", "+rho+"\n");
 						}
@@ -1046,8 +1060,8 @@ public class PitSearchFrame extends Frame implements TimeFrame
         int length = pits[0].length;
         int i = 0;
         long [] pdates = new long[pits[0].length];
-        avscience.ppc.PitObs pit;
-        avscience.ppc.PitObs pitInc;
+        avscience.ppc.PitObs pit = new avscience.ppc.PitObs();
+        avscience.ppc.PitObs pitInc = pit = new avscience.ppc.PitObs();
 
         if (length > 0)
         {
@@ -1064,7 +1078,15 @@ public class PitSearchFrame extends Frame implements TimeFrame
                     
                     if (pdates[i]==0)
                     {
-                        pit = new avscience.ppc.PitObs(data); 
+                        try
+                        {
+                            pit = new avscience.ppc.PitObs(data); 
+                        }
+                        catch(Exception e)
+                        {
+                            System.out.println(e.toString());
+                        }
+                        
                         pdate = pit.getTimestamp();
                         pdates[i]=pdate;
                     }
@@ -1076,7 +1098,14 @@ public class PitSearchFrame extends Frame implements TimeFrame
                     
                     if (pdates[i+1]==0)
                     {
-                        pitInc = new avscience.ppc.PitObs(dataInc); 
+                        try
+                        {
+                            pitInc = new avscience.ppc.PitObs(dataInc); 
+                        }
+                        catch(Exception ex)
+                        {
+                            System.out.println(ex.toString());
+                        }
                         pdateInc = pitInc.getTimestamp();
                         pdates[i+1]=pdateInc;
                     }

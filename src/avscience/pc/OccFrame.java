@@ -6,7 +6,6 @@ import java.util.*;
 import avscience.desktop.*;
 import java.util.Date;
 import avscience.ppc.*;
-import org.compiere.grid.ed.Calendar;
 import java.sql.Timestamp;
 import java.net.*;
 import java.util.Properties;
@@ -103,7 +102,7 @@ public class OccFrame extends Frame implements TimeFrame
     int starty=4;
     int startx=24;
     int yspace=24;
-    MainFrame mf;
+    public MainFrame mf;
     String defaultType = "Natural";
     String defaultrms= "no";
     public Vector subFrames = new Vector();
@@ -148,7 +147,7 @@ public class OccFrame extends Frame implements TimeFrame
     	initControls();
     	buildMenu();
     	buildForm(edit);
-    	avscience.wba.Location l = mf.getCurrentLocation();
+    	avscience.ppc.Location l = mf.getCurrentLocation();
     	if ( l !=null ) popLocation(l);
     }
     
@@ -751,7 +750,7 @@ public class OccFrame extends Frame implements TimeFrame
             Properties props = new Properties();
             props.put("format", "occsend");
             //avscience.ppc.AvOccurence occ = store.getOcc(occSers[i]);
-            String s = occ.dataString();
+            String s = occ.toXML();
             s = URLEncoder.encode(s);
             props.put("OCCDATA", s);
             msg.sendGetMessage(props);
@@ -774,7 +773,7 @@ public class OccFrame extends Frame implements TimeFrame
             props.put("format", "pitsend");
             System.out.println("Pit name: "+pit.getName());
            // System.out.println("Pit dat: "+pit.dataString());
-            String s = pit.dataString();
+            String s = pit.toXML();
             
             int dsize=s.length();
             System.out.println("Data size: "+dsize);
@@ -855,7 +854,7 @@ public class OccFrame extends Frame implements TimeFrame
 		estDate.setVisible(false);
 	}*/
 	
-	void popLocation(avscience.wba.Location l)
+	void popLocation(avscience.ppc.Location l)
 	{
 		String name = l.getName();
 		String selv = l.getElv();
@@ -879,7 +878,7 @@ public class OccFrame extends Frame implements TimeFrame
 	void popForm()
 	{
 		System.out.println("popForm()");
-        avscience.wba.Location l = pit.getLocation();
+        Location l = pit.getLocation();
         popLocation(l);
         long ts = pit.getTimestamp();
       	System.out.println("Timestamp: "+ts);
@@ -1369,7 +1368,7 @@ public class OccFrame extends Frame implements TimeFrame
     	}
         
         updateOccurenceFromForm();
-        avscience.wba.Location l = getLocationFromForm();
+        Location l = getLocationFromForm();
         pit.setLocation(l);
         pit.setCrownObs(true);
         occ.setPitName(pit.getName());
@@ -1385,23 +1384,27 @@ public class OccFrame extends Frame implements TimeFrame
         }
         else
         {
-	        mf.store.addOcc(occ.dataString());
-	        mf.store.addPit(pit.dataString());
+	        mf.store.addOcc(occ);
+	        mf.store.addPit(pit);
 	        mf.rebuildList();
 	     }
         dispose();
     }
     
-    public avscience.wba.Location getLocationFromForm()
+    public Location getLocationFromForm()
     {
-    	avscience.wba.User u = new avscience.wba.User(pit.getUser().dataString());
-    	avscience.wba.Location l = new avscience.wba.Location(u, loc.getText(), state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
-    /*	l.setName(loc.getText());
-    	l.setState(state.getSelectedItem());
-    	l.setLat(lat.getText());
-    	l.setLongitude(lon.getText());
-    	l.setRange(range.getText());
-    	l.setElv(elv.getText());*/
+        User u = new User();
+        try
+        {
+            u = new User(pit.getUser().toString());
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
+    	
+    	Location l = new Location(u, loc.getText(), state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
+    
     	return l;
     }
     	

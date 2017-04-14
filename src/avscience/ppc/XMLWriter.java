@@ -1,48 +1,60 @@
-/**
- * @(#)XMLWriter.java
- *
- *
- * @author 
- * @version 1.00 2009/6/22
- */
-
 package avscience.ppc;
 
 import java.util.*;
 import java.io.*;
-import avscience.wba.*;
-import avscience.util.*;
-import avscience.ppc.*;
+import avscience.wba.DensityProfile;
+import avscience.wba.TempProfile;
 import org.jdom.*;
 import org.jdom.output.*;
 import avscience.pc.Sorter;
 
 public class XMLWriter 
 {
-	File file = new File("PitObs.xml");
-	public XMLWriter(){}
+    File file = new File("PitObs.xml");
+    public XMLWriter(){}
     public XMLWriter(File file) 
     {
     	this.file = file;
     }
-    public void writePitToXML(avscience.ppc.PitObs pit)
+    
+    public String getXMLString(avscience.ppc.AvScienceDataObject obj)
+    {
+        if ( obj instanceof PitObs )
+        {
+            PitObs pit = (PitObs) obj;
+            Sorter.sortPit(pit);
+        }
+	Element e = getElementFromObject(obj);
+	Document doc = new Document(e);
+        XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+	try
+	{
+            return outputter.outputString(doc);
+	}
+	catch(Exception ex)
+	{
+            System.out.println(ex.toString());
+	}
+        return null;
+    }
+    
+    public void writeToXML(avscience.ppc.AvScienceDataObject obj)
   	{
-  	//	avscience.ppc.PitObs pit = getPit(serial);
-  		avscience.ppc.PitObs tpit = new avscience.ppc.PitObs(pit.dataString());
-  		tpit = Sorter.sortPit(tpit);
-  		
-  		System.out.println("writePitToXML");
-		Element e = getElementFromObject(tpit);
+                if ( obj instanceof PitObs )
+                {
+                    PitObs pit = (PitObs) obj;
+                    Sorter.sortPit(pit);
+                }
+		Element e = getElementFromObject(obj);
 		Document doc = new Document(e);
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		try
 		{
-		//	File f = new File(filename);
-			outputter.output(doc, new FileOutputStream(file));
+                    outputter.output(doc, new FileOutputStream(file));
 		}
 		catch(Exception ex)
 		{
-			System.out.println(ex.toString());
+                    System.out.println(ex.toString());
 		}
   	}
     
@@ -50,11 +62,10 @@ public class XMLWriter
         {
             CharArrayWriter cwriter = new CharArrayWriter(8400);
             
-            avscience.ppc.PitObs tpit = new avscience.ppc.PitObs(pit.dataString());
-  	    tpit = Sorter.sortPit(tpit);
+            Sorter.sortPit(pit);
   		
             System.out.println("writePitToXML");
-	    Element e = getElementFromObject(tpit);
+	    Element e = getElementFromObject(pit);
 	    Document doc = new Document(e);
 	    XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		try
@@ -69,10 +80,9 @@ public class XMLWriter
                 return null;
         }
   	
-  	Element addProfileFromTable(avscience.util.Hashtable table, Element el)
+  	Element addProfileFromTable(Hashtable table, Element el)
   	{
-  		//int i=0;
-  		avscience.util.Enumeration e = table.keys();
+  		Enumeration e = table.keys();
   		StringBuffer buffer = new StringBuffer();
   		while (e.hasMoreElements())
   		{
@@ -90,17 +100,23 @@ public class XMLWriter
   		el.setAttribute(a);
   		return el;
   	}
+        
+        public Document getDocumentFromPit(PitObs pit)
+        {
+            Sorter.sortPit(pit);
+            Element e = getElementFromObject(pit);
+            Document doc = new Document(e);
+            return doc;
+        }
   	
-  	
-  	
-  	public Element getElementFromObject(avscience.wba.AvScienceDataObject oo)
+  	public Element getElementFromObject(avscience.ppc.AvScienceDataObject oo)
 	{
 		System.out.println("getElementFromObject");
-		oo.setAttributes();
-		String name = avscience.ppc.AvScienceObjectTypes.getInstance().getName(oo.getKey());
-		Element e = new Element(name);
+		oo.writeAttributes();
+		Element e = null;
 		if ( oo instanceof PitObs )
 		{
+                        e = new Element("PitObs");
 			PitObs pit = (PitObs) oo;
 			Attribute a = new Attribute("activities", pit.getActivitiesString());
 			e.setAttribute(a);
@@ -108,6 +124,7 @@ public class XMLWriter
 		
 		if ( oo instanceof TempProfile )
 		{
+                        e = new Element("TempProfile");
 			TempProfile tp = (TempProfile) oo;
 			if (tp.hasPoints())
 			{
@@ -115,7 +132,7 @@ public class XMLWriter
 				e.setAttribute(a);
 				Attribute aa = new Attribute("depthUnits", tp.getDepthUnits());
 				e.setAttribute(aa);
-				avscience.util.Hashtable table = (avscience.util.Hashtable) tp.attributes.get("profile");
+				Hashtable table = tp.getProfile();
 				addProfileFromTable(table, e);
 			}
 			return e;
@@ -123,54 +140,45 @@ public class XMLWriter
 		////////////
 		if ( oo instanceof DensityProfile )
 		{
-			DensityProfile tp = (DensityProfile) oo;
-			if (tp.hasPoints())
+                        e = new Element("DensityProfile");
+			DensityProfile dp = (DensityProfile) oo;
+			if (dp.hasPoints())
 			{
-				Attribute a = new Attribute("rhoUnits", tp.getDensityUnits());
+				Attribute a = new Attribute("rhoUnits", dp.getDensityUnits());
 				e.setAttribute(a);
-				Attribute aa = new Attribute("depthUnits", tp.getDepthUnits());
+				Attribute aa = new Attribute("depthUnits", dp.getDepthUnits());
 				e.setAttribute(aa);
-				avscience.util.Hashtable table = (avscience.util.Hashtable) tp.attributes.get("profile");
-				addProfileFromTable(table, e);
+				addProfileFromTable(dp.getProfile(), e);
 			}
 			return e;
 		}
-		/////////////
-	/**/
-		avscience.util.Enumeration en = oo.attributes.keys();
-		if ( oo instanceof PitObs ) 
+		
+		Iterator<String> en = oo.keys();
+		while ( en.hasNext())
 		{
-			PitObs pit = (PitObs)oo;
-			en = pit.exportAttributes().keys();
-		}
-		while ( en.hasMoreElements())
-		{
-			Object att = en.nextElement();
-			System.out.println("att: "+att.toString());
-			Object o = oo.attributes.get(att);
-			/*if (att.equals("activities"))
-			{
-				System.out.println("Getting activities...  ");
-				java.util.Vector acts = (java.util.Vector) o;
-				StringBuffer buffer = new StringBuffer();
-				java.util.Enumeration ae = acts.elements();
-				while (ae.hasMoreElements())
-				{
-					buffer.append(ae.toString());
-					buffer.append(";");
-				}
-				Attribute a = new Attribute(att.toString(), buffer.toString());
-				e.setAttribute(a);
-			}*/
+			String att = en.next();
+			System.out.println("att: "+att);
+                        Object o = null;
+                        
+                        try
+                        {
+                            o = oo.get(att);
+                        }
+                        catch(Exception ee)
+                        {
+                            System.out.println(ee.toString());
+                        }
+			
+			
 			if (o instanceof String)
 			{
 				Attribute a = new Attribute(att.toString(), o.toString());
 				e.setAttribute(a);
 			}
 			
-			if  (o instanceof avscience.wba.AvScienceDataObject)
+			if  (o instanceof avscience.ppc.AvScienceDataObject)
 			{
-				Element ell = getElementFromObject((avscience.wba.AvScienceDataObject)o);
+				Element ell = getElementFromObject((avscience.ppc.AvScienceDataObject)o);
 				e.addContent(ell);
 			}
 			
@@ -180,10 +188,9 @@ public class XMLWriter
 				Iterator it = v.iterator();
 				while (it.hasNext())
 				{
-					Object ooo = it.next();
-					if ( ooo instanceof avscience.wba.AvScienceDataObject)
+					avscience.ppc.AvScienceDataObject ooo = (avscience.ppc.AvScienceDataObject) it.next();
 					{
-						Element elll = getElementFromObject((avscience.wba.AvScienceDataObject)ooo);
+						Element elll = getElementFromObject(ooo);
 						e.addContent(elll);
 					}
 				}

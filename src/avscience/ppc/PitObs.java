@@ -1,13 +1,14 @@
 package avscience.ppc;
+
 import java.util.Date;
-import waba.sys.Time;
-import avscience.wba.*;
-import avscience.pc.*;
+import avscience.wba.TempProfile;
+import avscience.wba.DensityProfile;
 import java.util.*;
+import org.json.JSONArray;
 
 public class PitObs extends avscience.ppc.AvScienceDataObject
 {
-    private avscience.wba.Location loc = new avscience.wba.Location();
+    private avscience.ppc.Location loc = new avscience.ppc.Location();
     private String aspect = "";
     private String incline = "";
     private String precip = "";
@@ -40,151 +41,200 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     private String currentEditTest = "";
     private String dateString = "";
     private String timestamp = "";
-    private avscience.ppc.User user;
+    private avscience.ppc.User user = new avscience.ppc.User();
     public String iLayerNumber="";
     public String iDepth="";
     public String testPit="false";
     public String version = "";
+    private String dbserial="";
     private String bld="";
     private java.util.Vector<String> activities = new java.util.Vector<String>();
-    private String actsString="";
     private String edited="false";
     public PitObs() {super();}
     
-    public avscience.util.Hashtable exportAttributes()
+    public void writeAttributes()
     {
-    	setAttributes();
-    	avscience.util.Hashtable atts = attributes;
-    	atts.remove("currentEditLayer");
-    	atts.remove("currentEditTest");
-    	atts.remove("edited");
-    	///atts.remove("skiBoot");
-    	atts.remove("dateString");
-    	atts.remove("archName");
-    	return atts;
+        System.out.println("PitObs:WriteAttributes");
+        try
+        {
+            System.out.println("Setting loc");
+            put("loc", loc.toString());
+            System.out.println("Setting aspect");
+            put("aspect", aspect);
+            put("incline", incline);
+            put("precip", precip);
+            put("sky", sky);
+            put("windspeed", windspeed);
+            put("winDir", winDir);
+            put("windLoading", windLoading);
+            put("skiBoot", skiBoot);
+            put("surfacePen", surfacePen);
+            put("airTemp", airTemp);
+            put("stability", stability);
+            put("pitNotes", pitNotes);
+            put("crownObs", crownObs);
+            System.out.println("Setting layers");
+            JSONArray jsonLayers = new JSONArray(layers);
+            put("layers", jsonLayers);
+            
+            System.out.println("Setting tests");
+            JSONArray jsonTests = new JSONArray(shearTests);
+            put("shearTests", jsonTests);
+            System.out.println("Setting temp profile");
+            put("tempProfile", tempProfile.toString());
+            System.out.println("Setting density profile");
+            put("densityProfile", densityProfile.toString());
+            put("measureFrom", measureFrom);
+            put("currentEditLayer", currentEditLayer);
+            put("currentEditTest", currentEditTest);
+            put("dateString", dateString);
+            System.out.println("Setting user");
+            put("user", user.toString());
+            
+            System.out.println("Setting activities");
+            JSONArray jsonActs = new JSONArray(activities);
+            put("activities", jsonActs);
+            put("date", date);
+            put("time", time);
+            put("timestamp", timestamp);
+            put("edited", edited);
+            put("serial", serial);
+            put("archname", archname);
+            put("testPit", testPit);
+            put("dbserial", dbserial);
+            put("iLayerNumber", iLayerNumber);
+            put("iDepth", iDepth);
+            put("version", version);
+            put("bld", bld);
+            put("skiAreaPit", skiAreaPit);
+            put("bcPit", bcPit);
+            put("aviPit", aviPit);
+            put("aviLoc", aviLoc);
+            put("heightOfSnowpack", heightOfSnowpack);
+        }
+        catch(Exception e)
+        {
+            System.out.println("PitObs:writeAtts: "+ e.toString());
+        }
     }
     
-    public void setAttributes()
+    public String[] getJSONLayerStrings()
     {
-    	attributes.put("loc", loc);
-    	attributes.put("aspect", aspect);
-    	attributes.put("incline", incline);
-    	attributes.put("precip", precip);
-    	attributes.put("sky", sky);
-    	attributes.put("windspeed", windspeed);
-    	attributes.put("winDir", winDir);
-    	attributes.put("windLoading", windLoading);
-    	attributes.put("skiBoot", skiBoot);
-    	attributes.put("surfacePen", surfacePen);
-    	attributes.put("airTemp", airTemp);
-    	attributes.put("stability", stability);
-    	attributes.put("pitNotes", pitNotes);
-    	attributes.put("crownObs", crownObs);
-    	attributes.put("layers", layers);
-    	attributes.put("shearTests", shearTests);
-    	attributes.put("tempProfile", tempProfile);
-    	attributes.put("densityProfile", densityProfile);
-    	attributes.put("measureFrom", measureFrom);
-    	attributes.put("currentEditLayer", currentEditLayer);
-    	attributes.put("currentEditTest", currentEditTest);
-    	attributes.put("dateString", dateString);
-    	attributes.put("user", user);
-    	attributes.put("activities", activities);
-    	attributes.put("actsString", actsString);
-        attributes.put("date", date);
-        attributes.put("time", time);
-        attributes.put("timestamp", timestamp);
-        System.out.println("Date: "+date);
-        System.out.println("time: "+time);
-        System.out.println("timestamp: "+timestamp);
-        attributes.put("edited", edited);
-        attributes.put("serial", serial);
-        attributes.put("archname", archname);
-        attributes.put("testPit", testPit);
-        attributes.put("iLayerNumber", iLayerNumber);
-        attributes.put("iDepth", iDepth);
-        attributes.put("version", version);
-        attributes.put("bld", bld);
-        attributes.put("skiAreaPit", skiAreaPit);
-        attributes.put("bcPit", bcPit);
-        attributes.put("aviPit", aviPit);
-        attributes.put("aviLoc", aviLoc);
-        attributes.put("heightOfSnowpack", heightOfSnowpack);
+        String[] slayers = new String[layers.size()];
+        int idx=0;
+        Iterator<Layer> itl = layers.iterator();
+        while (itl.hasNext())
+        {
+            Layer l = itl.next();
+            slayers[idx] = l.toString();
+            idx++;
+        }
+        return slayers;
     }
     
-    public void getAttributes()
+    public void popAttributes()
     {
-    	StringSerializable genloc = (StringSerializable)attributes.get("loc");
-    	if (genloc!=null) loc  = new avscience.wba.Location(genloc.dataString()); 
-    	aspect = (String) attributes.get("aspect");
-    	incline = (String) attributes.get("incline");
-    	precip = (String) attributes.get("precip");
-    	sky = (String) attributes.get("sky");
-    	windspeed = (String) attributes.get("windspeed");
-    	winDir = (String) attributes.get("winDir");
-    	windLoading = (String) attributes.get("windLoading");
-    	skiBoot = (String) attributes.get("skiBoot");
-    	Object sp = attributes.get("surfacePen");
-    	if (sp!=null) surfacePen = sp.toString();
-    	airTemp = (String) attributes.get("airTemp");
-    	stability = (String) attributes.get("stability");
-    	pitNotes = (String) attributes.get("pitNotes");
-    	crownObs = (String) attributes.get("crownObs");
-    	layers = (java.util.Vector<Layer>) attributes.get("layers");
-    	if (layers==null) layers = new java.util.Vector<Layer>();
-    	shearTests = (java.util.Vector<ShearTestResult>) attributes.get("shearTests");
-    	if (shearTests==null) shearTests = new java.util.Vector<ShearTestResult>();
-    	tempProfile = (TempProfile) attributes.get("tempProfile");
-    	densityProfile = (DensityProfile) attributes.get("densityProfile");
-    	measureFrom = (String) attributes.get("measureFrom");
-    	currentEditLayer = (String) attributes.get("currentEditLayer");
-    	currentEditTest = (String) attributes.get("currentEditTest");
-    	dateString = (String) attributes.get("dateString");
+        System.out.println("PitObs:popAttributes");
+        try
+        {
+            System.out.println("pop Location");
+            String locData = getString("loc");
+            loc = new Location(locData);
+            aspect = getString("aspect");
+            incline = getString("incline");
+            precip = getString("precip");
+            sky = getString("sky");
+            windspeed = getString("windspeed");
+            winDir = getString("winDir");
+            windLoading = getString("windLoading");
+            skiBoot = getString("skiBoot");
+            surfacePen = getString("surfacePen");
+            airTemp = getString("airTemp");
+            stability = getString("stability");
+            pitNotes = getString("pitNotes");
+            crownObs = getString("crownObs");
+             System.out.println("pop Layers");
+            JSONArray jLayers = getJSONArray("layers");
+            layers = new Vector<Layer>(jLayers.length());
+            System.out.println("Number of layers: "+jLayers.length());
+            for (int i = 0; i < jLayers.length(); i++)
+            {
+                String data = jLayers.getJSONObject(i).toString();
+                layers.add(new Layer(data));
+                
+            }
+            System.out.println("pop Tests");
+            JSONArray jTests = getJSONArray("shearTests");
+            shearTests = new Vector<ShearTestResult>(jTests.length());
+            for (int i = 0; i < jTests.length(); i++)
+            {
+                String data = jTests.getJSONObject(i).toString();
+                shearTests.add( new ShearTestResult(data));
+            }
+            System.out.println("pop tempprofile");
+            String stProfile = getString("tempProfile");
+            tempProfile = new TempProfile(stProfile);
+          
+            System.out.println("pop rhoprofile");
+            String srProfile = getString("densityProfile");
+            densityProfile = new DensityProfile(srProfile);
+            
+            measureFrom = getString("measureFrom");
+            currentEditLayer = getString("currentEditLayer");
+            currentEditTest = getString("currentEditTest");
+            dateString = getString("dateString");
+            System.out.println("pop user");
+            user = new User(getString("user"));
+            System.out.println("pop activities");
+            try
+            {
+                JSONArray jActs = getJSONArray("activities");
+                activities = new Vector<String>(jActs.length());
+                for (int i = 0; i < jActs.length(); i++)
+                {
+                    activities.add(jActs.getString(i));
+                }
+            }
+            catch(Exception ee)
+            {
+                System.out.println(ee.toString());
+            }
+            
+            dbserial = getString("dbserial");
+            date = getString("date");
+            time = getString("time");
+            timestamp = getString("timestamp");
+            edited = getString("edited");
+            serial = getString("serial");
+            archname = getString("archname");
+            testPit = getString("testPit");
+            bld = getString("bld");
+            bcPit = getString("bcPit");
+            skiAreaPit = getString("skiAreaPit");
+            aviPit = getString("aviPit");
+            aviLoc = getString("aviLoc");
+            iLayerNumber = getString("iLayerNumber");
+            iDepth = getString("iDepth");
+            version = getString("version");
+            heightOfSnowpack = getString("heightOfSnowpack");
+        }
+        catch(Exception e)
+        {
+            System.out.println("PitObs:popAtts: "+e.toString());
+        }
     	
-    	StringSerializable genuser = (StringSerializable) attributes.get("user");
-    	if (genuser!=null) user = new avscience.ppc.User(genuser.dataString());
-    	Object o = attributes.get("activities");
-    	if ( o instanceof java.util.Vector) activities = (java.util.Vector<String>) o;
-    	else if ( o instanceof avscience.util.Vector )
-    	{
-    		activities = new java.util.Vector<String>();
-    		avscience.util.Enumeration e = ((avscience.util.Vector)o).elements();
-    		if ( e!=null )
-    		{
-    			while ( e.hasMoreElements())
-    			{
-    				activities.add(e.nextElement().toString());
-    			}
-    		}
-    	}
-    	else if ( o instanceof String )
-    	{
-    		setPitNotes(o.toString()+" "+getPitNotes());
-    	}
-    	else activities = new java.util.Vector<String>();
-    	actsString = (String)attributes.get("actsString");
-        date = (String) attributes.get("date");
-        time = (String) attributes.get("time");
-        timestamp = (String) attributes.get("timestamp");
-        edited = (String) attributes.get("edited");
-        serial = (String) attributes.get("serial");
-        archname = (String)attributes.get("archname");
-        testPit = (String)attributes.get("testPit");
-        bld = (String) attributes.get("bld");
-        bcPit = (String) attributes.get("bcPit");
-        skiAreaPit = (String) attributes.get("skiAreaPit");
-        aviPit = (String) attributes.get("aviPit");
-        aviLoc = (String) attributes.get("aviLoc");
-        o = null;
-        o = (String) attributes.get("iLayerNumber");
-        if ( o!=null ) iLayerNumber = (String) o;
-        o = attributes.get("iDepth");
-       	if ( o!=null ) iDepth = (String) o;
-       	o = attributes.get("version");
-       	if ( o!=null ) version = (String) o;
-       	
-       	Object sph = attributes.get("heightOfSnowpack");
-       	if (sph!=null) heightOfSnowpack = sph.toString();
+    }
+    
+    public Layer getPILayer()
+    {
+        for(java.util.Enumeration layers = getLayers(); layers.hasMoreElements();)
+        {
+            Layer l = (Layer)layers.nextElement();
+            if(layerIsCritical(l))
+            return l;
+        }
+
+        return null;
     }
     
     public boolean isPracticePit()
@@ -215,15 +265,9 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         this.version=version;
         this.bld=bld+"";
         Date date = new Date();
-        Time t = new Time();
-        dateString = date.getDate()+":"+t.hour+":"+t.minute;
-        setTimestamp(System.currentTimeMillis());
+        date.setTime(System.currentTimeMillis());
+        dateString = date.toString();
         measureFrom = user.getMeasureFrom();
-    }
-    
-    public PitObs(avscience.wba.User user, String serial, int bld, String version)
-    {
-    	this(new avscience.ppc.User(user.dataString()), serial, bld, version);
     }
     
     public String getSerial()
@@ -243,70 +287,22 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     	else getUser().setShare("false");
     }
     
-    
     public avscience.ppc.Layer getLayerByString(String s)
     {
     	s = s.trim();
-    	if ( s.indexOf("PI") > 0 )
-    	{
-    	//	s.replaceAll("PI", " ");
-    		s=s.substring(0, s.length()-2);
-    	}
-    	s = s.trim();
-    	System.out.println("getLayerByString(): "+s);
-    	
-        for(java.util.Enumeration e = layers.elements(); e.hasMoreElements();)
+        for(Enumeration<Layer> e = layers.elements(); e.hasMoreElements();)
         {
-        	StringSerializable gl = (StringSerializable) e.nextElement();
-        	
-        	avscience.ppc.Layer l = new avscience.ppc.Layer(gl.dataString());
-            System.out.println(l.toString());
+            Layer l = e.nextElement();
             if(l.toString().trim().equals(s))return l;
         }
         return null;
     }
     
-    public PitObs(String data)
+    public PitObs(String data) throws Exception
     { 
-    	this();
-        popFromString(data);
-    	getAttributes();
-    //	updatePitLayers(this);
+    	super(data);
+        popAttributes();
     }
-    
-   /* public void updatePitLayers(avscience.ppc.PitObs pit)
-	{
-		System.out.println("updatePitLayers()");
-		if (pit==null)
-		{
-			System.out.println("Pit is null.");
-			return;
-		}
-		avscience.ppc.User u = pit.getUser();
-		boolean fromTop = false;
-		if ( u.getMeasureFrom().trim().equals("top")) fromTop = true;
-		else fromTop = false;
-		java.util.Enumeration layers = pit.getLayers();
-		while ( layers.hasMoreElements() )
-		{
-			Object o = layers.nextElement();
-			if (o!=null)
-			{
-				String lstring = o.toString();
-				if ( lstring!=null )
-				{
-					avscience.ppc.Layer l = pit.getLayer(lstring);
-					if (l!=null)
-					{
-						l.setFromTop(fromTop);
-						pit.updateCurrentEditLayer(l);
-					}
-						
-				}
-			}
-				
-		}
-	}*/
     
     public void setDateString(String date, String time)
     {
@@ -389,22 +385,23 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         if ( name == null ) name ="";
         String nds = "";
         
-       // if (ds.length()>5)
-       // {
-       // 	nds=ds.substring(3, ds.length());
-       // }
-      //  else nds=ds=
         name = name + " : " + ds;
         name = name.trim();
         if ( name.length() > 26 ) name = name.substring(0, 26);
         return name;
     }
     
-    /*public String getDate()
+     public void setDBSerial(long ls)
     {
-    	if ( ts > 0 ) return new Date(ts).toString();
-    	else return ds;
-    }*/
+        dbserial = ls+"";
+    }
+    
+    public long getDBSerial()
+    {
+        if (dbserial==null)return -1;
+        if (dbserial.trim().length()<1) return -1;
+        return new Long(dbserial).longValue();
+    }
     
     public String getDBName()
     {
@@ -503,12 +500,12 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     	this.densityProfile = densityProfile;
     }
     
-    public void setLocation(avscience.wba.Location loc)
+    public void setLocation(Location loc)
     {
         this.loc = loc;
     }
     
-    public avscience.wba.Location getLocation()
+    public avscience.ppc.Location getLocation()
     {
     	if (loc==null)loc=new Location();
         return loc;
@@ -538,7 +535,7 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     {
     	if (user==null)user=new User();
     	return user;
-	}
+    }
     
     public boolean getCrownObs()
     {
@@ -658,14 +655,12 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     public boolean hasTempProfile()
     {
         if ( tempProfile == null ) return false;
-        
         else return true;
     }
     
     public boolean hasDensityProfile()
     {
         if ( densityProfile == null ) return false;
-        
         else return true;
     }
     
@@ -705,9 +700,8 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         return tempProfile.getDepthUnits();
     }
     
-    public void addLayer(String data)
+    public void addLayer(avscience.ppc.Layer layer)
     {
-    	avscience.ppc.Layer layer = new avscience.ppc.Layer(data);
        	layers.addElement(layer);
     }
     
@@ -730,10 +724,9 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         
         while ( e.hasMoreElements() )
         {
-        	avscience.ppc.Layer l = (avscience.ppc.Layer) e.nextElement();
+            avscience.ppc.Layer l = (avscience.ppc.Layer) e.nextElement();
             if ( l.getLayerNumber() > num ) num=l.getLayerNumber();
         }
-       
         return num+1;
     }
     
@@ -743,22 +736,20 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         
         while ( e.hasMoreElements() )
         {
-        	avscience.ppc.Layer l  = (avscience.ppc.Layer) e.nextElement();
-        	if (l.getLString().equals(layerString)) layers.removeElement(l);
-        	if (l.toString().equals(layerString)) layers.removeElement(l);
+            avscience.ppc.Layer l  = (avscience.ppc.Layer) e.nextElement();
+            if (l.getLString().equals(layerString)) layers.removeElement(l);
+            if (l.toString().equals(layerString)) layers.removeElement(l);
         }
     }
     
     
     public avscience.ppc.Layer getLayer(String layerString)
     {
-        Enumeration e = layers.elements();
-        
+        Enumeration<Layer> e = layers.elements();
         while ( e.hasMoreElements() )
         {
-        	StringSerializable gl = (StringSerializable) e.nextElement();
-        	avscience.ppc.Layer l = new avscience.ppc.Layer(gl.dataString());
-        	if (l.getLString().equals(layerString)) return l;
+            Layer l = e.nextElement();
+            if (l.getLString().equals(layerString)) return l;
         }
         return null;
     }
@@ -783,18 +774,17 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     	if ( timestamp == null ) timestamp = "";
     	else
     	{
-	    //	timestamp=timestamp.trim();
-	      	if ( timestamp.length()>0 ) 
+            if ( timestamp.length()>0 ) 
+	     {
+                try
 	      	{
-	      		try
-	      		{
-	      			ts = new Long(timestamp).longValue();
-	      		}
-	      		catch(Throwable t){ts=0;}
+                    ts = new Long(timestamp).longValue();
 	      	}
-	    }
+                    catch(Throwable t){ts=0;}
+	      	}
+	}
       	if ( ts < 1 )
-	      	{
+	{
 		      	boolean udate = true;
 		      	
 		      	String dt = getDate();
@@ -832,12 +822,11 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
 			     }
 			     
 			}
-			return ts;
+		return ts;
     }
     
-    public void addShearTestResult(String data)
+    public void addShearTestResult(avscience.ppc.ShearTestResult res)
     {
-    	avscience.ppc.ShearTestResult res = new avscience.ppc.ShearTestResult(data);
         shearTests.addElement(res);
     }
     
@@ -847,34 +836,28 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     	Enumeration e = shearTests.elements();
     	while ( e.hasMoreElements())
     	{
-        	avscience.ppc.ShearTestResult res = (avscience.ppc.ShearTestResult) e.nextElement();
-        	if ( res.toString().equals(resultString)) shearTests.removeElement(res);
+            avscience.ppc.ShearTestResult res = (avscience.ppc.ShearTestResult) e.nextElement();
+            if ( res.toString().equals(resultString)) shearTests.removeElement(res);
         }
     }
     
     public void updateCurrentTestResult(avscience.ppc.ShearTestResult result)
     {
         removeShearTestResult(currentEditTest);
-        addShearTestResult(result.dataString());
+        addShearTestResult(result);
     }
     
     public avscience.ppc.ShearTestResult getShearTestResult(String testString)
     {
         avscience.ppc.ShearTestResult r = null;
-        StringSerializable gt = null;
-        Enumeration e = shearTests.elements();
+        Enumeration<ShearTestResult> e = shearTests.elements();
         while ( e.hasMoreElements() )
         {
-        	gt = (StringSerializable) e.nextElement();
-        	r = new avscience.ppc.ShearTestResult(gt.dataString()); 
-        	
+                r = e.nextElement();
         	String s = r.toString();
-        	if ( testString.equals(s) ) 
-        	{ 
-        		return r;
-        	}
+        	if ( testString.equals(s) ) return r;
         }
-        return r;
+        return null;
     }
     
     public void setCurrentEditLayer(String layerString)
@@ -893,7 +876,7 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     {
         removeLayer(layer.getLString());
         removeLayer(layer.toString());
-        addLayer(layer.dataString());
+        addLayer(layer);
     }
     
     public int getCriticalLayerDepth()
@@ -944,8 +927,6 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     {
     	if ( iLayerNumber.trim().length()>0) return true;
     	else return false;
-    //if ( iDepth.trim().length() > 0 ) return true;
-    //	else return false;
     }
     
     public void setProblemInterface(String iDepth, String iLayerNumber)
@@ -963,7 +944,7 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         {
         	avscience.ppc.Layer l = (avscience.ppc.Layer) e.nextElement();
         	
-        	String s  = l.toString();
+        	String s  = l.toUIString();
         	String lNum = l.getLayerNumber()+"";
         	if ( lNum.equals(iLayerNumber)) s = s+" PI";
         	layerStrings[i] = s;
@@ -979,7 +960,8 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
         int i = 0;
         while ( tests.hasMoreElements() )
         {
-            resultStrings[i] = tests.nextElement().toString();
+            ShearTestResult test = (ShearTestResult) tests.nextElement();
+            resultStrings[i] = test.toUIString();
             i++;
         }
         return resultStrings;
@@ -987,7 +969,6 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     
     private java.util.Vector sortAscendingLayers(java.util.Vector layers)
     {
-    	//System.out.println("sortAsc");
         boolean sorted = false;
         int length = layers.size();
         int i = 0;
@@ -1001,9 +982,9 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
                 sorted = true;
                 for(i=0; i<length - 1; i++)
                 {
-                	layer = (avscience.ppc.Layer) layers.elementAt(i);
-                	int strt = layer.getStartDepthInt();
-                	int end = layer.getEndDepthInt();
+                    layer = (avscience.ppc.Layer) layers.elementAt(i);
+                    int strt = layer.getStartDepthInt();
+                    int end = layer.getEndDepthInt();
                     int n = strt+end;
                     layerInc = (avscience.ppc.Layer) layers.elementAt(i+1);
                     int istrt = layerInc.getStartDepthInt();
@@ -1039,10 +1020,5 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     {
         if ( shearTests!=null) return shearTests.elements();
         else return new Vector().elements();
-    }
-    
-    public String getKey()
-    {
-        return new String("B");
     }
 }

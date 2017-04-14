@@ -1,4 +1,5 @@
 package avscience.pc;
+
 import java.util.*;
 import avscience.ppc.Layer;
 
@@ -6,58 +7,58 @@ public class Sorter
 {
 	public static avscience.ppc.PitObs sortPit(avscience.ppc.PitObs pit)
 	{
-		pit.layers = sortAscendingLayers(pit.layers);
-		pit.shearTests = sortAscendingTests(pit.shearTests);
-		pit.layers = checkLayers(pit.layers);
-		return pit;
+            pit.layers = sortAscendingLayers(pit.layers);
+            pit.shearTests = sortAscendingTests(pit.shearTests);
+            pit.layers = checkLayers(pit.layers);
+            return pit;
 	}
 	
 	public static java.util.Vector checkLayers(java.util.Vector layers)
-    {
-    	Iterator it = layers.iterator();
-    	while (it.hasNext())
-    	{
-    		Layer l = (Layer)it.next();
-    		if (l.getFromTop()) l.swapHardness();
-    	}
-    	return layers;
-    }
+        {
+            Iterator it = layers.iterator();
+            while (it.hasNext())
+            {
+                    Layer l = (Layer)it.next();
+                    if (l.getFromTop()) l.swapHardness();
+            }
+            return layers;
+        }
 	
 	
 	public static java.util.Vector sortDescendingLayers(java.util.Vector layers)
-    {
-        boolean sorted = false;
-        int length = layers.size();
-        int i = 0;
-        avscience.ppc.Layer layer;
-        avscience.ppc.Layer layerInc;
-
-        if (length > 0)
         {
-            while (!sorted)
+            boolean sorted = false;
+            int length = layers.size();
+            int i = 0;
+            avscience.ppc.Layer layer;
+            avscience.ppc.Layer layerInc;
+
+            if (length > 0)
             {
-                sorted = true;
-                for(i=0; i<length - 1; i++)
+                while (!sorted)
                 {
-                    layer = (avscience.ppc.Layer) layers.elementAt(i);
-                	int strt = layer.getStartDepthInt();
-                	int end = layer.getEndDepthInt();
-                    int n = strt+end;
-                    layerInc = (avscience.ppc.Layer) layers.elementAt(i+1);
-                    int istrt = layerInc.getStartDepthInt();
-                    int iend = layerInc.getEndDepthInt();
-                    int ninc = istrt+iend;
-                  
-                    if ( ninc > n )
+                    sorted = true;
+                    for(i=0; i<length - 1; i++)
                     {
+                        layer = (avscience.ppc.Layer) layers.elementAt(i);
+                        int strt = layer.getStartDepthInt();
+                        int end = layer.getEndDepthInt();
+                        int n = strt+end;
+                        layerInc = (avscience.ppc.Layer) layers.elementAt(i+1);
+                        int istrt = layerInc.getStartDepthInt();
+                        int iend = layerInc.getEndDepthInt();
+                        int ninc = istrt+iend;
+
+                        if ( ninc > n )
+                        {
                             layers.setElementAt(layerInc, i);
                             layers.setElementAt(layer, i+1);
                             sorted = false;
+                        }
                     }
                 }
             }
-        }
-        return layers;
+            return layers;
     }
     
     
@@ -83,9 +84,9 @@ public class Sorter
                   
                     if ( ninc < n )
                     {
-                            layers.setElementAt(layerInc, i);
-                            layers.setElementAt(layer, i+1);
-                            sorted = false;
+                        layers.setElementAt(layerInc, i);
+                        layers.setElementAt(layer, i+1);
+                        sorted = false;
                     }
                 }
             }
@@ -115,9 +116,9 @@ public class Sorter
                   
                     if ( ninc < n )
                     {
-                            tests.setElementAt(testInc, i);
-                            tests.setElementAt(test, i+1);
-                            sorted = false;
+                        tests.setElementAt(testInc, i);
+                        tests.setElementAt(test, i+1);
+                        sorted = false;
                     }
                 }
             }

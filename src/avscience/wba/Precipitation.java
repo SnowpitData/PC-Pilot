@@ -1,8 +1,8 @@
-package avscience.wba;
+ package avscience.wba;
 
 import java.util.Hashtable;
  
- public final class Precipitation implements DataTable
+ public final class Precipitation
   {
     private static final Precipitation instance = new Precipitation();
     private String[] codes;
@@ -81,11 +81,6 @@ import java.util.Hashtable;
   public String[] getCodes()
    {
      return this.codes;
-  }
-  
-  public String getCode(int i)
-  {
-     return codes[i];
   }
 
   public String[] getDescriptions()

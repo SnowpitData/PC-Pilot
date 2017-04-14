@@ -1,5 +1,5 @@
 package avscience.wba;
-import avscience.util.*;
+import java.util.*;
 
 public final class ShearTests extends Hashtable 
 {
@@ -12,9 +12,9 @@ public final class ShearTests extends Hashtable
     */
 
     public static   ShearTests getInstance()
-	{
-		return instance;
-	}
+    {
+	return instance;
+    }
 
     private ShearTests()
     {
@@ -26,16 +26,13 @@ public final class ShearTests extends Hashtable
         String[] descs = new String[this.size()];
         
         int i = 0;
-        
         Enumeration Descs = this.keys();
-        
         while ( Descs.hasMoreElements() )
         {
             String s = (String) Descs.nextElement();
             descs[i] = s;
             i++;
         }
-        
         return descs;
     }
     
@@ -58,18 +55,18 @@ public final class ShearTests extends Hashtable
     private void init()
     {
         put("Compression Test", CompressionTest.getInstance());
+        put("Deep Tap Test", DeepTapTest.getInstance());
         put("Rutschblock Test", RutschblockTest.getInstance());
         put("Shovel Shear Test", ShovelShearTest.getInstance());
         put("Stuffblock Test", StuffblockTest.getInstance());
         put("Extended Column Test", ExtendedColumnTest.getInstance());
         
         Codes.put(CompressionTest.getInstance().getTypeCode(), CompressionTest.getInstance());
+        Codes.put(DeepTapTest.getInstance().getTypeCode(), DeepTapTest.getInstance());
         Codes.put(RutschblockTest.getInstance().getTypeCode(), RutschblockTest.getInstance());
         Codes.put(ShovelShearTest.getInstance().getTypeCode(), ShovelShearTest.getInstance());
         Codes.put(StuffblockTest.getInstance().getTypeCode(), StuffblockTest.getInstance());
         Codes.put(ExtendedColumnTest.getInstance().getTypeCode(), ExtendedColumnTest.getInstance());
       
     }
-    
-   
 }

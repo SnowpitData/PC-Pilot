@@ -3,7 +3,9 @@ package avscience.pc;
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.Enumeration;
 import avscience.ppc.User;
 
 public class LayerSearchFrame extends Frame
@@ -300,10 +302,10 @@ public class LayerSearchFrame extends Frame
             
             if ( object == selectGT1 )
             {
-            	if (!multType) subFrames.add(new TypeCanvas(type1));
-            	else subFrames.add(new TypeCanvas(type1, true)); 
+            	//if (!multType) subFrames.add(new TypeDisplay(type1));
+            	//else subFrames.add(new TypeDisplay(type1)); 
             }
-            if ( object == selectGT2 ) subFrames.add(new TypeCanvas(type2, false));
+            //if ( object == selectGT2 ) subFrames.add(new TypeDisplay(type2));
             
 		}
 	}

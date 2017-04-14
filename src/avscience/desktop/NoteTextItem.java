@@ -7,7 +7,7 @@ public class NoteTextItem implements TextItemType
 {
     public Label label;
     
-   	public LimitedTextField field = new LimitedTextField(137);
+    public LimitedTextField field = new LimitedTextField(137);
     public boolean macos;
     int xspace=6;
     public int colWidth = 200;

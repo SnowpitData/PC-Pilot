@@ -1,10 +1,10 @@
 package avscience.ppc;
-import waba.util.Date;
-import waba.sys.Time;
-import avscience.wba.*;
+
+import java.util.Date;
+
 public class ShearTestResult extends avscience.ppc.AvScienceDataObject
 {
-    public String code;
+    public String code="";
     private String score = "";
     private String quality = "";
     public String character = "";
@@ -14,28 +14,28 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     private String comments = " ";
     private String dateString = "";
     private String ctScore = "";
+    private String dtScore = "";
     private String ecScore="";
-    public String numberOfTaps="";
+    public String numberOfTaps="0";
     public String releaseType="";
     /// PST
     public String lengthOfCut="0";
     public String lengthOfColumn="0";
     
-    private String s;
+    private String s="";
     private int mult=1;
     
-    public ShearTestResult(String data)
+    public ShearTestResult(String data) throws Exception
     {
-    	this();
-    	popFromString(data);
-    	setAttributes();
+    	super(data);
+        popAttributes();
     }
     
     public boolean isNoFail()
     {
     	boolean is = false;
     	if ( score==null) return false;
-    	if ( score.equals("SBN") || score.equals("CTN") || score.equals("RB7") || score.equals("STN") || score.equals("ECTNR")) is=true;
+    	if ( score.equals("SBN") || score.equals("CTN") || score.equals("DTN") || score.equals("RB7") || score.equals("STN") || score.equals("ECTNR")) is=true;
     	return is;
     }
     
@@ -46,7 +46,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     
     public ShearTestResult() {super();}
     
-    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String ecScore, String fractureChar, String cat)
+    public ShearTestResult(String code, String score, String quality, String sdepth, String depthUnits, String comments, String ctScore, String dtScore, String ecScore, String fractureChar, String cat)
     {
     	if ( code.equals("PST")) this.code=code;
         else this.code = score.substring(0, 2);
@@ -57,19 +57,13 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
         this.comments = comments;
         this.ctScore = ctScore;
         this.ecScore=ecScore;
+        this.dtScore=dtScore;
         this.character=fractureChar;
         this.fractureCat=cat;
         
-        Date date = new Date();
-        Time time = new Time();
-        int hour = time.hour;
-        int min = time.minute;
-        int sec = time.second;
-        int yr = date.getYear();
-        int mnth = date.getMonth();
-        int day = date.getDay();
-       	dateString = mnth+"/"+day+"/"+yr;
-        s = score + " " + quality + " " + sdepth + " " + dateString + "." + hour + ":" + min+ ":"+sec;
+        Date date = new Date(System.currentTimeMillis());
+        dateString = date.toString();
+        s = score + " " + quality + " " + sdepth + " " + dateString;
         if ( code.equals("PST"))  s=code+" "+s;
     }
     
@@ -79,14 +73,13 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
         else return " ";
     }
     
-	
-	public double getDepthSI()
-	{
-		if ( isNoFail() ) return 0.0;
-		double dsi = getDepthValue();
-		if ( depthUnits.equals("inches") ) dsi = (dsi/2.54);
-		return dsi;
-	}
+    public double getDepthSI()
+    {
+	if ( isNoFail() ) return 0.0;
+	double dsi = getDepthValue();
+	if ( depthUnits.equals("inches") ) dsi = (dsi/2.54);
+	return dsi;
+    }
     
     public String getDepth()
     {
@@ -100,6 +93,56 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     {
     	if ( isNoFail() ) return 0;
     	return (int) (10*getDepthValue());
+    }
+    
+    public int getCTScoreAsInt()
+    {
+        Integer I = null;
+        try
+        {
+            I = new java.lang.Integer(ctScore);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+            return 0;
+        }
+        return I.intValue();
+    }
+    
+    public int getDTScoreAsInt()
+    {
+        Integer I = null;
+        try
+        {
+            I = new java.lang.Integer(dtScore);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+            return 0;
+        }
+        return I.intValue();
+    }
+    
+    public int getECScoreAsInt()
+    {
+        Integer I = null;
+        try
+        {
+            I = new java.lang.Integer(ecScore);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+            return 0;
+        }
+        return I.intValue();
+    }
+    
+    public String getDateString()
+    {
+        return dateString;
     }
     
     public double getDepthValue()
@@ -150,7 +193,7 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	return mult;
     }
     
-    public String toString()
+    public String toUIString()
     {
     	return s;
     }
@@ -167,62 +210,99 @@ public class ShearTestResult extends avscience.ppc.AvScienceDataObject
     	return ctScore;
     }
     
+    public String getDTScore()
+    {
+    	if ( dtScore==null ) dtScore="";
+    	return dtScore;
+    }
+    
     public String getECScore()
     {
     	if ( ecScore==null ) ecScore="";
     	return ecScore;
     }
     
-    public void setAttributes()
+    public int getNumberOfTaps()
     {
-    	attributes.put("s", s);
-    	attributes.put("code", code);
-    	attributes.put("score", score);
-    	attributes.put("ctScore", ctScore);
-    	attributes.put("ecScore", ecScore);
-    	attributes.put("quality", quality);
-    	attributes.put("sdepth", sdepth);
-    	attributes.put("depthUnits", depthUnits);
-    	attributes.put("comments", comments);
-    	attributes.put("dateString", dateString);
-    	attributes.put("releaseType", releaseType);
-    	attributes.put("lengthOfCut", lengthOfCut);
-    	attributes.put("lengthOfColumn", lengthOfColumn);
-    	attributes.put("character", character);
-    	attributes.put("fractureCat", fractureCat);
-    	attributes.put("numberOfTaps", numberOfTaps);
+        if (numberOfTaps == null) return 0;
+        if (numberOfTaps.trim().length()<1) return 0;
+        return new Integer(numberOfTaps).intValue();
     }
     
-    public void getAttributes()
+    public int getLengthOfColumn()
+    {
+        if (lengthOfColumn == null) return 0;
+        if (lengthOfColumn.trim().length()<1) return 0;
+        return new Integer(lengthOfColumn).intValue();
+    }
+    
+    public int getLengthOfCut()
+    {
+        if (lengthOfCut == null) return 0;
+        if (lengthOfCut.trim().length()<1) return 0;
+        return new Integer(lengthOfCut).intValue();
+    }
+    
+    public void writeAttributes()
+    {
+        try
+        {
+            put("s", s);
+            put("code", code);
+            put("score", score);
+            put("ctScore", ctScore);
+            put("dtScore", dtScore);
+            put("ecScore", ecScore);
+            put("quality", quality);
+            put("sdepth", sdepth);
+            put("depthUnits", depthUnits);
+            put("comments", comments);
+            put("dateString", dateString);
+            put("releaseType", releaseType);
+            put("lengthOfCut", lengthOfCut);
+            put("lengthOfColumn", lengthOfColumn);
+            put("character", character);
+            put("fractureCat", fractureCat);
+            put("numberOfTaps", numberOfTaps);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+        }
+    }
+    
+    public void popAttributes()
     { 
-    	s = (String) attributes.get("s");
-    	code = (String) attributes.get("code");
-    	score = (String) attributes.get("score");
-    	ctScore = (String) attributes.get("ctScore");
-    	ecScore = (String) attributes.get("ecScore");
-    	quality = (String) attributes.get("quality");
-    	sdepth = (String) attributes.get("sdepth");
-    	depthUnits = (String) attributes.get("depthUnits");
-    	comments = (String) attributes.get("comments");
-    	dateString = (String) attributes.get("dateString");
-    	releaseType = (String) attributes.get("releaseType");
-    	if ( releaseType==null) releaseType="";
-    	lengthOfColumn = (String) attributes.get("lengthOfColumn");
-    	if ( lengthOfColumn==null) lengthOfColumn="";
-    	lengthOfCut = (String) attributes.get("lengthOfCut");
-    	if ( lengthOfCut==null) lengthOfCut="";
-    	character = (String) attributes.get("character");
-    	if ( character==null) character="";
-    	fractureCat = (String) attributes.get("fractureCat");
-    	if ( fractureCat==null) fractureCat="";
-    	numberOfTaps=(String)attributes.get("numberOfTaps");
-    	if (numberOfTaps==null)numberOfTaps="";
+        try
+        {
+            s = getString("s");
+            code = getString("code");
+            score = getString("score");
+            ctScore = getString("ctScore");
+            dtScore = getString("dtScore");
+            ecScore = getString("ecScore");
+            quality = getString("quality");
+            sdepth = getString("sdepth");
+            depthUnits = getString("depthUnits");
+            comments = getString("comments");
+            dateString = getString("dateString");
+            releaseType = getString("releaseType");
+            if ( releaseType==null) releaseType="";
+            lengthOfColumn = getString("lengthOfColumn");
+            if ( lengthOfColumn==null) lengthOfColumn="";
+            lengthOfCut = getString("lengthOfCut");
+            if ( lengthOfCut==null) lengthOfCut="";
+            character = getString("character");
+            if ( character==null) character="";
+            fractureCat = getString("fractureCat");
+            if ( fractureCat==null) fractureCat="";
+            numberOfTaps= getString("numberOfTaps");
+            if (numberOfTaps==null)numberOfTaps="";
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+        }
     }
-    
-    public String getKey()
-    {
-        return new String("E");
-    }
-    
     
 }

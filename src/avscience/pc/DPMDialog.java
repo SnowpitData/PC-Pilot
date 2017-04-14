@@ -1,7 +1,7 @@
 package avscience.pc;
 import java.awt.*;
 import java.awt.event.*;
-import avscience.util.*;
+import java.util.*;
 import avscience.ppc.PitObs;
 
 public class DPMDialog extends Dialog

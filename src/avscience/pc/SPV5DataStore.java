@@ -1,24 +1,19 @@
 package avscience.pc;
 
 import java.util.*;
-import java.io.*;
-import avscience.wba.*;
-import avscience.util.*;
-import avscience.desktop.Logger;
 import avscience.ppc.*;
-//import org.jdom.*;
-//import org.jdom.output.*;
 
 public class SPV5DataStore implements java.io.Serializable
 {
     private static final SPV5DataStore instance  = new SPV5DataStore();
-    private java.util.Hashtable Pits = new java.util.Hashtable();
-    private java.util.Hashtable PitIndex = new java.util.Hashtable();
-    private java.util.Hashtable OccIndex = new java.util.Hashtable();
-	private java.util.Hashtable Occs = new java.util.Hashtable();
-	private java.util.Hashtable Users = new java.util.Hashtable();
-	private java.util.Hashtable Locations = new java.util.Hashtable();
-	String username="";
+    private java.util.Hashtable<String, String> Pits = new java.util.Hashtable<String, String>();
+    private java.util.Hashtable<Integer, String>  PitIndex = new java.util.Hashtable<Integer, String>();
+    private java.util.Hashtable<Integer, String> OccIndex = new java.util.Hashtable();
+    private java.util.Hashtable<String, String> Occs = new java.util.Hashtable<String, String>();
+    private java.util.Hashtable<String, String> Users = new java.util.Hashtable<String, String>();
+    private java.util.Hashtable<String, String> Locations = new java.util.Hashtable<String, String>();
+    String username="";
+    
     public static SPV5DataStore getInstance()
 	{
 		return instance;
@@ -26,10 +21,9 @@ public class SPV5DataStore implements java.io.Serializable
 	
   	private SPV5DataStore()
   	{
-  		super();
-  		//System.out.println("SPDataStore");
-  		Properties props = System.getProperties();
-    	username = (String) props.get("user.name");
+            super();
+            Properties props = System.getProperties();
+            username = (String) props.get("user.name");
   	}
   	
   	
@@ -61,53 +55,41 @@ public class SPV5DataStore implements java.io.Serializable
   	
   	
   	
-  	public void addPit(String data)
+  	public void addPit(avscience.ppc.PitObs pit)
+  	{	   
+            if ( pit!=null )
+            {
+                String serial = pit.getSerial();
+		if ((serial==null) || (serial.trim().length()<1))
+		{
+                    serial = getNewSerial();
+                    pit.setSerial(serial);
+		}
+		Pits.put(serial, pit.toString());
+            }
+  	}
+        
+  	public void addLocation(Location l)
   	{
-  		
-  	//	System.out.println("addPit:: ");
-  		if ((data!=null) && (data.trim().length()>2))
-  		{
-	  		avscience.ppc.PitObs pit = new avscience.ppc.PitObs(data);
-	  		if ( pit!=null )
-	  		{
-		  	
-		  		String serial = pit.getSerial();
-		  		if ((serial==null) || (serial.trim().length()<1))
-		  		{
-		  			serial = getNewSerial();
-		  			pit.setSerial(serial);
-		  		}
-		  	//	else removePit(serial);
-		  		
-		  		
-		  		Pits.put(serial, pit.dataString());
-		  	//	System.out.println("PC PIT added: "+pit.getName()+" serial: "+serial);
-		  	}
-	  	}
+  		Locations.put(l.getName().trim(), l.toString());
   	}
   	
-  	/*public void addLocation(avscience.pc.Location l)
-  	{
-  		Locations.put(l.getName().trim()+" "+l.getID(), l);
-  	}*/
-  	
-  	public void addLocation(String data)
-  	{
-  		avscience.wba.Location l = new avscience.wba.Location(data);
-  		Locations.put(l.getName().trim(), l.dataString());
-  	}
-  	
-  	public avscience.wba.Location getLocation(String name)
+  	public Location getLocation(String name)
   	{
   		String s = null;
   		if ((name!=null) && (name.trim().length()>0)) s = Locations.get(name).toString();
-  		avscience.wba.Location l = null;
+  		Location l = null;
   		if (s!=null) 
-  		{
-  			l = new avscience.wba.Location(s);
-  		}
+                try
+                {
+                    l = new Location(s);
+                }
+                catch(Exception e)
+                {
+                    System.out.println(e.toString());
+                }
   		
-  		if ( l==null ) l = new avscience.wba.Location();
+  		if ( l==null ) l = new Location();
   		return l;
   	}
   	
@@ -116,27 +98,20 @@ public class SPV5DataStore implements java.io.Serializable
   		Locations.remove(name);
   	}
   	
-    public void addOcc(String data)
+    public void addOcc(AvOccurence occ)
   	{
-  		if ((data!=null) && (data.trim().length()>2))
-  		{
-	  		avscience.ppc.AvOccurence occ = new avscience.ppc.AvOccurence(data);
-	  		if (occ!=null)
-	  		{
-		  	//	System.out.println("addOcc: "+occ.getPitName());
-		  		//occ = new CharacterCleaner().cleanStrings(occ);
-		  		String serial = occ.getSerial();
+            if (occ!=null)
+            {
+                String serial = occ.getSerial();
 		  		
-		  		if ((serial==null) || (serial.trim().length()<1))
-		  		{
-		  			serial = getNewSerial();
-		  			occ.setSerial(serial);
-		  		}
-		  	//	else removeOcc(serial);
-		  		Occs.put(serial, occ.dataString());
+		if ((serial==null) || (serial.trim().length()<1))
+		{
+                    serial = getNewSerial();
+                    occ.setSerial(serial);
+		}
+		Occs.put(serial, occ.toString());
 		  	
-		  	}
-	  	}
+            }
   	}
   	
   	public avscience.ppc.PitObs getPitByName(String name)
@@ -192,9 +167,16 @@ public class SPV5DataStore implements java.io.Serializable
 	  		String data = (String) Pits.get(serial);
 	  		if ((data!=null) && (data.trim().length()>0))
 	  		{
-	  			avscience.ppc.PitObs pit = new avscience.ppc.PitObs(data);
-	  		//	writePitToXML(pit);
-	  			return pit;
+                            avscience.ppc.PitObs pit = new avscience.ppc.PitObs();
+                            try
+                            {
+                                pit = new avscience.ppc.PitObs(data);
+                            }
+                            catch(Exception e)
+                            {
+                                System.out.println(e.toString());
+                            }
+                            return pit;
 	  		}
 	  	}
 	  	return null;
@@ -288,7 +270,7 @@ public class SPV5DataStore implements java.io.Serializable
   	
   	public void addUser(avscience.ppc.User user)
   	{
-  		Users.put(user.getName(), user.dataString());
+            Users.put(user.getName(), user.toString());
   	}
   	
   	public avscience.ppc.User getUser(String name)
@@ -298,7 +280,15 @@ public class SPV5DataStore implements java.io.Serializable
   		if ( ( name!=null ) && ( name.trim().length()>0) )
   		{
 	  		s =  Users.get(name).toString();
-	  		u = new avscience.ppc.User(s);
+                        try
+                        {
+                            u = new avscience.ppc.User(s);
+                        }
+                        catch(Exception e)
+                        {
+                            System.out.println(e.toString());
+                        }
+	  		
 	  		if ( u==null ) u = new avscience.ppc.User();
 	  	} 
   		return u;
@@ -320,7 +310,6 @@ public class SPV5DataStore implements java.io.Serializable
     	String[] users = new String[Users.size()];
     	if (( Users!=null ) && ( Users.size()> 0 ))
     	{
-    	//	users[0]=" ";
     		java.util.Enumeration e = Users.keys();
     		int i=0;
     		while ( e.hasMoreElements() )
@@ -371,7 +360,6 @@ public class SPV5DataStore implements java.io.Serializable
     {
     	boolean sorted = false;
         int length = pits.size();
-        //Vector v = new Vector(length);
         int i = 0;
         avscience.ppc.PitObs pit;
         avscience.ppc.PitObs pitInc;
@@ -414,10 +402,8 @@ public class SPV5DataStore implements java.io.Serializable
       		int i = 1;
       		while (e.hasMoreElements())
       		{
-      		    //String serial = (String) e.nextElement();
-      		   // avscience.ppc.PitObs pit = getPit(serial);
-      		   	avscience.ppc.PitObs pit = (avscience.ppc.PitObs)e.nextElement();
-      		   	String serial = pit.getSerial();
+                    avscience.ppc.PitObs pit = (avscience.ppc.PitObs)e.nextElement();
+                    String serial = pit.getSerial();
       		    pits[i]=pit.getName();
       		    System.out.println("Idx: "+i+" Pit Name: "+pits[i]+" Serial: "+serial);
       		    PitIndex.put(new Integer(i), serial);
@@ -440,10 +426,8 @@ public class SPV5DataStore implements java.io.Serializable
       		int i = 0;
       		while (e.hasMoreElements())
       		{
-      		    //String serial = (String) e.nextElement();
-      		   // avscience.ppc.PitObs pit = getPit(serial);
-      		   	avscience.ppc.PitObs pit = (avscience.ppc.PitObs)e.nextElement();
-      		   	String serial = pit.getSerial();
+                    avscience.ppc.PitObs pit = (avscience.ppc.PitObs)e.nextElement();
+                    String serial = pit.getSerial();
       		    pits[i]=pit.getName();
       		    System.out.println("Idx: "+i+" Pit Name: "+pits[i]+" Serial: "+serial);
       		    PitIndex.put(new Integer(i), serial);

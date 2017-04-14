@@ -1,12 +1,15 @@
 package avscience.desktop;
-//import avscience.desktop.*;
+
 import java.awt.*;
 import avscience.wba.*;
 import java.util.*;
 import java.io.*;
 import avscience.pc.MainFrame;
+import avscience.pc.PitFrame;
 import avscience.ppc.PitObs;
 import avscience.ppc.AvOccurence;
+import avscience.ppc.Location;
+
 public class OccFrame extends Frame
 {
 
@@ -22,7 +25,7 @@ public class OccFrame extends Frame
 	private MenuItem saveMenuItem = new java.awt.MenuItem();
 	private MenuItem crownObsItem = new java.awt.MenuItem();
 	private MenuItem editItem = new java.awt.MenuItem();
-	private DataStore store;
+	///private DataStore store;
 	public AvApp app;
 	public avscience.ppc.PitObs pit;
 	private PitFrame frame;
@@ -34,7 +37,7 @@ public class OccFrame extends Frame
 	public boolean embedded = false;
 	String dtime = "";
 	
-	public OccFrame(MainFrame mf, avscience.ppc.AvOccurence AvOcc, avscience.ppc.PitObs pit, DataStore store, AvApp app, PitFrame frame, PitApplet applet, boolean embedded)
+	/*public OccFrame(MainFrame mf, avscience.ppc.AvOccurence AvOcc, avscience.ppc.PitObs pit, DataStore store, AvApp app, PitFrame frame, PitApplet applet, boolean embedded)
 	{
 		super("Avalanche Occurrence");
 		this.setSize(width, height);
@@ -60,20 +63,17 @@ public class OccFrame extends Frame
 		this.add(canvas);
 		buildMenu();
 		
-	}
+	}*/
 	
-	public OccFrame(MainFrame mf, avscience.ppc.AvOccurence AvOcc, avscience.ppc.PitObs pit, DataStore store, AvApp app, PitFrame frame, PitApplet applet)
+	public OccFrame(MainFrame mf, avscience.ppc.AvOccurence AvOcc, avscience.ppc.PitObs pit, AvApp app, PitFrame frame, PitApplet applet)
 	{
 		super("Avalanche Occurrence");
 		this.embedded = embedded;
 		this.setSize(width, height);
 		this.setVisible(true);
 		this.mf = mf;
-	//	AvOcc = new CharacterCleaner().cleanStrings(AvOcc);
-		this.store = store;
 		this.app = app;
 		this.pit = pit;
-		this.store = store;
 		this.frame = frame;
 		this.AvOcc = AvOcc;
 		if (applet!=null) this.webEdit = applet.superuser;
@@ -129,7 +129,7 @@ public class OccFrame extends Frame
     	catch(Exception e){System.out.println(e.toString());}
         setLabels();
         Location loc = pit.getLocation();
-        avscience.util.Hashtable atts = null;
+       // avscience.util.Hashtable atts = null;
         Enumeration e = null;
         StringBuffer buffer = new StringBuffer();
         buffer.append("User: " + pit.getUser().getName() + "\n");
@@ -137,53 +137,37 @@ public class OccFrame extends Frame
         buffer.append(AvOcc.getPitName() + "\n");
         buffer.append("Location: \n");
         buffer.append(loc.toString() + "\n");
-        atts = AvOcc.attributes;
-        atts.put("dtime", dtime);
-       // e = attributes.keySet();
-       	Object[] keys = attributes.keySet().toArray();
-        System.out.println("attribute # "+atts.size());
+      
+        try
+        {
+            AvOcc.put("dtime", dtime);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
         String l = null;
         String v = null;
-        for ( int i=0; i<keys.length; i++ )
+        Iterator keys = AvOcc.sortedKeys();
+        while ( keys.hasNext() )
         {
-        	String s = keys[i].toString();
-            //System.out.println("s: "+s);
-            v = (String) atts.get(s);
-            //System.out.println("att: "+v);
+            String s = keys.next().toString();
+            try
+            {
+                v =  AvOcc.get(s).toString();
+            }
+            catch(Exception ee)
+            {
+                System.out.println(ee.toString());
+                v="";
+            }
             l = (String) attributes.get(s);
-            //System.out.println("label: "+l);
             s = l + " " + v + "\n";
             if (( v!=null ) && ( v.trim().length() > 0 ))
             {
-            	if (!( s.trim().equals("null")) )buffer.append(s);
+            	if (!( s==null ))buffer.append(s);
             }
         }
-       // while ( e.hasMoreElements() )
-        
-     //   txt.setText(buffer.toString());
-		//////////////////////
-	/*	setLabels();
-		StringBuffer buffer = new StringBuffer();
-		avscience.wba.Location loc = pit.getLocation();
-        avscience.util.Hashtable atts = null;
-        avscience.util.Enumeration e = null;
-        buffer.append("User: " + pit.getUser().getName() + "\n");
-        buffer.append("Avalanche Occurrence Record: \n");
-        buffer.append(AvOcc.getPitName() + "\n");
-        buffer.append("Location: \n");
-        buffer.append(loc.toString() + "\n");
-        atts = AvOcc.attributes;
-        e = atts.keys();
-        String l = null;
-        String v = null;
-        while ( e.hasMoreElements() )
-        {
-            String s = (String) e.nextElement();
-            v = (String) atts.get(s);
-            l = (String) attributes.get(s);
-            s = l + " " + v + "\n";
-            if (!( s.trim().equals("null")) ) buffer.append(s);
-        }*/
         
         try
         {
@@ -336,7 +320,7 @@ public class OccFrame extends Frame
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-		    if (object == deleteMenuItem) deleteObs();
+		   /// if (object == deleteMenuItem) deleteObs();
 		    if (object == saveMenuItem) saveOcc();
 		    if (object == crownObsItem ) editPit();
 		    if (object == editItem ) new avscience.pc.OccFrame(AvOcc, pit, mf, true, applet, OccFrame.this).setVisible(true);
@@ -352,10 +336,10 @@ public class OccFrame extends Frame
     
     }
 	
-	void deleteObs()
+	/*void deleteObs()
 	{
-		(new DeleteObsDialog(this, true, new avscience.wba.PitObs(pit.dataString()), store)).setVisible(true);	 
-	}
+		(new DeleteObsDialog(this, true, new PitObs(pit.toJSON()), store)).setVisible(true);	 
+	}*/
 	
 }	
 	

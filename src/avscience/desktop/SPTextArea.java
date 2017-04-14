@@ -5,14 +5,13 @@ import java.awt.event.*;
 import java.awt.*;
 import avscience.desktop.action.*;
 
-public class SPTextArea extends JTextArea ///implements MouseListener
+public class SPTextArea extends JTextArea 
 {
 	
 	public SPTextArea()
 	{
 		super();
 		initialize();
-		//addMouseListener(this);
 	}
 	
 	protected void initialize()

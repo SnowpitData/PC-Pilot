@@ -3,7 +3,7 @@ package avscience.pc;
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
+import java.util.*;
 import java.io.*;
 import avscience.ppc.User;
 import avscience.ppc.XMLReader;
@@ -59,7 +59,6 @@ public class PitListFrame extends Frame implements ListFrame
 			if ( object==editMenuItem ) 
 			{
 				avscience.ppc.PitObs pit = mframe.store.getPit(pits.getSelectedIndex());
-				if ( pit!=null )System.out.println("Pit: "+pit.dataString());
 				if ( pit==null )
 				{
 					System.out.println("Pit Null.");
@@ -69,7 +68,11 @@ public class PitListFrame extends Frame implements ListFrame
 				
 				mframe.showPitHeaderFrame(true, pit, PitListFrame.this);
 			}
-			if ( object==deleteMenuItem ) new DeletePitDialog(PitListFrame.this, true).setVisible(true);
+			if ( object==deleteMenuItem ) 
+                        {
+                            avscience.ppc.PitObs pit = mframe.store.getPit(pits.getSelectedIndex());
+                            new DeletePitDialog(PitListFrame.this, pit, mframe.store);
+                        }
 			if ( object==importMenuItem )
 			{
 				try 
@@ -86,12 +89,12 @@ public class PitListFrame extends Frame implements ListFrame
 			                
 			                if ( pit!=null ) 
 			                {
-			                	mframe.store.addPit(pit.dataString());
-			                	new PitFrame(pit, mframe, false);
-			                	rebuildList();
-			                	mframe.rebuildList();
+                                            mframe.store.addPit(pit);
+                                            new PitFrame(pit, mframe, false);
+                                            rebuildList();
+                                            mframe.rebuildList();
 			                }
-				        }
+				      }
 				     }
 				     catch (Exception e) {e.printStackTrace();}
 			}

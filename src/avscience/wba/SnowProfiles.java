@@ -1,6 +1,6 @@
 package avscience.wba;
 
-import waba.fx.*;
+import java.awt.Graphics;
 
 public class SnowProfiles
 {

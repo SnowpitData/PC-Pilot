@@ -2,10 +2,9 @@ package avscience.pc;
 
 import java.awt.*;
 import avscience.wba.*;
-import avscience.util.*;
-import avscience.desktop.*;
+import avscience.ppc.*;
 import java.util.*;
-import org.compiere.grid.ed.Calendar;
+import avscience.desktop.*;
 import java.sql.Timestamp;
 import javax.swing.*;
 
@@ -552,7 +551,7 @@ public class PitSumFrame extends Frame implements TimeFrame
     void popForm()
     {
     	System.out.println("popForm");
-        avscience.wba.Location l = pFrame.getPit().getLocation();
+        Location l = pFrame.getPit().getLocation();
         state.select(l.getState());
         range.setText(l.getRange());
         if (utm)
@@ -670,9 +669,9 @@ public class PitSumFrame extends Frame implements TimeFrame
     	pFrame.getPit().setEdited();
         String name = pFrame.getPit().getLocation().getName();
         User u = pFrame.getPit().getUser();
-        avscience.wba.Location l=null;
-        if (utm) l=new avscience.wba.Location(u, name, state.getSelectedItem(), range.getText(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), "");
-        else l = new avscience.wba.Location(u, name, state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
+        Location l=null;
+        if (utm) l=new Location(u, name, state.getSelectedItem(), range.getText(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), "");
+        else l = new Location(u, name, state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
         pFrame.getPit().setLocation(l);
         pFrame.getPit().setAspect(aspect.getText());
         pFrame.getPit().setIncline(slope.getText());

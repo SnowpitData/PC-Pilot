@@ -1,11 +1,7 @@
 package avscience.pc;
 
-import avscience.desktop.GrainTypeSymbols;
 import avscience.ppc.GrainTypeConvertor;
-import avscience.wba.GrainType;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 
 public class GrainTypeSelectionFrame extends Frame
 {

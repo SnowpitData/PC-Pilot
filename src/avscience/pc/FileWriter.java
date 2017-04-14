@@ -1,9 +1,9 @@
 package avscience.pc;
 
-import java.awt.*;
 import avscience.desktop.*;
-import avscience.wba.*;
-import avscience.util.*;
+import avscience.ppc.*;
+import avscience.wba.TempProfile;
+import avscience.wba.DensityProfile;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -26,15 +26,15 @@ public class FileWriter
 		while (e.hasMoreElements())
 		{
 			String name = (String) e.nextElement();
-			avscience.wba.PitObs pit = getPit(name);
+			avscience.ppc.PitObs pit = getPit(name);
 			writePitToFile(pit);
 			
 		}
 	}
 	
-	private avscience.wba.PitObs getPit(String name)
+	private avscience.ppc.PitObs getPit(String name)
     {
-        avscience.wba.PitObs pit = null;
+        avscience.ppc.PitObs pit = null;
         try
         {
             URL url = new URL("http://kahrlconsulting.com/avscience/PitServlet");
@@ -45,9 +45,8 @@ public class FileWriter
             props.put("PITNAME", name);
             InputStream in = msg.sendGetMessage(props);
             ObjectInputStream result = new ObjectInputStream(in);
-            pit = (avscience.wba.PitObs) result.readObject();
+            pit = (avscience.ppc.PitObs) result.readObject();
             if ( pit == null ) System.out.println("Pit null.");
-            pit = new CharacterCleaner().cleanStrings(pit);
             System.out.println("Pit: " + pit.getName());
             System.out.println("Detecting OS: ");
             String os_name = System.getProperty( "os.name" );
@@ -64,12 +63,12 @@ public class FileWriter
         return pit;
     }
 	
-	void writePitToFile(avscience.wba.PitObs pit)
+	void writePitToFile(avscience.ppc.PitObs pit)
     {
-    	User u = pit.getUser();
+                avscience.ppc.User u = pit.getUser();
     	
 		StringBuffer buffer = new StringBuffer();
-		avscience.wba.Location loc = pit.getLocation();
+		Location loc = pit.getLocation();
 		buffer.append(pit.getDateString()+ "\n");
 		buffer.append("Observer ,"+u.getFirst()+ " "+ u.getLast()+ "\n");
 		buffer.append("Location ,"+loc.getName()+ "\n");
@@ -80,18 +79,25 @@ public class FileWriter
 		buffer.append("Long. ,"+loc.getLongitude()+"\n");
 		
 		java.util.Hashtable labels = getPitLabels();
-		avscience.util.Hashtable atts = pit.attributes;
 		java.util.Enumeration e = labels.keys();
 		while ( e.hasMoreElements())
 		{
-			String s = (String) e.nextElement();
-            String v = (String) atts.get(s);
-            String l = (String) labels.get(s);
-            s = l + " ," + v + "\n";
-            if (!( s.trim().equals("null")) ) buffer.append(s);
+                    String s = (String) e.nextElement();
+                    String v ="";
+                    try
+                    {
+                        v = (String) pit.get(s);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println(ex.toString());
+                    }
+                    String l = (String) labels.get(s);
+                    s = l + " ," + v + "\n";
+                    if (!( s.trim().equals("null")) ) buffer.append(s);
 		}
 		buffer.append("Activities: \n");
-		avscience.util.Enumeration ee = pit.getActivities().elements();
+		Enumeration ee = pit.getActivities().elements();
 		while ( ee.hasMoreElements())
 		{
 			String s = (String) ee.nextElement();
@@ -100,16 +106,16 @@ public class FileWriter
 		buffer.append("\n");
 		buffer.append("Layer Data:, Depth units:, "+u.getDepthUnits()+", Density Units, "+u.getRhoUnits()+"\n");
 		buffer.append("Layer start, Layer end, Hardness 1, Hardness 2, Crystal Form 1, Crystal Form 2, Crystal Size 1, Crystal Size 2, Size Units 1, Size Units 2, Density 1, Density 2, Water Content \n");
-		avscience.util.Enumeration l = pit.getLayers();
+		Enumeration l = pit.getLayers();
 		while ( l.hasMoreElements())
 		{
-			avscience.wba.Layer layer = (avscience.wba.Layer)l.nextElement();
+			avscience.ppc.Layer layer = (avscience.ppc.Layer)l.nextElement();
 			buffer.append(layer.getStartDepth()+", "+layer.getEndDepth()+", "+layer.getHardness1()+", "+layer.getHardness2()+", "+layer.getGrainType1()+", "+layer.getGrainType2()+", "+layer.getGrainSize1()+", "+layer.getGrainSize2()+", "+layer.getGrainSizeUnits1()+", "+layer.getGrainSizeUnits2()+", "+layer.getDensity1()+", "+layer.getDensity2()+", "+layer.getWaterContent()+"\n");
 		}
 		buffer.append("\n");
 		buffer.append("Test Data: \n");
 		buffer.append("Test, Score, Shear quality, Depth \n");
-		avscience.util.Enumeration tests = pit.getShearTests();
+		Enumeration tests = pit.getShearTests();
 		while ( tests.hasMoreElements())
 		{
 			ShearTestResult result = (ShearTestResult) tests.nextElement();
@@ -119,7 +125,7 @@ public class FileWriter
 		buffer.append("\n");
 		buffer.append("Temperature Data:, Temp Units:, "+u.getTempUnits()+"\n");
 		buffer.append("Depth, Temperature \n");
-		avscience.util.Enumeration dpths=null;
+		Enumeration dpths=null;
 		if ( pit.hasTempProfile())
 		{
 			TempProfile tp = pit.getTempProfile();
@@ -130,7 +136,7 @@ public class FileWriter
 			{
 				while (dpths.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dpths.nextElement();
+					Integer depth = (Integer)dpths.nextElement();
 					int t = tp.getTemp(depth);
 					t=t/10;
 					buffer.append(depth.toString()+", "+t+"\n");
@@ -145,13 +151,13 @@ public class FileWriter
 		
 		if ( dp!=null )
 		{
-			avscience.util.Enumeration dts = dp.getDepths().elements();
+			Enumeration dts = dp.getDepths().elements();
 		
 			if ( dts!=null ) 
 			{
 				while (dts.hasMoreElements())
 				{
-					avscience.pda.Integer depth = (avscience.pda.Integer)dts.nextElement();
+					Integer depth = (Integer)dts.nextElement();
 					String rho = dp.getDensity(depth);
 					buffer.append(depth.toString()+", "+rho+"\n");
 				}

@@ -3,9 +3,6 @@ package avscience.pc;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
-import avscience.wba.StringNumConvertor;
-import avscience.pda.Integer;
-
 
 public class ProfileCanvas extends Frame
 {
@@ -39,7 +36,7 @@ public class ProfileCanvas extends Frame
      
      public void setProfileType(String type)
      {
-     	int t = StringNumConvertor.getInstance().getNumFromDisplayString(type);
+     	int t = new Integer(type).intValue();
      	setProfileType(t);
      }
      
@@ -71,7 +68,7 @@ public class ProfileCanvas extends Frame
         int x = 8;
         int y = 36;
       
-        g.drawString(new avscience.pda.Integer(type+1).toString(),4, 4);
+        g.drawString(new Integer(type+1).toString(),4, 4);
       
         rects = new Rectangle[numProfiles];
         Rectangle r = null;

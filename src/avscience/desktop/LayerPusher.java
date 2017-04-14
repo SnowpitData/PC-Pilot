@@ -41,15 +41,7 @@ public class LayerPusher
     		{
     			if (isLayerThick(i)) shrinkLayerUp(i);
     		}
-    		
-    		
-    	/*	for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if ((hasThinLayersBelow(i)) && (isLayerMin(i))) moveLayerUp(i);
-    		}*/
-    	
-    		
-    		
+                
     		count++;
     		if (count > 2000) 
     		{
@@ -57,53 +49,6 @@ public class LayerPusher
     			break;
     		}
     	}
-    	
-    /*	count=0;
-    	while (hasThinLayers())
-    	{
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if ((hasThinLayersBelow(i)) && (isLayerMin(i))) moveLayerUp(i);
-    		}
-    		count++;
-    		if (count > 100) break;
-    	}
-    	count=0;
-    	while (hasThinLayers())
-    	{
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if ((hasThinLayersAbove(i)) && (isLayerMin(i))) moveLayerDown(i);
-    		}
-    		count++;
-    		if (count > 100) break;
-    	}
-    	count=0;
-    	while (hasThinLayers())
-    	{
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if ((isLayerThin(i)) && (isLayerThick(i+1))) expandLayerDown(i);	
-    		}
-    		
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if ((isLayerThin(i)) && (isLayerThick(i-1))) expandLayerUp(i);
-    		}
-    		
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if (isLayerThick(i)) shrinkLayerDown(i);
-    		}
-    		
-    		for (int i=0;i<numberOfLayers;i++)
-    		{
-    			if (isLayerThick(i)) shrinkLayerUp(i);
-    		}
-    		count++;
-    		if (count > 150) break;
-    	}*/
-    	
     }
     
     boolean isLayerThin(int i)
@@ -178,19 +123,6 @@ public class LayerPusher
     	layers[1][i]--;
     	layers[1][i-1]--;
     }
-    
-  /*  int getSpaceBelow(int i)
-    {
-    	int sum=0;
-    	return sum;
-    }
-    
-    int getSpaceAbove(int i)
-    {
-    	int sum=0;
-    	return sum;
-    }
-    */
     
     boolean hasThinLayersAbove(int l)
     {

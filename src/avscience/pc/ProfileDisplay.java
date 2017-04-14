@@ -1,7 +1,6 @@
 package avscience.pc;
 
 import java.awt.*;
-import avscience.wba.StringNumConvertor;
 
 public class ProfileDisplay extends Canvas
 {
@@ -16,7 +15,7 @@ public class ProfileDisplay extends Canvas
     
     public void setType(String type)
     {
-        int i = StringNumConvertor.getInstance().getNumFromDisplayString(type);
+        int i = new Integer(type).intValue();
         this.type = i;
     }
     

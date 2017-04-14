@@ -6,11 +6,8 @@ import java.util.*;
 import avscience.desktop.*;
 import java.util.Date;
 import avscience.ppc.*;
-import avscience.desktop.*;
-import org.compiere.grid.ed.Calendar;
 import java.sql.Timestamp;
 import javax.swing.*;
-///import com.compendium.ui.*;
 
  public class PitHeaderFrame extends Frame implements TimeFrame
 {
@@ -79,7 +76,6 @@ import javax.swing.*;
     Checkbox sharePit;
     boolean utm=false;
     Panel p = new Panel();
-   // final static int maxDataLength=4500;
     
     public PitHeaderFrame(MainFrame frame, boolean edit, avscience.ppc.PitObs pit, PitListFrame lframe)
     {
@@ -87,7 +83,6 @@ import javax.swing.*;
         mFrame = frame;
         this.edit=edit;
         this.lframe=lframe;
-       // this.webEdit = webEdit;
         System.out.println("PitHeaderFraMe");
         pf = this;
         this.user = frame.getUser();
@@ -102,7 +97,7 @@ import javax.swing.*;
         {
         	String serial = mFrame.store.getNewSerial();
         	this.pit = new avscience.ppc.PitObs(this.user, serial, frame.bld, frame.version);
-        	utm = this.user.coordType.equals("UTM");
+        	utm = this.user.getCoordType().equals("UTM");
         }
         if (mFrame.getSmallScreen()) height=580;
         this.setSize(width+20, height);
@@ -120,7 +115,14 @@ import javax.swing.*;
         pf = this;
         mFrame=pframe.mf;
         this.user = pframe.pit.getUser();
-        this.pit=new avscience.ppc.PitObs(pframe.pit.dataString());
+        try
+        {
+            this.pit=pframe.pit;
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.toString());
+        }
         if (pit.getLocation().type!=null) utm = pit.getLocation().type.equals("UTM");
         if (mFrame.getSmallScreen()) height=580;
         this.setSize(width+20, height);
@@ -130,7 +132,7 @@ import javax.swing.*;
         init();
     }
     
-    void exit()
+    public void exit()
     {
     	System.out.println("exit");
     	if ((edit) && (lframe!=null)) 
@@ -140,9 +142,17 @@ import javax.swing.*;
     	if ( mFrame!=null ) mFrame.rebuildList();
     	if ( pframe!=null )
 	    {
-	    	avscience.wba.PitObs p = new avscience.wba.PitObs(pit.dataString());
-	    	pframe.updatePit(pit);
+                avscience.ppc.PitObs p = new avscience.ppc.PitObs();
+                try
+                {
+                    p = new avscience.ppc.PitObs(pit.toString());
+                    pframe.updatePit(pit);
 	 	}
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                }
+            }
         this.dispose();
     }
     
@@ -152,21 +162,12 @@ import javax.swing.*;
     	if ( webEdit ) pframe.updateWebPit(pit);
         else if ( mFrame!=null )
         {
-		        mFrame.store.addPit(pit.dataString());
-		        mFrame.rebuildList();
-	    }
-	    if ( pframe!=null )
-	    {
-	    	avscience.wba.PitObs p = new avscience.wba.PitObs(pit.dataString());
-	    	pframe.updatePit(pit);
-	    }
+            mFrame.store.addPit(pit);
+            mFrame.rebuildList();
+	}
 	    
-	    if ((edit) && (lframe!=null)) 
-    	{
-    		lframe.rebuildList();
-    	}
-    	
-    
+        if ( pframe!=null ) pframe.updatePit(pit);
+        if ((edit) && (lframe!=null)) lframe.rebuildList();
     }
     
     void clearSubFrames()
@@ -179,7 +180,7 @@ import javax.swing.*;
     	}
     }
     
-    void save()
+    public void save()
     {
     	System.out.println("PitHeaderFrame-save");
         updatePitFromForm();
@@ -187,7 +188,7 @@ import javax.swing.*;
        	if ( webEdit ) pframe.updateWebPit(pit);
        	else
        	{
-        	if (mFrame!=null) mFrame.store.addPit(pit.dataString());
+        	if (mFrame!=null) mFrame.store.addPit(pit);
         }
         
         exit();
@@ -259,7 +260,7 @@ import javax.swing.*;
             if (object == pitGraphMenuItem) 
             {
             	updatePitFromForm();
-            	String data = pit.dataString();
+            	///String data = pit.dataString();
             	subFrames.add(new avscience.pc.PitFrame(pit, mFrame, true));
             	saveWO();
             }
@@ -652,7 +653,7 @@ import javax.swing.*;
     
     void popLocation()
     {
-    	avscience.wba.Location l = mFrame.store.getLocation(mFrame.locations.getSelectedItem());
+        Location l = mFrame.store.getLocation(mFrame.locations.getSelectedItem());
     	if ((l!=null)&&(l.getName().trim().length()>0))
     	{
     		loc.setText(l.getName().trim()+" "+l.getID());
@@ -669,37 +670,33 @@ import javax.swing.*;
     	System.out.println("phf popForm");
     	if ( pit!=null )
     	{
-    		StringSerializable ss = pit.getLocation();
-    		if ( ss!=null )
-    		{
-		        avscience.wba.Location l = new avscience.wba.Location(ss.dataString()); 
-		        if ( l!=null)
-		        {
-			        loc.setText(l.getName());
-			        state.select(l.getState());
-			        range.setText(l.getRange());
-			        if (l.type!=null)
-			        {
-			        	if (l.type.equals("UTM"))
-				        {
-				        	utmZone.setText(l.zone);
-				        	east.setText(l.east);
-				        	north.setText(l.north);
-				        }
-				        else
-				        {
-				        	lat.setText(l.getLat());
-				        	lon.setText(l.getLongitude());
-				        }
-			        }
-			        else 
-			        {
-			        	lat.setText(l.getLat());
-				        lon.setText(l.getLongitude());
-			        }
-			        elv.setText(l.getElv());
-			     }
-                }
+            avscience.ppc.Location l = pit.getLocation();
+            if ( l!=null)
+            {
+                    loc.setText(l.getName());
+                    state.select(l.getState());
+                    range.setText(l.getRange());
+                    if (l.type!=null)
+                    {
+                            if (l.type.equals("UTM"))
+                            {
+                                utmZone.setText(l.zone);
+                                east.setText(l.east);
+                                north.setText(l.north);
+                            }
+                            else
+                            {
+                                lat.setText(l.getLat());
+                                lon.setText(l.getLongitude());
+                            }
+                    }
+                    else 
+                    {
+                            lat.setText(l.getLat());
+                            lon.setText(l.getLongitude());
+                    }
+                    elv.setText(l.getElv());
+                 }
 		    if ( pit.testPit.trim().equals("true")) testPit.setState(true);
 		    else testPit.setState(false);
 		    /////////
@@ -794,8 +791,8 @@ import javax.swing.*;
         boolean sorted = false;
         int length = layers.size();
         int i = 0;
-        avscience.pc.Layer layer;
-        avscience.pc.Layer layerInc;
+        avscience.ppc.Layer layer;
+        avscience.ppc.Layer layerInc;
 
         if (length > 0)
         {
@@ -804,10 +801,10 @@ import javax.swing.*;
                 sorted = true;
                 for(i=0; i<length - 1; i++)
                 {
-                    layer = (avscience.pc.Layer) layers.elementAt(i);
-                    int n = layer.getStartDepth();
-                    layerInc = (avscience.pc.Layer) layers.elementAt(i+1);
-                    int ninc = layerInc.getStartDepth();
+                    layer = (avscience.ppc.Layer) layers.elementAt(i);
+                    int n = layer.getStartDepthInt();
+                    layerInc = (avscience.ppc.Layer) layers.elementAt(i+1);
+                    int ninc = layerInc.getStartDepthInt();
                   
                     if ( ninc < n )
                     {
@@ -826,9 +823,9 @@ import javax.swing.*;
     {
     	System.out.println("updatePitFromForm");
     	pit.setEdited();
-    	avscience.wba.Location l = null;
-    	if (utm) l = new avscience.wba.Location(new avscience.wba.User(user.dataString()), loc.getText().trim(), state.getSelectedItem(), range.getText(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), "");
-       	else l = new avscience.wba.Location(new avscience.wba.User(user.dataString()), loc.getText().trim(), state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
+    	avscience.ppc.Location l = null;
+    	if (utm) l = new avscience.ppc.Location(user, loc.getText().trim(), state.getSelectedItem(), range.getText(), utmZone.getText(), east.getText(), north.getText(), elv.getText(), "");
+       	else l = new avscience.ppc.Location(user, loc.getText().trim(), state.getSelectedItem(), range.getText(), lat.getText(), lon.getText(), elv.getText(), "");
         pit.setLocation(l);
         System.out.println("User:: "+pit.getUser());
         pit.setAspect(aspect.getText());

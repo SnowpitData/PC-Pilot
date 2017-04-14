@@ -3,12 +3,11 @@ package avscience.pc;
 import java.awt.*;
 import java.awt.event.*;
 import avscience.desktop.*;
-import avscience.wba.*;
-import avscience.util.*;
 import java.io.*;
 import java.net.*;
 import java.util.Properties;
 import avscience.ppc.*;
+import java.util.*;
 
 public class MainFrame extends Frame implements ListFrame
 {
@@ -106,22 +105,7 @@ public class MainFrame extends Frame implements ListFrame
 			readData();
 		}
 		catch(Exception e){logger.println(e.toString());}
-		/*try
-		{
-			readVer3Data();
-		}
-		catch(Exception e){logger.println(e.toString());}
-		try
-		{
-			readOldData();
-			readOlderData();
-		}
-		catch(Exception e){logger.println(e.toString());}
-		try
-		{
-			new PDARecordHandler(store);
-		}
-		catch(Exception e){logger.println(e.toString());}*/
+		
 		addPit.addActionListener(new MenuAction());
 		addOcc.addActionListener(new MenuAction());
 		pits.addItemListener(new PitoccListener());
@@ -156,9 +140,9 @@ public class MainFrame extends Frame implements ListFrame
                 if ((System.currentTimeMillis() - lastDataSentTime) > dataSendIterval) new Sender(false).start();
 	}
         
-	public avscience.wba.Location getCurrentLocation()
+	public Location getCurrentLocation()
 	{
-		avscience.wba.Location l = new avscience.wba.Location();
+		Location l = new Location();
 		String loc = locations.getSelectedItem();
 		
 		if ( (loc!=null) && ( loc.trim().length() > 0 ))
@@ -263,304 +247,6 @@ public class MainFrame extends Frame implements ListFrame
 		
 	}
 	
-	/*void readOldData()
-    {
-    	avscience.pc.DataStore ostore = null;
-    	File file = null;
-    	FileInputStream fin = null;
-    	ObjectInputStream oin = null;
-    	logger.println("readOldData()");
-    	try
-        {
-            try
-        	{
-        		file = new File("SnowPilot-PC.dat");
-            }
-            catch(Exception e)
-            {
-            	logger.println(e.toString());
-            	return;
-            }
-            fin = new FileInputStream(file);
-            oin = new ObjectInputStream(fin);
-            try
-            {
-            	ostore = (avscience.pc.DataStore) oin.readObject();
-            }
-            catch(ClassNotFoundException e){logger.println(e.toString());}
-            // close the input file.
-            fin.close();
-        }
-        catch(IOException e){logger.println(e.toString());}
-        if ( ostore!=null )      
-        {	
-        	logger.println("reading old data.");
-	        String [] pnames = ostore.getPitNames();
-	        for ( int i = 0; i<pnames.length; i++ )
-	        {
-	        	StringSerializable apit = (StringSerializable) ostore.getPit(pnames[i]);
-	        	avscience.ppc.PitObs ppit = new avscience.ppc.PitObs(apit.dataString());
-	        	String name = new avscience.wba.PitObs(apit.dataString()).getName();
-	        	String serial = store.getNewSerial();
-	        	ppit.setSerial(serial);
-	        	ppit=convertPit(ppit);
-	        	ppit.setArchName(name);
-	        	ppit.setCrownObs(false);
-	        	
-	        	logger.println("adding pit: "+ppit.getName()+" serial: "+serial);
-	        	store.addPit(ppit.dataString());
-	        }
-	        
-	        String [] occnames = ostore.getOccNames();
-	        for ( int i = 0; i<occnames.length; i++ )
-	        {
-	        	logger.println("adding Occurence: "+occnames[i]);
-	        	StringSerializable occ = (StringSerializable) ostore.getOcc(occnames[i]);
-	        	String name = new avscience.wba.AvOccurence(occ.dataString()).getPitName();
-	        	avscience.ppc.AvOccurence aocc = new avscience.ppc.AvOccurence(occ.dataString());
-	        	String serial = store.getNewSerial();
-	        	aocc.setSerial(serial);
-	        	aocc.setArchName(name);
-	        	avscience.ppc.PitObs ppit = store.getPitByArchName(aocc.getPitName());
-	        	String oserial = ppit.getSerial();
-	        	if (ppit!=null)
-	        	{
-		        	ppit.setSerial(serial);
-		        	ppit.setCrownObs(true);
-		        	store.addPit(ppit.dataString());
-		        	store.addOcc(aocc.dataString());
-		        	store.removePit(oserial);
-		        }
-		        else logger.println("ppit is null.");
-	        }
-	        
-	        String[] unames = ostore.getUserNames();
-	        for ( int i=0; i<unames.length; i++ )
-	        {
-	        	StringSerializable user = (StringSerializable) ostore.getUser(unames[i]);
-	        	store.addUser(new avscience.ppc.User(user.dataString()));
-	        }
-	        
-	        String[] lnames = ostore.getLocationNames();
-	        for ( int i=0; i<lnames.length; i++ )
-	        {
-	        	StringSerializable loc = (StringSerializable) ostore.getLocation(lnames[i]);
-	        	store.addLocation(loc.dataString());
-	        }
-	    }
-	    logger.println("READ OLD DATA DONE::: ");
-        file.delete();
-    }*/
-    
- /*   void readVer3Data()
-    {
-    	avscience.pc.SPDataStore ostore = null;
-    	File file = null;
-    	FileInputStream fin = null;
-    	ObjectInputStream oin = null;
-    	logger.println("readVer3Data()");
-    	try
-        {
-            try
-        	{
-        		file = new File("PCPILOT.DAT");
-            }
-            catch(Exception e)
-            {
-            	logger.println(e.toString());
-            	return;
-            }
-            fin = new FileInputStream(file);
-            oin = new ObjectInputStream(fin);
-            try
-            {
-            	ostore = (avscience.pc.SPDataStore) oin.readObject();
-            }
-            catch(ClassNotFoundException e){logger.println(e.toString());}
-            // close the input file.
-            fin.close();
-        }
-        catch(IOException e){logger.println(e.toString());}
-        if ( ostore!=null )      
-        {	
-        	logger.println("reading VER3 data.");
-	        String [] pnames = ostore.getPitNames();
-	        for ( int i = 0; i<pnames.length; i++ )
-	        {
-	        	StringSerializable apit = (StringSerializable) ostore.getPitByName(pnames[i]);
-	        	if (apit!=null) store.addPit(apit.dataString());
-	        	else System.out.println("PIT IS NULL!");
-	        }
-	        
-	        String [] occnames = ostore.getOccNames();
-	        for ( int i = 0; i<occnames.length; i++ )
-	        {
-	        	logger.println("adding Occurence: "+occnames[i]);
-	        	StringSerializable occ = (StringSerializable) ostore.getOccByName(occnames[i]);
-	        	if ( occ!=null ) store.addOcc(occ.dataString());
-	        	else System.out.println("OCC IS NULL!");
-	        }
-	        
-	        String[] unames = ostore.getUserNames();
-	        for ( int i=0; i<unames.length; i++ )
-	        {
-	        	StringSerializable user = (StringSerializable) ostore.getUser(unames[i]);
-	        	if (user!=null) store.addUser(new avscience.ppc.User(user.dataString()));
-	        	else System.out.println("USER IS NULL!");
-	        }
-	        
-	        String[] lnames = ostore.getLocationNames();
-	        for ( int i=0; i<lnames.length; i++ )
-	        {
-	        	StringSerializable loc = (StringSerializable) ostore.getLocation(lnames[i]);
-	        	if (loc!=null) store.addLocation(loc.dataString());
-	        	else System.out.println("LOCATION IS NULL!");
-	        }
-	    }
-	    logger.println("READ ver 3 DATA DONE::: ");
-	    System.out.println("READ ver 3 DATA DONE::: ");
-        file.delete();
-    }*/
-    
- /*   void readOlderData()
-    {
-    	avscience.desktop.DataStore ostore = null;
-    	File file = null;
-    	FileInputStream fin = null;
-    	ObjectInputStream oin = null;
-    	logger.println("readOldERData()");
-    	try
-        {
-            try
-        	{
-            	file = new File("AviData.dat");
-            }
-            catch(Exception e)
-            {
-            	logger.println(e.toString());
-            	return;
-            }
-            fin = new FileInputStream(file);
-            oin = new ObjectInputStream(fin);
-            try
-            {
-            	ostore = (avscience.desktop.DataStore) oin.readObject();
-            }
-            catch(ClassNotFoundException e){logger.println(e.toString());}
-            // close the input file.
-            fin.close();
-        }
-        catch(IOException e){logger.println(e.toString());}
-        if ( ostore!=null )      
-        {	
-        	logger.println("reading oldER data.");
-	        String [] pnames = ostore.getPitNames();
-	        for ( int i = 0; i<pnames.length; i++ )
-	        {
-	        	StringSerializable apit = (StringSerializable) ostore.getPit(pnames[i]);
-	        	avscience.ppc.PitObs ppit = new avscience.ppc.PitObs(apit.dataString());
-	        	String name = new avscience.wba.PitObs(apit.dataString()).getName();
-	        	String serial = store.getNewSerial();
-	        	ppit.setSerial(serial);
-	        	ppit=convertPit(ppit);
-	        	ppit.setArchName(name);
-	        	ppit.setCrownObs(false);
-	        	
-	        	logger.println("adding pit: "+ppit.getName()+" serial: "+serial);
-	        	store.addPit(ppit.dataString());
-	        }
-	        
-	        String [] occnames = ostore.getOccNames();
-	        for ( int i = 0; i<occnames.length; i++ )
-	        {
-	        	logger.println("adding Occurence: "+occnames[i]);
-	        	StringSerializable occ = (StringSerializable) ostore.getOcc(occnames[i]);
-	        	String name = new avscience.wba.AvOccurence(occ.dataString()).getPitName();
-	        	avscience.ppc.AvOccurence aocc = new avscience.ppc.AvOccurence(occ.dataString());
-	        	String serial = store.getNewSerial();
-	        	aocc.setSerial(serial);
-	        	aocc.setArchName(name);
-	        	avscience.ppc.PitObs ppit = store.getPitByArchName(aocc.getPitName());
-	        	String oserial = ppit.getSerial();
-	        	if (ppit!=null)
-	        	{
-		        	ppit.setSerial(serial);
-		        	ppit.setCrownObs(true);
-		        	store.addPit(ppit.dataString());
-		        	store.addOcc(aocc.dataString());
-		        	store.removePit(oserial);
-		        }
-		        else logger.println("ppit is null.");
-	        }
-	        
-	        String[] unames = ostore.getUserNames();
-	        for ( int i=0; i<unames.length; i++ )
-	        {
-	        	StringSerializable user = (StringSerializable) ostore.getUser(unames[i]);
-	        	store.addUser(new avscience.ppc.User(user.dataString()));
-	        }
-	        
-	        String[] lnames = ostore.getLocationNames();
-	        for ( int i=0; i<lnames.length; i++ )
-	        {
-	        	StringSerializable loc = (StringSerializable) ostore.getLocation(lnames[i]);
-	        	store.addLocation(loc.dataString());
-	        }
-	    }
-    }*/
-    
-    /*public void updatePitLayers(avscience.ppc.PitObs pit)
-	{
-		avscience.ppc.User u = pit.getUser();
-		boolean fromTop = false;
-		if ( u.getMeasureFrom().equals("true")) fromTop = true;
-		else fromTop = false;
-		java.util.Enumeration layers = pit.getLayers();
-		while ( layers.hasMoreElements() )
-		{
-			avscience.ppc.Layer l = (avscience.ppc.Layer) layers.nextElement();
-			l.setFromTop(fromTop);
-					
-		}
-	}
-    */
-   ///////////
-   /*	public avscience.ppc.PitObs convertPit(avscience.ppc.PitObs pit)
-  	{
-  		logger.println("covertPit");
-  		java.util.Vector nt = new java.util.Vector();
-  		java.util.Vector np = new java.util.Vector();
-  		java.util.Enumeration e = pit.getShearTests();
-  		if ( e!= null )
-  		{
-	  		while ( e.hasMoreElements())
-	  		{
-		  		StringSerializable gtest = (StringSerializable) e.nextElement();
-		  		avscience.ppc.ShearTestResult test = new avscience.ppc.ShearTestResult(gtest.dataString());
-		  		nt.add(test);
-		    	
-		    }
-		    pit.shearTests=nt;
-		}
-	    java.util.Enumeration ee = pit.getLayers();
-	    
-	    while ( ee.hasMoreElements())
-  		{
-	  		StringSerializable glayer = (StringSerializable) ee.nextElement();
-	  		avscience.ppc.Layer l = new avscience.ppc.Layer(glayer.dataString());
-	    	np.add(l);
-	    }
-	    pit.layers=np;
-	    StringSerializable genuser = (StringSerializable) pit.getUser();
-	    avscience.ppc.User u = new avscience.ppc.User(genuser.dataString());
-	    pit.setUser(u);
-	    
-	    StringSerializable genloc = (StringSerializable) pit.getLocation();
-	    avscience.wba.Location l = new avscience.wba.Location(genloc.dataString());
-	    pit.setLocation(l);
-	    return pit;
-  	}*/
-    
     public class PitoccListener implements ItemListener
     {
     	public void itemStateChanged(ItemEvent e)
@@ -572,13 +258,11 @@ public class MainFrame extends Frame implements ListFrame
     		if ( e.getItemSelectable()==pits )
     		{
     			int idx = pits.getSelectedIndex();
-    			///if (idx > 0)
-    			///{
-                                String serial = (String) pitSerials.get(idx);
-                                avscience.ppc.PitObs pit = store.getPit(serial);
-	    			//avscience.ppc.PitObs pit = store.getPit(idx);
-	    			new avscience.pc.PitFrame(pit, MainFrame.this, false);
-	    		///}
+                        System.out.println("Getting pit for idx: "+idx);
+                        String serial = (String) pitSerials.get(idx);
+                        System.out.println("PIT serial: "+serial);
+                        avscience.ppc.PitObs pit = store.getPit(serial);
+                        if (pit!=null) new avscience.pc.PitFrame(pit, MainFrame.this, false);
     		}
     		
     		if ( e.getItemSelectable()==occs )
@@ -733,7 +417,6 @@ public class MainFrame extends Frame implements ListFrame
 	public void rebuildList()
 	{
 		users.removeAll();
-	//	users.add(" ");
 		String[] usrs = store.getUserNames();
 		for ( int i = 0; i < usrs.length; i++ )
 		{
@@ -742,7 +425,6 @@ public class MainFrame extends Frame implements ListFrame
 		users.select(defaultUser);
 		
 		locations.removeAll();
-	//	locations.add(" ");
 		String [] lcs = store.getLocationNames();
 		for ( int i = 0; i < lcs.length; i++ )
 		{
@@ -750,8 +432,6 @@ public class MainFrame extends Frame implements ListFrame
 		}
 		
 		pits.removeAll();
-	//	pits.add(" ");
-		///String[] pts = store.getPitNames(false);
                 java.util.Vector pts = store.getPits();
                 pts = sortPitsByTime(pts);
 		for (int i = 0; i < pts.size(); i++ )

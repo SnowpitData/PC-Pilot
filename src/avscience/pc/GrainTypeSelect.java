@@ -1,7 +1,6 @@
 package avscience.pc;
 
 import avscience.desktop.GrainTypeSymbols;
-import avscience.wba.GrainType;
 import avscience.ppc.GrainTypeConvertor;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,6 +30,7 @@ public class GrainTypeSelect extends Canvas
   
   public GrainTypeSelect(GrainTypeSelectionFrame frame, String type)
   {
+      System.out.println("GrainTypeSelect:type: "+type);
     setSize(wdth+8, 30);
     setVisible(true);
     this.frame=frame;
@@ -81,13 +81,16 @@ public class GrainTypeSelect extends Canvas
 	
    public void paint(Graphics g)
    {
+       System.out.println("GTS:paint()");
    	x=8;
    	y=0;
    	g.drawImage(drpdwn, x, y, null);
    	GrainTypeSymbols gts = GrainTypeSymbols.getInstance(g);
    	if (selectedSymbol!=null)
    	{
+            System.out.println("Selected symbol: "+selectedSymbol);
             String scd = gtc.getSubTypeCode(selectedSymbol);
+            System.out.println("scd: "+scd);
             gts.drawSymbol(24, 6, scd);
    	}
    		
@@ -108,9 +111,12 @@ public class GrainTypeSelect extends Canvas
            
 	   for (int i=0; i<types.length; i++ )
 	   {
-	   	String type = types[i];
-	   	gts.drawSymbol(24, y, type);
-                String s = gtc.getUITypeFromCode(type);
+	   	String type = gtc.getSubTypeCode(types[i]);
+                System.out.println("types[i]: "+types[i]);
+                System.out.println("type: "+type);
+	   	gts.drawSymbol(24, y, types[i]);
+                String s = gtc.getUITypeFromCode(types[i]);
+               // String s = types[i];
                 if (s==null) s="null";
                 if (type!=null) g.drawString(s, 68, y+12);
 	   	y+=vspace;

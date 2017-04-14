@@ -1,44 +1,54 @@
-
-
 package avscience.wba;
 
-import avscience.pda.Integer;
-import avscience.util.*;
+import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.Vector;
 
-// Referenced classes of package avscience.wba:
-//            AvScienceDataObject
+import avscience.ppc.AvScienceDataObject;
+import avscience.ppc.ValueProfile;
 
-public class DensityProfile extends AvScienceDataObject
+public class DensityProfile extends avscience.ppc.AvScienceDataObject implements ValueProfile
 {
-
     public DensityProfile()
     {
-        densityUnits = "";
-        depthUnits = "";
-        depths = new Hashtable();
-        profile = new Hashtable();
     }
 
-    public DensityProfile(String s)
+    public DensityProfile(String s) throws Exception
     {
-        this();
-        popFromString(s);
+        super(s);
     }
 
-    public void setAttributes()
+    public void writeAttributes()
     {
-        attributes.put("densityUnits", densityUnits);
-        attributes.put("depthUnits", depthUnits);
-        attributes.put("depths", depths);
-        attributes.put("profile", profile);
+        try
+        {
+            put("densityUnits", densityUnits);
+            put("depthUnits", depthUnits);
+            String profile_data = this.getProfileFromTable(profile);
+            put("profile_data", profile_data);
+        }
+        catch(Exception e)
+        {
+            System.out.println("RhoProfile:writeAtts: "+e.toString());
+        }
+       
     }
 
-    public void getAttributes()
-    {
-        densityUnits = (String)attributes.get("densityUnits");
-        depthUnits = (String)attributes.get("depthUnits");
-        depths = (Hashtable)attributes.get("depths");
-        profile = (Hashtable)attributes.get("profile");
+    public void popAttributes()
+    {   
+        if (depths==null) depths = new Hashtable();
+        if (profile==null) profile = new Hashtable();
+        try
+        {
+            densityUnits = getString("densityUnits");
+            depthUnits = getString("depthUnits");
+            this.writeProfileToTable(this, getString("profile_data"));
+        }
+        catch(Exception e)
+        {
+            System.out.println("RhoProfile:popAtts: "+e.toString());
+        }
+       
     }
 
     public String[] getPoints()
@@ -57,8 +67,6 @@ public class DensityProfile extends AvScienceDataObject
 
     public DensityProfile(String s, String s1)
     {
-        densityUnits = "";
-        depthUnits = "";
         depths = new Hashtable();
         profile = new Hashtable();
         densityUnits = s;
@@ -129,14 +137,15 @@ public class DensityProfile extends AvScienceDataObject
     {
         return depthUnits;
     }
-
-    public String getKey()
+    
+    public Hashtable getProfile()
     {
-        return new String("2");
+        return profile;
     }
 
+    
     private String densityUnits = "";
     private String depthUnits = "";
-    private Hashtable depths = new Hashtable();
-    private Hashtable profile = new Hashtable();
+    private Hashtable depths;// = new Hashtable();
+    private Hashtable profile;// = new Hashtable();
 }

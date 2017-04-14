@@ -3,7 +3,6 @@ package avscience.pc;
 import java.awt.*;
 import avscience.desktop.*;
 import avscience.wba.*;
-import avscience.util.*;
 import avscience.ppc.User;
 
 public class TestSearchFrame extends Frame

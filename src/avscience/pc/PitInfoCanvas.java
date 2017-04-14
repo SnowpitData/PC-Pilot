@@ -1,11 +1,10 @@
 package avscience.pc;
 
-import avscience.wba.*;
-import avscience.util.*;
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import avscience.ppc.*;
-import java.util.Enumeration;
+import avscience.wba.SkyCover;
 import java.util.Date;
 
 public class PitInfoCanvas extends Canvas implements MouseListener
@@ -83,8 +82,8 @@ public class PitInfoCanvas extends Canvas implements MouseListener
    
         int x = margin;
         int y = vspace;
-        avscience.wba.Location l = pit.getLocation();
-        if ( l==null ) l = new avscience.wba.Location();
+        avscience.ppc.Location l = pit.getLocation();
+        if ( l==null ) l = new avscience.ppc.Location();
         avscience.ppc.User u = pit.getUser();
         if (u==null) u=new avscience.ppc.User();
         g.setColor(java.awt.Color.black);
@@ -288,8 +287,7 @@ public class PitInfoCanvas extends Canvas implements MouseListener
         Vector tests = new Vector();
         while ( e.hasMoreElements() )
         {
-        	StringSerializable stest = (StringSerializable) e.nextElement();
-        	avscience.ppc.ShearTestResult str = new avscience.ppc.ShearTestResult(stest.dataString());
+        	avscience.ppc.ShearTestResult str = (avscience.ppc.ShearTestResult) e.nextElement();
         	v.add(str);
         }
         if ( invert ) v = Sorter.sortDescendingTests(v);
@@ -323,8 +321,7 @@ public class PitInfoCanvas extends Canvas implements MouseListener
         e = pit.getLayers();
         while ( e.hasMoreElements())
         {
-        	StringSerializable sl = (StringSerializable) e.nextElement();
-            avscience.ppc.Layer la = new avscience.ppc.Layer(sl.dataString());
+            avscience.ppc.Layer la = (avscience.ppc.Layer) e.nextElement();
             v.add(la);
         }
         if ( invert ) v = Sorter.sortDescendingLayers(v);
