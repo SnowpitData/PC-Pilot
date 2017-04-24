@@ -14,7 +14,6 @@ import org.jdom.filter.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import avscience.pc.Sorter;
 import avscience.ppc.*;
 import avscience.wba.*;
 

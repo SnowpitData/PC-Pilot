@@ -6,7 +6,6 @@ import avscience.wba.DensityProfile;
 import avscience.wba.TempProfile;
 import org.jdom.*;
 import org.jdom.output.*;
-import avscience.pc.Sorter;
 
 public class XMLWriter 
 {
@@ -19,11 +18,6 @@ public class XMLWriter
     
     public String getXMLString(avscience.ppc.AvScienceDataObject obj)
     {
-        if ( obj instanceof PitObs )
-        {
-            PitObs pit = (PitObs) obj;
-            Sorter.sortPit(pit);
-        }
 	Element e = getElementFromObject(obj);
 	Document doc = new Document(e);
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
@@ -40,11 +34,6 @@ public class XMLWriter
     
     public void writeToXML(avscience.ppc.AvScienceDataObject obj)
   	{
-                if ( obj instanceof PitObs )
-                {
-                    PitObs pit = (PitObs) obj;
-                    Sorter.sortPit(pit);
-                }
 		Element e = getElementFromObject(obj);
 		Document doc = new Document(e);
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
@@ -61,12 +50,10 @@ public class XMLWriter
         public char[] getXML(avscience.ppc.PitObs pit)
         {
             CharArrayWriter cwriter = new CharArrayWriter(8400);
-            
             Sorter.sortPit(pit);
-  		
             System.out.println("writePitToXML");
-	    Element e = getElementFromObject(pit);
-	    Document doc = new Document(e);
+            
+	    Document doc = getDocumentFromPit(pit);
 	    XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		try
 		{
@@ -104,7 +91,95 @@ public class XMLWriter
         public Document getDocumentFromPit(PitObs pit)
         {
             Sorter.sortPit(pit);
-            Element e = getElementFromObject(pit);
+            Element e = new Element("PitObs");
+            Iterator en = pit.keys();
+  
+            while ( en.hasNext())
+            {
+                try
+                {
+                    Object o = pit.get(en.next().toString());
+                    if ( o instanceof String )
+                    {
+                        String s = o.toString();
+                        String att = pit.getString(s);
+                        Attribute a = new Attribute(s, att);
+                        e.setAttribute(a);
+                        
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                }
+            }
+            
+            Location l = pit.getLocation();
+            Element eloc =  getElementFromObject(l);
+            e.addContent(eloc);
+            
+            User u = pit.getUser();
+            Element eu = getElementFromObject(u);
+            e.addContent(eu);
+            
+            Enumeration layers = pit.getLayers();
+            
+            while (layers.hasMoreElements())
+            {
+                Layer layer = (Layer) layers.nextElement();
+                Element elayer = getElementFromObject(layer);
+                e.addContent(elayer);
+            }
+            
+            Enumeration tests = pit.getShearTests();
+            
+            while (tests.hasMoreElements())
+            {
+                ShearTestResult test = (ShearTestResult) layers.nextElement();
+                Element etest = getElementFromObject(test);
+                e.addContent(etest);
+            }
+            
+            Element rhoPro = new Element("DensityProfile");
+            
+            DensityProfile rhop = pit.getDensityProfile();
+            rhop.writeAttributes();
+            Attribute rhou = new Attribute("densityUnits", rhop.getDensityUnits());
+            rhoPro.setAttribute(rhou);
+            Attribute du = new Attribute("depthUnits", rhop.getDepthUnits());
+            rhoPro.setAttribute(du);
+            try
+            {
+                Attribute pdata = new Attribute("profile_data", (String) rhop.get("profile_data"));
+                rhoPro.setAttribute(pdata);
+            }
+            catch(Exception ee)
+            {
+                System.out.println(ee.toString());
+            }
+            e.addContent(rhoPro);
+            
+            /////////////
+            
+            Element tPro = new Element("TempProfile");
+            
+            TempProfile tp = pit.getTempProfile();
+            tp.writeAttributes();
+            Attribute tu = new Attribute("tempUnits", tp.getTempUnits());
+            tPro.setAttribute(tu);
+            Attribute tdu = new Attribute("depthUnits", tp.getDepthUnits());
+            tPro.setAttribute(tdu);
+            try
+            {
+                Attribute pdata = new Attribute("profile_data", (String) tp.get("profile_data"));
+                tPro.setAttribute(pdata);
+            }
+            catch(Exception ee)
+            {
+                System.out.println(ee.toString());
+            }
+            e.addContent(tPro);
+            
             Document doc = new Document(e);
             return doc;
         }
@@ -113,95 +188,24 @@ public class XMLWriter
 	{
 		System.out.println("getElementFromObject");
 		oo.writeAttributes();
-		Element e = null;
-		if ( oo instanceof PitObs )
-		{
-                        e = new Element("PitObs");
-			PitObs pit = (PitObs) oo;
-			Attribute a = new Attribute("activities", pit.getActivitiesString());
-			e.setAttribute(a);
-		}
-		
-		if ( oo instanceof TempProfile )
-		{
-                        e = new Element("TempProfile");
-			TempProfile tp = (TempProfile) oo;
-			if (tp.hasPoints())
-			{
-				Attribute a = new Attribute("tempUnits", tp.getTempUnits());
-				e.setAttribute(a);
-				Attribute aa = new Attribute("depthUnits", tp.getDepthUnits());
-				e.setAttribute(aa);
-				Hashtable table = tp.getProfile();
-				addProfileFromTable(table, e);
-			}
-			return e;
-		}
-		////////////
-		if ( oo instanceof DensityProfile )
-		{
-                        e = new Element("DensityProfile");
-			DensityProfile dp = (DensityProfile) oo;
-			if (dp.hasPoints())
-			{
-				Attribute a = new Attribute("rhoUnits", dp.getDensityUnits());
-				e.setAttribute(a);
-				Attribute aa = new Attribute("depthUnits", dp.getDepthUnits());
-				e.setAttribute(aa);
-				addProfileFromTable(dp.getProfile(), e);
-			}
-			return e;
-		}
-		
-		Iterator<String> en = oo.keys();
+		Element e = new Element(oo.getClass().getName());
+                
+		Iterator en = oo.keys();
 		while ( en.hasNext())
 		{
-			String att = en.next();
-			System.out.println("att: "+att);
-                        Object o = null;
-                        
-                        try
-                        {
-                            o = oo.get(att);
-                        }
-                        catch(Exception ee)
-                        {
-                            System.out.println(ee.toString());
-                        }
+                    try
+                    {
+                        String att = en.next().toString();
+                        System.out.println("att: "+att);
+                        Attribute a = new Attribute(att, oo.getString(att));
+                        e.setAttribute(a);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println(ex.toString());
+                    }
 			
-			
-			if (o instanceof String)
-			{
-				Attribute a = new Attribute(att.toString(), o.toString());
-				e.setAttribute(a);
-			}
-			
-			if  (o instanceof avscience.ppc.AvScienceDataObject)
-			{
-				Element ell = getElementFromObject((avscience.ppc.AvScienceDataObject)o);
-				e.addContent(ell);
-			}
-			
-			if ( o instanceof java.util.Vector )
-			{
-				java.util.Vector v = (java.util.Vector) o;
-				Iterator it = v.iterator();
-				while (it.hasNext())
-				{
-					avscience.ppc.AvScienceDataObject ooo = (avscience.ppc.AvScienceDataObject) it.next();
-					{
-						Element elll = getElementFromObject(ooo);
-						e.addContent(elll);
-					}
-				}
-				
-			}
-			
-				
 		}
 		return e;
 	}
-	
-
-  	
 }

@@ -20,6 +20,8 @@ public class DensityProfile extends avscience.ppc.AvScienceDataObject implements
 
     public void writeAttributes()
     {
+        if (depths==null) depths = new Hashtable();
+        if (profile==null) profile = new Hashtable();
         try
         {
             put("densityUnits", densityUnits);
@@ -146,6 +148,6 @@ public class DensityProfile extends avscience.ppc.AvScienceDataObject implements
     
     private String densityUnits = "";
     private String depthUnits = "";
-    private Hashtable depths;// = new Hashtable();
-    private Hashtable profile;// = new Hashtable();
+    private Hashtable depths = new Hashtable();
+    private Hashtable profile = new Hashtable();
 }

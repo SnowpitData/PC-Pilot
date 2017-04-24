@@ -46,11 +46,13 @@ public class TempProfile extends avscience.ppc.AvScienceDataObject implements Va
     public void writeAttributes()
     {
         System.out.println("TempProfile:writeAttributes()");
+        if (depths==null) depths = new Hashtable();
+        if (profile==null) profile = new Hashtable();
         try
         {
             put("tempUnits", tempUnits);
             put("depthUnits", depthUnits);
-            String profile_data = this.getProfileFromTable(profile);
+            String profile_data = getProfileFromTable(profile);
             System.out.println("profile_data: "+profile_data);
             put("profile_data", profile_data);
         }
@@ -167,8 +169,8 @@ public class TempProfile extends avscience.ppc.AvScienceDataObject implements Va
         return depthUnits;
     }
 
-    private String tempUnits;//="";
-    private String depthUnits;//="";
-    private Hashtable depths;// = new Hashtable();
-    private Hashtable profile;// = new Hashtable();
+    private String tempUnits="";
+    private String depthUnits="";
+    private Hashtable depths = new Hashtable();
+    private Hashtable profile = new Hashtable();
 }

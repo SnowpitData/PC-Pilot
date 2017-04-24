@@ -4,7 +4,7 @@ import java.util.*;
 import java.awt.*;
 import avscience.wba.*;
 import avscience.ppc.*;
-import avscience.pc.Sorter;
+import avscience.ppc.Sorter;
 
 public class PitCanvas extends Canvas
 {

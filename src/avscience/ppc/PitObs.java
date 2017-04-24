@@ -52,6 +52,14 @@ public class PitObs extends avscience.ppc.AvScienceDataObject
     private String edited="false";
     public PitObs() {super();}
     
+    @Override
+    public String toXML()
+    {
+        writeAttributes();
+        StringBuffer buffer = new StringBuffer();
+        return buffer.toString();
+    }
+    
     public void writeAttributes()
     {
         System.out.println("PitObs:WriteAttributes");
